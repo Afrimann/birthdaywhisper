@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Fonts — next/font injects these CSS vars onto <html> */
+  --font-playfair: var(--font-playfair);
+  --font-inter: var(--font-inter);
+  --font-dancing: var(--font-dancing);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Brand colors */
+  --color-violet-50:  #F5F3FF;
+  --color-violet-100: #EDE9FE;
+  --color-violet-200: #DDD6FE;
+  --color-violet-300: #C4B5FD;
+  --color-violet-400: #A78BFA;
+  --color-violet-500: #8B5CF6;
+  --color-violet-600: #7C3AED;
+  --color-violet-700: #6D28D9;
+  --color-violet-800: #5B21B6;
+  --color-violet-900: #4C1D95;
+
+  --color-amber-300: #FDE68A;
+  --color-amber-400: #FBBF24;
+  --color-amber-500: #F59E0B;
+  --color-amber-600: #D97706;
+
+  --color-rose-400: #FB7185;
+  --color-rose-500: #F43F5E;
+
+  /* Background scale */
+  --color-navy-900: #020617;
+  --color-navy-800: #0F172A;
+  --color-navy-700: #1E293B;
+  --color-navy-600: #334155;
+
+  /* Light mode */
+  --color-cream:    #FFFBF5;
+  --color-lavender: #EDE9FE;
+
+  /* Shadows */
+  --shadow-glow:       0 0 20px rgb(124 58 237 / 0.4);
+  --shadow-glow-amber: 0 0 20px rgb(245 158 11 / 0.4);
+  --shadow-card:       0 4px 32px rgb(0 0 0 / 0.4);
+
+  /* Animations */
+  --animate-shimmer:       shimmer 2s linear infinite;
+  --animate-float:         float 6s ease-in-out infinite;
+  --animate-flicker:       flicker 1.5s ease-in-out infinite alternate;
+  --animate-pulse-slow:    pulse 3s cubic-bezier(0.4,0,0.6,1) infinite;
+
+  /* Keyframes */
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
+  }
+  @keyframes flicker {
+    0%   { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.05); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Base styles */
+html {
+  color-scheme: dark;
 }
+
+body {
+  background-color: #0F172A;
+  color: #CBD5E1;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1E293B; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #7C3AED; }

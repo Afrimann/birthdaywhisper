@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  clerkId       String   @unique
+  email         String   @unique
+  username      String   @unique
+  displayName   String
+  avatarUrl     String?
+  birthdayMonth Int
+  birthdayDay   Int
+  timezone      String   @default("UTC")
+  isPremium     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  messages      Message[]
+  sentMessages  Message[]        @relation("SentMessages")
+  followers     BirthdayFollow[] @relation("FollowedUser")
+  following     BirthdayFollow[] @relation("FollowingUser")
+  wishlistItems WishlistItem[]
+  groupCards    GroupCard[]
+
+  @@index([username])
+  @@index([birthdayMonth, birthdayDay])
+}
+
+model Message {
+  id          String  @id @default(cuid())
+  recipientId String
+  recipient   User    @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  senderId    String?
+  sender      User?   @relation("SentMessages", fields: [senderId], references: [id], onDelete: SetNull)
+
+  content         String
+  senderName      String?
+  isAnonymous     Boolean       @default(true)
+  cardTheme       CardTheme     @default(CLASSIC)
+  voiceUrl        String?
+  birthdayYear    Int
+  status          MessageStatus @default(PENDING)
+  revealedAt      DateTime?
+  reactionEmoji   String?
+  isReported      Boolean       @default(false)
+  reportReason    String?
+  isHidden        Boolean       @default(false)
+  targetBirthdayYear Int?
+  groupCardId     String?
+  groupCard       GroupCard?    @relation(fields: [groupCardId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([recipientId, birthdayYear])
+  @@index([recipientId, status])
+}
+
+enum MessageStatus {
+  PENDING
+  REVEALED
+  HIDDEN
+}
+
+enum CardTheme {
+  CLASSIC
+  GOLDEN_HOUR
+  MIDNIGHT_STARS
+  BLOOM
+  RETRO
+  NEON
+}
+
+model BirthdayFollow {
+  id               String   @id @default(cuid())
+  followerId       String
+  follower         User     @relation("FollowingUser", fields: [followerId], references: [id], onDelete: Cascade)
+  followedId       String
+  followed         User     @relation("FollowedUser", fields: [followedId], references: [id], onDelete: Cascade)
+  notifyDaysBefore Int      @default(3)
+  createdAt        DateTime @default(now())
+
+  @@unique([followerId, followedId])
+  @@index([followedId])
+}
+
+model WishlistItem {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  url         String?
+  priceRange  String?
+  isPurchased Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model GroupCard {
+  id            String    @id @default(cuid())
+  recipientId   String
+  recipient     User      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  createdById   String?
+  createdByName String?
+  title         String?
+  inviteToken   String    @unique @default(cuid())
+  birthdayYear  Int
+  isLocked      Boolean   @default(false)
+  messages      Message[]
+  createdAt     DateTime  @default(now())
+
+  @@index([recipientId, birthdayYear])
+}
+
+model SenderSession {
+  id              String   @id @default(cuid())
+  fingerprintHash String
+  recipientId     String
+  messageCount    Int      @default(0)
+  lastSentAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@unique([fingerprintHash, recipientId])
+  @@index([fingerprintHash])
+}
+
+model ScheduledEmail {
+  id             String    @id @default(cuid())
+  recipientEmail String
+  type           EmailType
+  payload        Json
+  sendAt         DateTime
+  sentAt         DateTime?
+  failed         Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+
+  @@index([sendAt, sentAt])
+}
+
+enum EmailType {
+  BIRTHDAY_UNLOCK
+  BIRTHDAY_REMINDER_SENDER
+  REACTION_RECEIVED
+  WELCOME
+}
