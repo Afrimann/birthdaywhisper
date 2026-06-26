@@ -5,8 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+function todayMidnight(): Date {
+  const t = new Date();
+  return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+}
+
 export function getBirthdayYear(month: number, day: number): number {
-  const today = new Date();
+  const today = todayMidnight();
   const thisYear = today.getFullYear();
   const birthdayThisYear = new Date(thisYear, month - 1, day);
   return today <= birthdayThisYear ? thisYear : thisYear + 1;
@@ -18,7 +23,7 @@ export function isBirthdayToday(month: number, day: number): boolean {
 }
 
 export function daysUntilBirthday(month: number, day: number): number {
-  const today = new Date();
+  const today = todayMidnight();
   const thisYear = today.getFullYear();
   let birthday = new Date(thisYear, month - 1, day);
   if (birthday < today) {

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Gift, Copy, Lock, Clock, Share2, BookOpen, Star, Settings } from "lucide-react";
