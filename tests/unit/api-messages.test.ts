@@ -20,14 +20,14 @@ const {
   mockSessionFindUnique,
   mockMessageCreate,
   mockSessionUpsert,
-  mockContainsProfanity,
+  mockModerateContent,
 } = vi.hoisted(() => ({
   mockAuth:              vi.fn().mockResolvedValue({ userId: "user_1" }),
   mockUserFindUnique:    vi.fn(),
   mockSessionFindUnique: vi.fn(),
   mockMessageCreate:     vi.fn(),
   mockSessionUpsert:     vi.fn(),
-  mockContainsProfanity: vi.fn(),
+  mockModerateContent:   vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({
@@ -45,8 +45,8 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
-vi.mock("@/lib/profanity", () => ({
-  containsProfanity: mockContainsProfanity,
+vi.mock("@/lib/moderation", () => ({
+  moderateContent: mockModerateContent,
 }));
 
 import { POST } from "@/app/api/messages/route";
@@ -75,7 +75,7 @@ beforeEach(() => {
   mockSessionFindUnique.mockResolvedValue(null); // no prior session
   mockMessageCreate.mockResolvedValue({});
   mockSessionUpsert.mockResolvedValue({});
-  mockContainsProfanity.mockReturnValue(false); // clean by default
+  mockModerateContent.mockResolvedValue(false); // clean by default
 });
 
 describe("POST /api/messages", () => {
@@ -167,8 +167,8 @@ describe("POST /api/messages", () => {
     );
   });
 
-  it("AC-9: returns 422 when content fails the profanity filter", async () => {
-    mockContainsProfanity.mockReturnValue(true);
+  it("AC-9: returns 422 when content is flagged by moderation", async () => {
+    mockModerateContent.mockResolvedValue(true);
     const res = await POST(makeRequest(VALID_BODY));
     expect(res.status).toBe(422);
     expect(mockMessageCreate).not.toHaveBeenCalled();
