@@ -7,84 +7,65 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  clerkId       String   @unique
-  email         String   @unique
-  username      String   @unique
+  id            String           @id @default(cuid())
+  clerkId       String           @unique
+  email         String           @unique
+  username      String           @unique
   displayName   String
   avatarUrl     String?
   birthdayMonth Int
   birthdayDay   Int
-  timezone      String   @default("UTC")
-  isPremium     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  messages      Message[]
-  sentMessages  Message[]        @relation("SentMessages")
+  timezone      String           @default("UTC")
+  isPremium     Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   followers     BirthdayFollow[] @relation("FollowedUser")
   following     BirthdayFollow[] @relation("FollowingUser")
-  wishlistItems WishlistItem[]
   groupCards    GroupCard[]
+  messages      Message[]
+  sentMessages  Message[]        @relation("SentMessages")
+  wishlistItems WishlistItem[]
 
   @@index([username])
   @@index([birthdayMonth, birthdayDay])
 }
 
 model Message {
-  id          String  @id @default(cuid())
-  recipientId String
-  recipient   User    @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-
-  senderId    String?
-  sender      User?   @relation("SentMessages", fields: [senderId], references: [id], onDelete: SetNull)
-
-  content         String
-  senderName      String?
-  isAnonymous     Boolean       @default(true)
-  cardTheme       CardTheme     @default(CLASSIC)
-  voiceUrl        String?
-  birthdayYear    Int
-  status          MessageStatus @default(PENDING)
-  revealedAt      DateTime?
-  reactionEmoji   String?
-  isReported      Boolean       @default(false)
-  reportReason    String?
-  isHidden        Boolean       @default(false)
+  id                 String        @id @default(cuid())
+  recipientId        String
+  senderId           String?
+  content            String
+  senderName         String?
+  isAnonymous        Boolean       @default(true)
+  cardTheme          CardTheme     @default(CLASSIC)
+  voiceUrl           String?
+  birthdayYear       Int
+  status             MessageStatus @default(PENDING)
+  revealedAt         DateTime?
+  reactionEmoji      String?
+  isReported         Boolean       @default(false)
+  reportReason       String?
+  isHidden           Boolean       @default(false)
   targetBirthdayYear Int?
-  groupCardId     String?
-  groupCard       GroupCard?    @relation(fields: [groupCardId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  groupCardId        String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  groupCard          GroupCard?    @relation(fields: [groupCardId], references: [id])
+  recipient          User          @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  sender             User?         @relation("SentMessages", fields: [senderId], references: [id])
 
   @@index([recipientId, birthdayYear])
   @@index([recipientId, status])
 }
 
-enum MessageStatus {
-  PENDING
-  REVEALED
-  HIDDEN
-}
-
-enum CardTheme {
-  CLASSIC
-  GOLDEN_HOUR
-  MIDNIGHT_STARS
-  BLOOM
-  RETRO
-  NEON
-}
-
 model BirthdayFollow {
   id               String   @id @default(cuid())
   followerId       String
-  follower         User     @relation("FollowingUser", fields: [followerId], references: [id], onDelete: Cascade)
   followedId       String
-  followed         User     @relation("FollowedUser", fields: [followedId], references: [id], onDelete: Cascade)
   notifyDaysBefore Int      @default(3)
   createdAt        DateTime @default(now())
+  followed         User     @relation("FollowedUser", fields: [followedId], references: [id], onDelete: Cascade)
+  follower         User     @relation("FollowingUser", fields: [followerId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followedId])
   @@index([followedId])
@@ -93,7 +74,6 @@ model BirthdayFollow {
 model WishlistItem {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String?
   url         String?
@@ -101,6 +81,7 @@ model WishlistItem {
   isPurchased Boolean  @default(false)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -108,15 +89,15 @@ model WishlistItem {
 model GroupCard {
   id            String    @id @default(cuid())
   recipientId   String
-  recipient     User      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   createdById   String?
   createdByName String?
   title         String?
   inviteToken   String    @unique @default(cuid())
   birthdayYear  Int
   isLocked      Boolean   @default(false)
-  messages      Message[]
   createdAt     DateTime  @default(now())
+  recipient     User      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  messages      Message[]
 
   @@index([recipientId, birthdayYear])
 }
@@ -144,6 +125,21 @@ model ScheduledEmail {
   createdAt      DateTime  @default(now())
 
   @@index([sendAt, sentAt])
+}
+
+enum MessageStatus {
+  PENDING
+  REVEALED
+  HIDDEN
+}
+
+enum CardTheme {
+  CLASSIC
+  GOLDEN_HOUR
+  MIDNIGHT_STARS
+  BLOOM
+  RETRO
+  NEON
 }
 
 enum EmailType {
