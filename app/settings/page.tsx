@@ -6,6 +6,7 @@ import { Settings } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import SettingsForm from "./SettingsForm";
+import SignOutButton from "@/app/_components/SignOutButton";
 
 export default async function SettingsPage() {
   const { userId } = await auth();
@@ -47,6 +48,11 @@ export default async function SettingsPage() {
 
         <div className="animate-fade-rise" style={{ animationDelay: "60ms" }}>
           <SettingsForm initialData={user} />
+        </div>
+
+        <div className="mt-10 pt-8 border-t border-[rgba(242,193,78,0.08)] animate-fade-rise" style={{ animationDelay: "120ms" }}>
+          <p className="text-ghost text-xs uppercase tracking-wider mb-4">Account</p>
+          <SignOutButton />
         </div>
       </main>
     </div>
