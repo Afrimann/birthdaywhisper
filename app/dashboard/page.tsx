@@ -2,11 +2,12 @@ export const dynamic = "force-dynamic";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Gift, Lock, Clock, Share2, BookOpen, Star, Settings } from "lucide-react";
+import { Gift, Lock, Clock, BookOpen, Star, Settings } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
 import CopyLinkButton from "./CopyLinkButton";
+import ShareButton from "./ShareButton";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -70,9 +71,7 @@ export default async function DashboardPage() {
             <CopyLinkButton url={profileUrl} />
           </div>
           <div className="flex gap-3">
-            <button className="flex-1 flex items-center justify-center gap-2 border border-[rgba(242,193,78,0.15)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-cream text-sm py-2.5 rounded-xl transition-all min-h-[44px]">
-              <Share2 className="w-4 h-4" /> Share
-            </button>
+            <ShareButton url={profileUrl} title="Leave me a secret birthday message!" />
             <a
               href={`https://wa.me/?text=${encodeURIComponent(`Leave me a secret birthday message! 🎂 ${profileUrl}`)}`}
               target="_blank"
@@ -80,6 +79,14 @@ export default async function DashboardPage() {
               className="flex-1 flex items-center justify-center gap-2 bg-green-600/20 border border-green-600/30 text-green-400 hover:bg-green-600/30 text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
             >
               WhatsApp
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Leave me a secret birthday message! 🎂 ${profileUrl}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 border border-[rgba(242,193,78,0.15)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-cream text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
+            >
+              𝕏
             </a>
           </div>
         </div>
