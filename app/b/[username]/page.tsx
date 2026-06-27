@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Gift } from "lucide-react";
+import { Gift, Bell } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { isBirthdayToday, daysUntilBirthday, formatBirthday, getBirthdayYear } from "@/lib/utils";
 import MessageForm from "./MessageForm";
 import FollowButton from "./FollowButton";
+import WishlistSection from "./WishlistSection";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -42,6 +43,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
           avatarUrl: true,
           birthdayMonth: true,
           birthdayDay: true,
+          showWishlist: true,
         },
       })
       .catch(() => null),
@@ -53,6 +55,14 @@ export default async function PublicBirthdayPage({ params }: Props) {
   if (!user) notFound();
 
   const isOwnProfile = viewerDb?.id === user.id;
+
+  const wishlistItems = user.showWishlist
+    ? await prisma.wishlistItem.findMany({
+        where: { userId: user.id },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      }).catch(() => [])
+    : [];
+
   const initialFollowing = isSignedIn && !isOwnProfile && viewerDb
     ? await prisma.birthdayFollow
         .findUnique({
@@ -84,9 +94,15 @@ export default async function PublicBirthdayPage({ params }: Props) {
             BirthdayWhisper
           </span>
         </Link>
-        <Link href="/sign-up" className="text-stone hover:text-cream text-sm transition-colors">
-          Create your page →
-        </Link>
+        {isSignedIn ? (
+          <Link href="/dashboard" className="text-stone hover:text-cream text-sm transition-colors">
+            Dashboard →
+          </Link>
+        ) : (
+          <Link href="/sign-up" className="text-stone hover:text-cream text-sm transition-colors">
+            Create your page →
+          </Link>
+        )}
       </nav>
 
       <main className="max-w-lg mx-auto px-6 py-12">
@@ -135,6 +151,15 @@ export default async function PublicBirthdayPage({ params }: Props) {
           )}
         </div>
 
+        {/* Wishlist */}
+        {user.showWishlist && wishlistItems.length > 0 && (
+          <WishlistSection
+            items={wishlistItems}
+            firstName={firstName}
+            isOwnProfile={isOwnProfile}
+          />
+        )}
+
         {/* Message form */}
         <MessageForm
           recipientId={user.id}
@@ -143,6 +168,30 @@ export default async function PublicBirthdayPage({ params }: Props) {
           isToday={isToday}
           isSignedIn={isSignedIn}
         />
+
+        {/* Reaction notification hint */}
+        {!isOwnProfile && (
+          <div className="mt-4 animate-fade-rise" style={{ animationDelay: "180ms" }}>
+            {isSignedIn ? (
+              <div className="flex items-start gap-3 glass rounded-2xl px-4 py-3">
+                <Bell className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
+                <p className="text-stone text-xs leading-relaxed">
+                  When {firstName} reacts to your whisper, you&apos;ll get a notification — check the bell icon on your dashboard.
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-start gap-3 glass rounded-2xl px-4 py-3">
+                <Bell className="w-4 h-4 text-ghost flex-shrink-0 mt-0.5" />
+                <p className="text-ghost text-xs leading-relaxed">
+                  <Link href="/sign-up" className="text-gold hover:text-gold-bright underline underline-offset-2 transition-colors">
+                    Create a free account
+                  </Link>{" "}
+                  to be notified when {firstName} reacts to your whisper.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

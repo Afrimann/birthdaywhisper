@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import Link from "next/link";
 
-export default function NotificationBell() {
-  const [unread, setUnread] = useState(0);
+function useNotifications() {
+  return useQuery<{ notifications: { read: boolean }[] }>({
+    queryKey: ["notifications"],
+    queryFn: () => fetch("/api/notifications").then((r) => r.json()),
+  });
+}
 
-  useEffect(() => {
-    fetch("/api/notifications")
-      .then((r) => r.json())
-      .then((d) => {
-        if (Array.isArray(d.notifications)) {
-          setUnread(d.notifications.filter((n: { read: boolean }) => !n.read).length);
-        }
-      })
-      .catch(() => null);
-  }, []);
+export default function NotificationBell() {
+  const { data } = useNotifications();
+  const unread = Array.isArray(data?.notifications)
+    ? data.notifications.filter((n) => !n.read).length
+    : 0;
 
   return (
     <Link

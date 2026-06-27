@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import OnboardingPage from "@/app/onboarding/OnboardingForm";
 
 // ─────────────────────────────────────────────────────────────
@@ -14,40 +15,49 @@ import OnboardingPage from "@/app/onboarding/OnboardingForm";
 //   AC-7: Username input strips invalid characters (non-alphanumeric/underscore)
 // ─────────────────────────────────────────────────────────────
 
-// Mock fetch for username check and onboarding API
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 beforeEach(() => {
   mockFetch.mockReset();
+  mockFetch.mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve({ available: true }),
+  });
 });
+
+function wrapper({ children }: { children: React.ReactNode }) {
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
+}
 
 describe("Onboarding — Step 1 (Name)", () => {
   it("AC-1: renders name input and Next button", () => {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     expect(screen.getByPlaceholderText("Your name...")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /next/i })).toBeInTheDocument();
   });
 
   it("AC-2: Next button is disabled when name is empty", () => {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
   });
 
   it("AC-2: Next button is disabled when name is 1 character", async () => {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     await userEvent.type(screen.getByPlaceholderText("Your name..."), "A");
     expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
   });
 
   it("AC-1: Next button is enabled when name has 2+ characters", async () => {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     await userEvent.type(screen.getByPlaceholderText("Your name..."), "Amara");
     expect(screen.getByRole("button", { name: /next/i })).toBeEnabled();
   });
 
   it("AC-1: clicking Next advances to step 2", async () => {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     await userEvent.type(screen.getByPlaceholderText("Your name..."), "Amara");
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
     expect(screen.getByText(/when.*birthday/i)).toBeInTheDocument();
@@ -56,7 +66,7 @@ describe("Onboarding — Step 1 (Name)", () => {
 
 describe("Onboarding — Step 2 (Birthday)", () => {
   async function goToStep2(name = "Amara") {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     await userEvent.type(screen.getByPlaceholderText("Your name..."), name);
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
   }
@@ -69,31 +79,43 @@ describe("Onboarding — Step 2 (Birthday)", () => {
 
   it("AC-4: Next button is disabled until both month and day are selected", async () => {
     await goToStep2();
-    const [monthSelect] = screen.getAllByRole("combobox");
+    const [monthTrigger] = screen.getAllByRole("combobox");
     expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
 
-    // Select only month
-    await userEvent.selectOptions(monthSelect, "6");
+    await userEvent.click(monthTrigger);
+    await userEvent.click(screen.getByRole("option", { name: "June" }));
     expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
   });
 
   it("AC-4: Next button enables after both month and day selected", async () => {
     await goToStep2();
-    const [monthSelect, daySelect] = screen.getAllByRole("combobox");
-    await userEvent.selectOptions(monthSelect, "6");
-    await userEvent.selectOptions(daySelect, "27");
+    const [monthTrigger] = screen.getAllByRole("combobox");
+
+    await userEvent.click(monthTrigger);
+    await userEvent.click(screen.getByRole("option", { name: "June" }));
+
+    const [, dayTrigger] = screen.getAllByRole("combobox");
+    await userEvent.click(dayTrigger);
+    await userEvent.click(screen.getByRole("option", { name: "27" }));
+
     expect(screen.getByRole("button", { name: /next/i })).toBeEnabled();
   });
 });
 
 describe("Onboarding — Step 3 (Username)", () => {
   async function goToStep3(name = "Amara Okafor") {
-    render(<OnboardingPage />);
+    render(<OnboardingPage />, { wrapper });
     await userEvent.type(screen.getByPlaceholderText("Your name..."), name);
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
-    const [monthSelect, daySelect] = screen.getAllByRole("combobox");
-    await userEvent.selectOptions(monthSelect, "6");
-    await userEvent.selectOptions(daySelect, "27");
+
+    const [monthTrigger] = screen.getAllByRole("combobox");
+    await userEvent.click(monthTrigger);
+    await userEvent.click(screen.getByRole("option", { name: "June" }));
+
+    const [, dayTrigger] = screen.getAllByRole("combobox");
+    await userEvent.click(dayTrigger);
+    await userEvent.click(screen.getByRole("option", { name: "27" }));
+
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
   }
 
@@ -105,7 +127,6 @@ describe("Onboarding — Step 3 (Username)", () => {
   it("AC-6: auto-suggests a username from the display name", async () => {
     await goToStep3("Amara Okafor");
     const input = screen.getByPlaceholderText("yourname") as HTMLInputElement;
-    // Should suggest 'amaraokafor' (lowercased, spaces removed)
     expect(input.value).toBe("amaraokafor");
   });
 
@@ -114,7 +135,6 @@ describe("Onboarding — Step 3 (Username)", () => {
     const input = screen.getByPlaceholderText("yourname") as HTMLInputElement;
     await userEvent.clear(input);
     await userEvent.type(input, "hello world!");
-    // Spaces and ! should be stripped
     expect(input.value).toBe("helloworld");
   });
 });

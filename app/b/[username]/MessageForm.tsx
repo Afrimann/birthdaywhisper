@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Send, User, EyeOff, Check, Lock } from "lucide-react";
 
 const MAX_CHARS = 500;
@@ -28,7 +29,6 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [senderName, setSenderName] = useState("");
   const [cardTheme, setCardTheme] = useState<ThemeId>("CLASSIC");
-  const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [needsAccount, setNeedsAccount] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
@@ -37,13 +37,9 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   const firstName = recipientName.split(" ")[0];
   const remaining = MAX_CHARS - content.length;
 
-  const handleSubmit = async () => {
-    if (!content.trim() || loading) return;
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/messages", {
+  const sendMessage = useMutation({
+    mutationFn: () =>
+      fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -54,15 +50,12 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           birthdayYear,
           cardTheme,
         }),
-      });
-
+      }),
+    onSuccess: async (res) => {
       if (res.status === 429) {
         const data = await res.json().catch(() => ({})) as { needsAccount?: boolean };
-        if (data.needsAccount) {
-          setNeedsAccount(true);
-        } else {
-          setRateLimited(true);
-        }
+        if (data.needsAccount) setNeedsAccount(true);
+        else setRateLimited(true);
         return;
       }
       if (res.status === 422) {
@@ -73,12 +66,10 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
         setError("Something went wrong. Please try again.");
         return;
       }
-
       setSent(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onError: () => setError("Something went wrong. Please try again."),
+  });
 
   // Account gate — guest tried to send a second message
   if (needsAccount) {
@@ -258,11 +249,11 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
       {/* Submit */}
       <button
         type="button"
-        onClick={handleSubmit}
-        disabled={!content.trim() || loading}
+        onClick={() => { setError(""); sendMessage.mutate(); }}
+        disabled={!content.trim() || sendMessage.isPending}
         className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
       >
-        {loading ? "Sending..." : (
+        {sendMessage.isPending ? "Sending..." : (
           <>
             <Send className="w-4 h-4" />
             Send Whisper

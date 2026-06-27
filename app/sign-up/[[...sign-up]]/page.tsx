@@ -20,9 +20,9 @@ export default function SignUpPage() {
   const [code, setCode]         = useState("");
   const [error, setError]       = useState("");
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = () => {
     if (!signUp) return;
-    await signUp.sso({
+    void signUp.sso({
       strategy: "oauth_google",
       redirectUrl: "/onboarding",
       redirectCallbackUrl: "/sso-callback",
@@ -278,7 +278,8 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={handleGoogleSignUp}
-                  className="w-full flex items-center justify-center gap-3 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.09)] border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.18)] text-cream font-medium py-3 rounded-xl transition-all min-h-[44px] text-sm"
+                  disabled={!signUp}
+                  className="w-full flex items-center justify-center gap-3 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.09)] active:bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.18)] text-cream font-medium py-3 rounded-xl transition-all min-h-[44px] text-sm touch-manipulation disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                     <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />

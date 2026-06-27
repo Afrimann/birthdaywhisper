@@ -1,0 +1,63 @@
+name: Features — CI & Merge to master
+
+on:
+  push:
+    branches: [features]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ci:
+    name: Type check & tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
+      - run: npx tsc --noEmit
+
+      - run: npm test
+
+  merge-to-master:
+    name: Open PR & merge → master
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create PR (skip if already open)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base master \
+            --head features \
+            --title "feat: features → master" \
+            --body "Automated PR — all CI checks passed on the \`features\` branch." \
+          2>&1 || true
+
+      - name: Merge PR into master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR=$(gh pr list \
+            --head features \
+            --base master \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+          if [ -n "$PR" ] && [ "$PR" != "null" ]; then
+            gh pr merge "$PR" --merge --delete-branch=false
+          else
+            echo "No open PR found — nothing to merge."
+          fi

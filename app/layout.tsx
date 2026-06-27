@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import QueryProvider from "./_components/QueryProvider";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -34,7 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         lang="en"
         className={`${fraunces.variable} ${jakarta.variable}`}
       >
-        <body>{children}</body>
+        <body>
+          <QueryProvider>{children}</QueryProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

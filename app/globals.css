@@ -22,6 +22,7 @@
   --color-gold-400: #F2C14E;
   --color-gold-500: #D4A828;
   --color-gold-600: #A07D0C;
+  --color-brown:    #C8581C;
 
   /* ── Legacy aliases — keeps existing classNames compiling ── */
   --color-violet-600: #7C3AED;
@@ -109,6 +110,86 @@ body {
 ::-webkit-scrollbar-track { background: #0B0B0D; }
 ::-webkit-scrollbar-thumb { background: #2A2730; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #F2C14E; }
+
+/* ─── Custom Select ───────────────────────────────────────── */
+.select-trigger {
+  background: rgba(11, 11, 13, 0.85);
+  border: 1px solid rgba(242, 193, 78, 0.18);
+  position: relative;
+  overflow: hidden;
+  animation: select-aura 3s ease-in-out infinite;
+}
+
+.select-trigger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(242, 193, 78, 0.07) 45%,
+    rgba(160, 75, 20, 0.11) 55%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  animation: select-sweep 2.8s linear infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.select-trigger-open {
+  border-color: rgba(242, 193, 78, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.07), 0 0 22px rgba(242, 193, 78, 0.18) !important;
+  animation: none !important;
+}
+
+@keyframes select-aura {
+  0%, 100% {
+    border-color: rgba(242, 193, 78, 0.18);
+    box-shadow: 0 0 8px rgba(160, 75, 20, 0.14), inset 0 0 6px rgba(242, 193, 78, 0.03);
+  }
+  35% {
+    border-color: rgba(180, 85, 25, 0.5);
+    box-shadow: 0 0 18px rgba(160, 75, 20, 0.32), inset 0 0 10px rgba(180, 85, 25, 0.08);
+  }
+  70% {
+    border-color: rgba(242, 193, 78, 0.4);
+    box-shadow: 0 0 24px rgba(242, 193, 78, 0.24), inset 0 0 14px rgba(242, 193, 78, 0.06);
+  }
+}
+
+@keyframes select-sweep {
+  0%   { background-position:  160% 0; }
+  100% { background-position: -160% 0; }
+}
+
+.select-dropdown {
+  background: #000;
+  border: 1px solid rgba(200, 88, 28, 0.35);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.95), 0 0 28px rgba(200, 88, 28, 0.12);
+  animation: select-burst 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: top center;
+}
+
+@keyframes select-burst {
+  from { opacity: 0; transform: scaleY(0.6) translateY(-10px); }
+  to   { opacity: 1; transform: scaleY(1)   translateY(0);     }
+}
+
+.select-option {
+  display: block;
+  animation: option-appear 0.18s ease-out both;
+}
+
+@keyframes option-appear {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0);      }
+}
+
+.select-list::-webkit-scrollbar       { width: 3px; }
+.select-list::-webkit-scrollbar-track { background: #000; }
+.select-list::-webkit-scrollbar-thumb { background: rgba(200, 88, 28, 0.6); border-radius: 999px; }
+.select-list::-webkit-scrollbar-thumb:hover { background: #C8581C; }
 
 /* ─── Respect reduced-motion preference ──────────────────── */
 @media (prefers-reduced-motion: reduce) {
