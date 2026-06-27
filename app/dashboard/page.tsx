@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Gift, Copy, Lock, Clock, Share2, BookOpen, Star, Settings } from "lucide-react";
+import { Gift, Lock, Clock, Share2, BookOpen, Star, Settings } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
+import CopyLinkButton from "./CopyLinkButton";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -66,12 +67,7 @@ export default async function DashboardPage() {
           <p className="text-stone text-xs font-semibold uppercase tracking-wider mb-3">Your Birthday Link</p>
           <div className="flex items-center gap-3 bg-[rgba(11,11,13,0.6)] rounded-xl px-4 py-3 mb-4 border border-[rgba(242,193,78,0.07)]">
             <span className="text-cream text-sm flex-1 truncate">{profileUrl}</span>
-            <button
-              title="Copy link"
-              className="text-gold hover:text-gold-bright transition-colors flex-shrink-0"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+            <CopyLinkButton url={profileUrl} />
           </div>
           <div className="flex gap-3">
             <button className="flex-1 flex items-center justify-center gap-2 border border-[rgba(242,193,78,0.15)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-cream text-sm py-2.5 rounded-xl transition-all min-h-[44px]">
