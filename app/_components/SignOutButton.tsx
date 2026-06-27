@@ -27,9 +27,9 @@ export default function SignOutButton({ variant = "full" }: Props) {
   return (
     <button
       onClick={handleSignOut}
-      className="w-full flex items-center justify-center gap-2 border border-[rgba(251,113,133,0.2)] hover:border-rose-400/40 hover:bg-[rgba(251,113,133,0.06)] text-stone hover:text-rose-400 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px]"
+      className="w-full flex items-center justify-center gap-2 border border-[rgba(251,113,133,0.2)] hover:border-rose-400/40 hover:bg-[rgba(251,113,133,0.06)] text-stone hover:text-rose-400 py-4 rounded-2xl text-base font-medium transition-all min-h-[56px]"
     >
-      <LogOut className="w-4 h-4" />
+      <LogOut className="w-5 h-5" />
       Sign Out
     </button>
   );

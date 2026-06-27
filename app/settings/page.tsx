@@ -7,6 +7,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import SettingsForm from "./SettingsForm";
 import SignOutButton from "@/app/_components/SignOutButton";
+import { getBaseUrl } from "@/lib/url";
 
 export default async function SettingsPage() {
   const { userId } = await auth();
@@ -47,7 +48,7 @@ export default async function SettingsPage() {
         </div>
 
         <div className="animate-fade-rise" style={{ animationDelay: "60ms" }}>
-          <SettingsForm initialData={user} />
+          <SettingsForm initialData={user} baseUrl={getBaseUrl()} />
         </div>
 
         <div className="mt-10 pt-8 border-t border-[rgba(242,193,78,0.08)] animate-fade-rise" style={{ animationDelay: "120ms" }}>
