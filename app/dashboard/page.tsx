@@ -9,6 +9,7 @@ import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils"
 import { getBaseUrl } from "@/lib/url";
 import CopyLinkButton from "./CopyLinkButton";
 import ShareButton from "./ShareButton";
+import SignOutButton from "@/app/_components/SignOutButton";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -46,6 +47,7 @@ export default async function DashboardPage() {
           <Link href="/settings">
             <Settings className="w-5 h-5 text-stone hover:text-cream transition-colors" />
           </Link>
+          <SignOutButton variant="icon" />
         </div>
       </nav>
 
