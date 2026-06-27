@@ -18,7 +18,7 @@ export default function SignUpPage() {
       </div>
 
       <div className="relative z-10 animate-fade-rise" style={{ animationDelay: "60ms" }}>
-        <SignUp />
+        <SignUp forceRedirectUrl="/onboarding" />
       </div>
     </div>
   );

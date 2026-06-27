@@ -18,7 +18,7 @@ export default function SignInPage() {
       </div>
 
       <div className="relative z-10 animate-fade-rise" style={{ animationDelay: "60ms" }}>
-        <SignIn />
+        <SignIn forceRedirectUrl="/dashboard" />
       </div>
     </div>
   );

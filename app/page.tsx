@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { Gift, Star, Lock, BookOpen, Sparkles } from "lucide-react";
+import { Gift, Star, Lock, BookOpen, Sparkles, LayoutDashboard } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
+import { UserButton } from "@clerk/nextjs";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const { userId } = await auth();
+  const isSignedIn = !!userId;
+
   return (
     <div className="min-h-screen bg-canvas text-cream overflow-x-hidden">
       {/* Nav */}
@@ -10,16 +15,32 @@ export default function LandingPage() {
           <Gift className="text-gold w-5 h-5" />
           <span className="font-fraunces text-xl font-bold text-cream tracking-tight">BirthdayWhisper</span>
         </div>
+
         <div className="flex items-center gap-3">
-          <Link href="/sign-in" className="text-stone hover:text-cream text-sm transition-colors">
-            Sign In
-          </Link>
-          <Link
-            href="/sign-up"
-            className="bg-gold hover:bg-gold-bright text-canvas text-sm font-semibold px-4 py-2 rounded-full transition-all hover:shadow-gold"
-          >
-            Get Started
-          </Link>
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1.5 text-stone hover:text-cream text-sm transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+              <UserButton />
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in" className="text-stone hover:text-cream text-sm transition-colors">
+                Sign In
+              </Link>
+              <Link
+                href="/sign-up"
+                className="bg-gold hover:bg-gold-bright text-canvas text-sm font-semibold px-4 py-2 rounded-full transition-all hover:shadow-gold"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -55,26 +76,40 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-rise"
             style={{ animationDelay: "180ms" }}
           >
-            <Link
-              href="/sign-up"
-              className="bg-gold hover:bg-gold-bright text-canvas font-semibold px-8 py-4 rounded-full text-lg transition-all hover:shadow-gold min-h-[56px] flex items-center justify-center"
-            >
-              Create My Birthday Page
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="border border-[rgba(242,193,78,0.2)] bg-[rgba(22,21,25,0.45)] backdrop-blur-sm text-stone hover:text-cream font-medium px-8 py-4 rounded-full text-lg transition-all min-h-[56px] flex items-center justify-center"
-            >
-              See How It Works
-            </Link>
+            {isSignedIn ? (
+              <Link
+                href="/dashboard"
+                className="bg-gold hover:bg-gold-bright text-canvas font-semibold px-8 py-4 rounded-full text-lg transition-all hover:shadow-gold min-h-[56px] flex items-center justify-center gap-2"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                Go to My Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/sign-up"
+                  className="bg-gold hover:bg-gold-bright text-canvas font-semibold px-8 py-4 rounded-full text-lg transition-all hover:shadow-gold min-h-[56px] flex items-center justify-center"
+                >
+                  Create My Birthday Page
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="border border-[rgba(242,193,78,0.2)] bg-[rgba(22,21,25,0.45)] backdrop-blur-sm text-stone hover:text-cream font-medium px-8 py-4 rounded-full text-lg transition-all min-h-[56px] flex items-center justify-center"
+                >
+                  See How It Works
+                </Link>
+              </>
+            )}
           </div>
 
-          <p
-            className="text-ghost text-sm mt-8 animate-fade-rise"
-            style={{ animationDelay: "240ms" }}
-          >
-            Free to use · No card required · Beautiful on mobile
-          </p>
+          {!isSignedIn && (
+            <p
+              className="text-ghost text-sm mt-8 animate-fade-rise"
+              style={{ animationDelay: "240ms" }}
+            >
+              Free to use · No card required · Beautiful on mobile
+            </p>
+          )}
         </div>
 
         {/* Preview card */}
@@ -118,10 +153,10 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-4 gap-8">
             {[
-              { step: "1", icon: Gift,     title: "Set your birthday", desc: "Create your page and set your birthday month and day." },
-              { step: "2", icon: Star,     title: "Share your link",   desc: "Post it on WhatsApp, Instagram, or anywhere you like." },
-              { step: "3", icon: Lock,     title: "Messages are sealed", desc: "Friends leave whispers — you won't see them until your day." },
-              { step: "4", icon: BookOpen, title: "Open on your birthday", desc: "Enjoy a cinematic reveal with card flips and confetti." },
+              { step: "1", icon: Gift,     title: "Set your birthday",      desc: "Create your page and set your birthday month and day." },
+              { step: "2", icon: Star,     title: "Share your link",        desc: "Post it on WhatsApp, Instagram, or anywhere you like." },
+              { step: "3", icon: Lock,     title: "Messages are sealed",    desc: "Friends leave whispers — you won't see them until your day." },
+              { step: "4", icon: BookOpen, title: "Open on your birthday",  desc: "Enjoy a cinematic reveal with card flips and confetti." },
             ].map(({ step, icon: Icon, title, desc }) => (
               <div key={step} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.2)] flex items-center justify-center mx-auto mb-4">
@@ -136,21 +171,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 px-6 text-center">
-        <div className="max-w-xl mx-auto">
-          <h2 className="font-fraunces text-4xl font-bold text-cream mb-4">
-            Your birthday is coming.
-          </h2>
-          <p className="text-stone mb-8">Be ready. Start collecting whispers today.</p>
-          <Link
-            href="/sign-up"
-            className="inline-flex items-center justify-center bg-gold hover:bg-gold-bright text-canvas font-semibold px-10 py-4 rounded-full text-lg transition-all hover:shadow-gold min-h-[56px]"
-          >
-            Create My Birthday Page Free
-          </Link>
-        </div>
-      </section>
+      {/* CTA — only show to logged-out visitors */}
+      {!isSignedIn && (
+        <section className="py-24 px-6 text-center">
+          <div className="max-w-xl mx-auto">
+            <h2 className="font-fraunces text-4xl font-bold text-cream mb-4">
+              Your birthday is coming.
+            </h2>
+            <p className="text-stone mb-8">Be ready. Start collecting whispers today.</p>
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center justify-center bg-gold hover:bg-gold-bright text-canvas font-semibold px-10 py-4 rounded-full text-lg transition-all hover:shadow-gold min-h-[56px]"
+            >
+              Create My Birthday Page Free
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-[rgba(242,193,78,0.08)] py-8 px-6 text-center text-ghost text-sm">
