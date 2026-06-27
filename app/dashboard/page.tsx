@@ -6,6 +6,7 @@ import { Gift, Lock, Clock, BookOpen, Star, Settings } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/url";
 import CopyLinkButton from "./CopyLinkButton";
 import ShareButton from "./ShareButton";
 
@@ -28,7 +29,7 @@ export default async function DashboardPage() {
   const isToday = isBirthdayToday(user.birthdayMonth, user.birthdayDay);
   const days = daysUntilBirthday(user.birthdayMonth, user.birthdayDay);
   const birthdayLabel = formatBirthday(user.birthdayMonth, user.birthdayDay);
-  const profileUrl = `${process.env.NEXT_PUBLIC_APP_URL}/b/${user.username}`;
+  const profileUrl = `${getBaseUrl()}/b/${user.username}`;
 
   return (
     <div className="min-h-screen bg-canvas text-cream">
