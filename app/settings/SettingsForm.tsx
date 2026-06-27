@@ -13,11 +13,18 @@ function getDaysInMonth(month: number) {
   return new Date(2000, month, 0).getDate();
 }
 
+interface NotifPrefs {
+  emailOnBirthdayUnlock: boolean;
+  emailReminders: boolean;
+  emailReactions: boolean;
+}
+
 interface InitialData {
   displayName: string;
   birthdayMonth: number;
   birthdayDay: number;
   username: string;
+  notifPrefs: NotifPrefs;
 }
 
 export default function SettingsForm({ initialData, baseUrl }: { initialData: InitialData; baseUrl: string }) {
@@ -28,6 +35,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
   const [day, setDay]                 = useState(String(initialData.birthdayDay));
   const [username, setUsername]       = useState(initialData.username);
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [notifPrefs, setNotifPrefs]   = useState<NotifPrefs>(initialData.notifPrefs);
 
   const [saving, setSaving]     = useState(false);
   const [success, setSuccess]   = useState(false);
@@ -77,6 +85,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           birthdayMonth: parseInt(month),
           birthdayDay: parseInt(day),
           username,
+          notifPrefs,
         }),
       });
 
@@ -198,6 +207,45 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
         <p className="text-ghost text-xs mt-1">
           3–30 characters. Letters, numbers, and underscores only.
         </p>
+      </div>
+
+      {/* Notification preferences */}
+      <div className="glass rounded-2xl p-6">
+        <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-4">
+          Email Notifications
+        </label>
+        <div className="space-y-4">
+          {(
+            [
+              { key: "emailOnBirthdayUnlock", label: "Birthday unlock", desc: "When your birthday messages are ready to open" },
+              { key: "emailReminders",        label: "Reminder emails",  desc: "Get reminded 3 days before a followed birthday" },
+              { key: "emailReactions",        label: "Reaction alerts",  desc: "When someone reacts to your birthday message" },
+            ] as { key: keyof NotifPrefs; label: string; desc: string }[]
+          ).map(({ key, label, desc }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setNotifPrefs((p) => ({ ...p, [key]: !p[key] }))}
+              className="w-full flex items-center justify-between gap-4 text-left"
+            >
+              <div>
+                <p className="text-cream text-sm font-medium">{label}</p>
+                <p className="text-ghost text-xs">{desc}</p>
+              </div>
+              <div
+                className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
+                  notifPrefs[key] ? "bg-gold" : "bg-pitch border border-[rgba(242,193,78,0.2)]"
+                }`}
+              >
+                <span
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-canvas transition-all ${
+                    notifPrefs[key] ? "left-5" : "left-1"
+                  }`}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Save button */}

@@ -19,12 +19,14 @@ model User {
   isPremium     Boolean          @default(false)
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
-  followers     BirthdayFollow[] @relation("FollowedUser")
-  following     BirthdayFollow[] @relation("FollowingUser")
-  groupCards    GroupCard[]
-  messages      Message[]
-  sentMessages  Message[]        @relation("SentMessages")
-  wishlistItems WishlistItem[]
+  followers      BirthdayFollow[]        @relation("FollowedUser")
+  following      BirthdayFollow[]        @relation("FollowingUser")
+  groupCards     GroupCard[]
+  messages       Message[]
+  sentMessages   Message[]               @relation("SentMessages")
+  wishlistItems  WishlistItem[]
+  notifPrefs     NotificationPreference?
+  notifications  Notification[]
 
   @@index([username])
   @@index([birthdayMonth, birthdayDay])
@@ -125,6 +127,34 @@ model ScheduledEmail {
   createdAt      DateTime  @default(now())
 
   @@index([sendAt, sentAt])
+}
+
+model NotificationPreference {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  emailOnBirthdayUnlock Boolean  @default(true)
+  emailReminders        Boolean  @default(true)
+  emailReactions        Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String       @id @default(cuid())
+  userId    String
+  type      NotifType
+  payload   Json
+  read      Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+enum NotifType {
+  REACTION_RECEIVED
 }
 
 enum MessageStatus {

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { recipientId, content, isAnonymous, senderName, birthdayYear } =
+  const { recipientId, content, isAnonymous, senderName, birthdayYear, cardTheme } =
     body as Record<string, unknown>;
 
   // ── Validate ──────────────────────────────────────────────────────────────
@@ -91,7 +91,8 @@ export async function POST(req: Request) {
       senderName: isAnonymous !== false ? null : (typeof senderName === "string" ? senderName.trim() || null : null),
       birthdayYear,
       status: "PENDING",
-      cardTheme: "CLASSIC",
+      cardTheme: (["CLASSIC","GOLDEN_HOUR","MIDNIGHT_STARS","BLOOM","RETRO","NEON"].includes(String(cardTheme))
+        ? String(cardTheme) : "CLASSIC") as "CLASSIC" | "GOLDEN_HOUR" | "MIDNIGHT_STARS" | "BLOOM" | "RETRO" | "NEON",
     },
   });
 

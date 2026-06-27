@@ -4,6 +4,17 @@ import { Send, User, EyeOff, Check, Lock } from "lucide-react";
 
 const MAX_CHARS = 500;
 
+const THEMES = [
+  { id: "CLASSIC",        label: "Classic",        bg: "from-[#1a1a2e] to-[#16213e]",   accent: "bg-gold",            border: "border-gold/40" },
+  { id: "GOLDEN_HOUR",   label: "Golden Hour",    bg: "from-[#2d1b00] to-[#5c3200]",   accent: "bg-amber-400",       border: "border-amber-400/40" },
+  { id: "MIDNIGHT_STARS",label: "Midnight Stars", bg: "from-[#0a0015] to-[#1a0030]",   accent: "bg-purple-400",      border: "border-purple-400/40" },
+  { id: "BLOOM",          label: "Bloom",          bg: "from-[#1a0012] to-[#3d0030]",   accent: "bg-rose-400",        border: "border-rose-400/40" },
+  { id: "RETRO",          label: "Retro",          bg: "from-[#0f1500] to-[#1e2e00]",   accent: "bg-lime-400",        border: "border-lime-400/40" },
+  { id: "NEON",           label: "Neon",           bg: "from-[#001520] to-[#002a40]",   accent: "bg-cyan-400",        border: "border-cyan-400/40" },
+] as const;
+
+type ThemeId = typeof THEMES[number]["id"];
+
 interface Props {
   recipientId: string;
   recipientName: string;
@@ -16,6 +27,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [senderName, setSenderName] = useState("");
+  const [cardTheme, setCardTheme] = useState<ThemeId>("CLASSIC");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [needsAccount, setNeedsAccount] = useState(false);
@@ -40,6 +52,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           isAnonymous,
           senderName: isAnonymous ? null : senderName.trim() || null,
           birthdayYear,
+          cardTheme,
         }),
       });
 
@@ -181,6 +194,27 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
         <span className={`text-xs ${remaining < 50 ? "text-gold" : "text-ghost"}`}>
           {remaining} remaining
         </span>
+      </div>
+
+      {/* Card theme picker */}
+      <div className="mb-4">
+        <p className="text-xs text-stone mb-2">Card theme</p>
+        <div className="grid grid-cols-6 gap-2">
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setCardTheme(t.id)}
+              title={t.label}
+              className={`relative h-10 rounded-lg bg-gradient-to-br ${t.bg} border transition-all ${
+                cardTheme === t.id ? `${t.border} ring-2 ring-offset-1 ring-offset-canvas ring-current scale-105` : "border-pitch hover:scale-105"
+              }`}
+            >
+              <span className={`absolute bottom-1 right-1 w-2 h-2 rounded-full ${t.accent}`} />
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-ghost mt-1">{THEMES.find((t) => t.id === cardTheme)?.label}</p>
       </div>
 
       {/* Anonymous toggle */}

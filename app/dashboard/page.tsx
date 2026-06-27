@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Gift, Lock, Clock, BookOpen, Star, Settings } from "lucide-react";
+import { Gift, Lock, Clock, BookOpen, Star, Settings, Bell } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { getBaseUrl } from "@/lib/url";
 import CopyLinkButton from "./CopyLinkButton";
 import ShareButton from "./ShareButton";
 import SignOutButton from "@/app/_components/SignOutButton";
+import NotificationBell from "@/app/_components/NotificationBell";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -24,7 +25,33 @@ export default async function DashboardPage() {
     },
   }).catch(() => null);
 
+  const follows = user
+    ? await prisma.birthdayFollow.findMany({
+        where: { followerId: user.id },
+        include: {
+          followed: {
+            select: {
+              displayName: true,
+              username: true,
+              birthdayMonth: true,
+              birthdayDay: true,
+            },
+          },
+        },
+        take: 5,
+      }).catch(() => [])
+    : [];
+
   if (!user) redirect("/onboarding");
+
+  const upcomingFollows = follows
+    .map((f) => ({
+      ...f,
+      days: daysUntilBirthday(f.followed.birthdayMonth, f.followed.birthdayDay),
+      isToday: isBirthdayToday(f.followed.birthdayMonth, f.followed.birthdayDay),
+      label: formatBirthday(f.followed.birthdayMonth, f.followed.birthdayDay),
+    }))
+    .sort((a, b) => a.days - b.days);
 
   const messageCount = user._count.messages;
   const isToday = isBirthdayToday(user.birthdayMonth, user.birthdayDay);
@@ -44,6 +71,7 @@ export default async function DashboardPage() {
           <span className="text-stone text-sm hidden sm:block">
             Hi, {clerkUser?.firstName ?? user.displayName}
           </span>
+          <NotificationBell />
           <Link href="/settings">
             <Settings className="w-5 h-5 text-stone hover:text-cream transition-colors" />
           </Link>
@@ -157,11 +185,12 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick links */}
-        <div className="grid grid-cols-3 gap-3 animate-fade-rise" style={{ animationDelay: "180ms" }}>
+        <div className="grid grid-cols-4 gap-3 animate-fade-rise" style={{ animationDelay: "180ms" }}>
           {[
-            { href: "/jar",      icon: BookOpen,  label: "Memory Jar" },
-            { href: "/wishlist", icon: Star,      label: "Wishlist"   },
-            { href: "/settings", icon: Settings,  label: "Settings"   },
+            { href: "/jar",       icon: BookOpen,  label: "Memory Jar" },
+            { href: "/wishlist",  icon: Star,      label: "Wishlist"   },
+            { href: "/following", icon: Bell,      label: "Following"  },
+            { href: "/settings",  icon: Settings,  label: "Settings"   },
           ].map(({ href, icon: Icon, label }) => (
             <Link
               key={href}
@@ -173,6 +202,40 @@ export default async function DashboardPage() {
             </Link>
           ))}
         </div>
+
+        {/* Upcoming birthdays */}
+        {upcomingFollows.length > 0 && (
+          <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "240ms" }}>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-stone text-xs font-semibold uppercase tracking-wider">Upcoming Birthdays</p>
+              <Link href="/following" className="text-gold text-xs hover:text-gold-bright transition-colors">
+                View all
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {upcomingFollows.map(({ followed, days, isToday: fIsToday, label, id }) => (
+                <Link
+                  key={id}
+                  href={`/b/${followed.username}`}
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[rgba(242,193,78,0.1)] border border-[rgba(242,193,78,0.2)] flex items-center justify-center flex-shrink-0">
+                    <span className="font-fraunces text-xs font-bold text-gold">
+                      {followed.displayName[0].toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-cream text-sm font-medium truncate group-hover:text-gold transition-colors">{followed.displayName}</p>
+                    <p className="text-ghost text-xs">{label}</p>
+                  </div>
+                  <span className="text-gold text-sm font-bold font-fraunces flex-shrink-0">
+                    {fIsToday ? "🎂" : `${days}d`}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

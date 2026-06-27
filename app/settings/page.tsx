@@ -20,6 +20,13 @@ export default async function SettingsPage() {
       birthdayMonth: true,
       birthdayDay:   true,
       username:      true,
+      notifPrefs: {
+        select: {
+          emailOnBirthdayUnlock: true,
+          emailReminders:        true,
+          emailReactions:        true,
+        },
+      },
     },
   }).catch(() => null);
 
@@ -48,7 +55,20 @@ export default async function SettingsPage() {
         </div>
 
         <div className="animate-fade-rise" style={{ animationDelay: "60ms" }}>
-          <SettingsForm initialData={user} baseUrl={getBaseUrl()} />
+          <SettingsForm
+            initialData={{
+              displayName:   user.displayName,
+              birthdayMonth: user.birthdayMonth,
+              birthdayDay:   user.birthdayDay,
+              username:      user.username,
+              notifPrefs: {
+                emailOnBirthdayUnlock: user.notifPrefs?.emailOnBirthdayUnlock ?? true,
+                emailReminders:        user.notifPrefs?.emailReminders ?? true,
+                emailReactions:        user.notifPrefs?.emailReactions ?? true,
+              },
+            }}
+            baseUrl={getBaseUrl()}
+          />
         </div>
 
         <div className="mt-10 pt-8 border-t border-[rgba(242,193,78,0.08)] animate-fade-rise" style={{ animationDelay: "120ms" }}>

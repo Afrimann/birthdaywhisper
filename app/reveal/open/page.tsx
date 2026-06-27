@@ -35,6 +35,7 @@ export default async function RevealOpenPage() {
       isAnonymous:   true,
       status:        true,
       reactionEmoji: true,
+      cardTheme:     true,
     },
   }).catch(() => []);
 
