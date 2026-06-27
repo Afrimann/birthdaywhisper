@@ -163,8 +163,8 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
         <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-3">
           Username
         </label>
-        <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
-          <span className="text-ghost text-sm whitespace-nowrap">{baseUrl}/b/</span>
+        <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-1.5 transition-all">
+          <span className="text-ghost text-sm whitespace-nowrap select-none">/b/</span>
           <input
             type="text"
             value={username}
@@ -174,7 +174,10 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
             className="flex-1 bg-transparent text-cream outline-none min-w-0"
           />
         </div>
-        <div className="mt-2 h-5 text-xs">
+        <p className="text-ghost text-xs mt-1.5 truncate">
+          {baseUrl}/b/<span className="text-stone">{username || "your-username"}</span>
+        </p>
+        <div className="mt-1 h-5 text-xs">
           {usernameChanged && usernameStatus === "checking" && (
             <span className="text-stone flex items-center gap-1">
               <Loader2 className="w-3 h-3 animate-spin" /> Checking...
