@@ -20,7 +20,7 @@ interface InitialData {
   username: string;
 }
 
-export default function SettingsForm({ initialData }: { initialData: InitialData }) {
+export default function SettingsForm({ initialData, baseUrl }: { initialData: InitialData; baseUrl: string }) {
   const router = useRouter();
 
   const [displayName, setDisplayName] = useState(initialData.displayName);
@@ -164,7 +164,7 @@ export default function SettingsForm({ initialData }: { initialData: InitialData
           Username
         </label>
         <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
-          <span className="text-ghost text-sm whitespace-nowrap">birthdaywhisper.com/b/</span>
+          <span className="text-ghost text-sm whitespace-nowrap">{baseUrl}/b/</span>
           <input
             type="text"
             value={username}
@@ -202,16 +202,16 @@ export default function SettingsForm({ initialData }: { initialData: InitialData
         onClick={handleSave}
         disabled={!canSave}
         className={cn(
-          "w-full flex items-center justify-center gap-2 font-semibold py-3 rounded-xl transition-all min-h-[44px]",
+          "w-full flex items-center justify-center gap-2 text-base font-semibold py-4 rounded-2xl transition-all min-h-[56px]",
           canSave
             ? "bg-gold hover:bg-gold-bright text-canvas"
             : "bg-pitch text-ghost cursor-not-allowed"
         )}
       >
         {saving ? (
-          <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+          <><Loader2 className="w-5 h-5 animate-spin" /> Saving...</>
         ) : (
-          <><ChevronRight className="w-4 h-4" /> Save Changes</>
+          <><ChevronRight className="w-5 h-5" /> Save Changes</>
         )}
       </button>
     </div>
