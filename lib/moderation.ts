@@ -14,21 +14,23 @@ export async function moderateContent(text: string): Promise<boolean> {
   if (containsProfanity(text)) return true;
 
   const client = getClient();
-  if (!client) return false; // No API key — local check only
+  if (!client) return false;
 
   try {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 64,
-      system: `You are a content moderator for a birthday message platform. Messages can be emotional, funny, heartfelt, or use mild profanity between friends — those are fine. Flag ONLY: hate speech, explicit sexual content, death threats, harassment, or spam. Reply with JSON only, no other text: {"flagged": true} or {"flagged": false}`,
+      max_tokens: 10,
+      system: `You moderate birthday messages sent to someone on their birthday. Reply with exactly one word: FLAGGED or CLEAN.
+
+FLAGGED: hate speech, slurs, explicit sexual content, threats, wishes of harm, or insults directed at the recipient — including "fuck you", "I hate you", "you're ugly", "go die", or any message clearly meant to hurt.
+CLEAN: compliments, well-wishes, heartfelt words, funny messages, or positively-used profanity like "you're fucking amazing".`,
       messages: [{ role: "user", content: text }],
     });
 
-    const raw = (response.content[0] as { type: string; text: string }).text.trim();
-    const parsed = JSON.parse(raw) as { flagged: boolean };
-    return parsed.flagged === true;
-  } catch {
-    // API down or malformed response — fail open so legitimate messages aren't blocked
+    const result = (response.content[0] as { type: string; text: string }).text.trim().toUpperCase();
+    return result.startsWith("FLAGGED");
+  } catch (err) {
+    console.error("[moderation] Anthropic error:", err);
     return false;
   }
 }
