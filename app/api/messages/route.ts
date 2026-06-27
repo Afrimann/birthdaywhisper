@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { containsProfanity } from "@/lib/profanity";
 
 const MAX_CHARS = 500;
 const RATE_LIMIT = 5;
@@ -30,6 +31,10 @@ export async function POST(req: Request) {
 
   if (content.length > MAX_CHARS) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
+  }
+
+  if (containsProfanity(content)) {
+    return NextResponse.json({ error: "Message contains inappropriate content" }, { status: 422 });
   }
 
   if (!birthdayYear || typeof birthdayYear !== "number") {
