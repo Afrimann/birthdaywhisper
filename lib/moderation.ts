@@ -1,36 +1,31 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { containsProfanity } from "./profanity";
-
-let _client: Anthropic | null = null;
-
-function getClient(): Anthropic | null {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
 
 export async function moderateContent(text: string): Promise<boolean> {
   // Local block-list first — instant, no network cost
   if (containsProfanity(text)) return true;
 
-  const client = getClient();
-  if (!client) return false;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return false;
 
   try {
-    const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 10,
-      system: `You moderate birthday messages sent to someone on their birthday. Reply with exactly one word: FLAGGED or CLEAN.
-
-FLAGGED: hate speech, slurs, explicit sexual content, threats, wishes of harm, or insults directed at the recipient — including "fuck you", "I hate you", "you're ugly", "go die", or any message clearly meant to hurt.
-CLEAN: compliments, well-wishes, heartfelt words, funny messages, or positively-used profanity like "you're fucking amazing".`,
-      messages: [{ role: "user", content: text }],
+    const res = await fetch("https://api.openai.com/v1/moderations", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input: text }),
     });
 
-    const result = (response.content[0] as { type: string; text: string }).text.trim().toUpperCase();
-    return result.startsWith("FLAGGED");
+    if (!res.ok) {
+      console.error("[moderation] OpenAI API error:", res.status, await res.text());
+      return false;
+    }
+
+    const data = (await res.json()) as { results: { flagged: boolean }[] };
+    return data.results[0]?.flagged === true;
   } catch (err) {
-    console.error("[moderation] Anthropic error:", err);
+    console.error("[moderation] fetch error:", err);
     return false;
   }
 }
