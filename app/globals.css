@@ -1,81 +1,120 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Fonts — next/font injects these CSS vars onto <html> */
-  --font-playfair: var(--font-playfair);
-  --font-inter: var(--font-inter);
-  --font-dancing: var(--font-dancing);
+  /* ── Fonts ──────────────────────────────────────────────── */
+  --font-fraunces: var(--font-fraunces);
+  --font-jakarta:  var(--font-jakarta);
 
-  /* Brand colors */
-  --color-violet-50:  #F5F3FF;
-  --color-violet-100: #EDE9FE;
-  --color-violet-200: #DDD6FE;
-  --color-violet-300: #C4B5FD;
-  --color-violet-400: #A78BFA;
-  --color-violet-500: #8B5CF6;
+  /* ── Core palette ───────────────────────────────────────── */
+  --color-canvas:      #0B0B0D;
+  --color-surface:     #161519;
+  --color-gold:        #F2C14E;
+  --color-gold-bright: #FFD874;
+  --color-cream:       #F4F1EA;
+  --color-stone:       #9A968C;
+  --color-ghost:       #5C5851;
+  --color-pitch:       #2A2730;
+
+  /* ── Gold tones ──────────────────────────────────────────── */
+  --color-gold-100: #FFF6C6;
+  --color-gold-200: #FFEC94;
+  --color-gold-300: #FFD874;
+  --color-gold-400: #F2C14E;
+  --color-gold-500: #D4A828;
+  --color-gold-600: #A07D0C;
+
+  /* ── Legacy aliases — keeps existing classNames compiling ── */
   --color-violet-600: #7C3AED;
-  --color-violet-700: #6D28D9;
-  --color-violet-800: #5B21B6;
-  --color-violet-900: #4C1D95;
+  --color-amber-300:  #FFD874;
+  --color-amber-400:  #F2C14E;
+  --color-amber-500:  #D4A828;
+  --color-rose-400:   #FB7185;
+  --color-rose-500:   #F43F5E;
+  --color-green-400:  #4ADE80;
+  --color-green-600:  #16A34A;
+  --color-navy-900:   #0B0B0D;
+  --color-navy-800:   #0B0B0D;
+  --color-navy-700:   #161519;
+  --color-navy-600:   #2A2730;
 
-  --color-amber-300: #FDE68A;
-  --color-amber-400: #FBBF24;
-  --color-amber-500: #F59E0B;
-  --color-amber-600: #D97706;
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-gold:       0 0 24px rgba(242,193,78,0.35);
+  --shadow-gold-lg:    0 0 56px rgba(242,193,78,0.22), 0 0 20px rgba(242,193,78,0.4);
+  --shadow-card:       0 4px 32px rgba(0,0,0,0.55);
+  --shadow-glow:       0 0 20px rgba(242,193,78,0.4);
+  --shadow-glow-amber: 0 0 20px rgba(242,193,78,0.4);
 
-  --color-rose-400: #FB7185;
-  --color-rose-500: #F43F5E;
+  /* ── Animations ──────────────────────────────────────────── */
+  --animate-fade-rise:  fade-rise 0.45s ease-out both;
+  --animate-shimmer:    shimmer 2s linear infinite;
+  --animate-float:      float 6s ease-in-out infinite;
+  --animate-flicker:    flicker 1.5s ease-in-out infinite alternate;
+  --animate-lantern:    lantern-glow 2s ease-in-out infinite alternate;
+  --animate-gold-pulse: gold-pulse 2.4s ease-in-out infinite;
 
-  /* Background scale */
-  --color-navy-900: #020617;
-  --color-navy-800: #0F172A;
-  --color-navy-700: #1E293B;
-  --color-navy-600: #334155;
-
-  /* Light mode */
-  --color-cream:    #FFFBF5;
-  --color-lavender: #EDE9FE;
-
-  /* Shadows */
-  --shadow-glow:       0 0 20px rgb(124 58 237 / 0.4);
-  --shadow-glow-amber: 0 0 20px rgb(245 158 11 / 0.4);
-  --shadow-card:       0 4px 32px rgb(0 0 0 / 0.4);
-
-  /* Animations */
-  --animate-shimmer:       shimmer 2s linear infinite;
-  --animate-float:         float 6s ease-in-out infinite;
-  --animate-flicker:       flicker 1.5s ease-in-out infinite alternate;
-  --animate-pulse-slow:    pulse 3s cubic-bezier(0.4,0,0.6,1) infinite;
-
-  /* Keyframes */
+  /* ── Keyframes ───────────────────────────────────────────── */
+  @keyframes fade-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
   @keyframes shimmer {
     0%   { background-position: -200% 0; }
     100% { background-position:  200% 0; }
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0);     }
     50%       { transform: translateY(-10px); }
   }
   @keyframes flicker {
-    0%   { opacity: 0.9; transform: scale(1); }
+    0%   { opacity: 0.9; transform: scale(1);    }
     100% { opacity: 1;   transform: scale(1.05); }
+  }
+  @keyframes lantern-glow {
+    from { box-shadow: 0 0 12px rgba(242,193,78,0.25), 0 0 40px rgba(242,193,78,0.08); }
+    to   { box-shadow: 0 0 32px rgba(242,193,78,0.65), 0 0 80px rgba(242,193,78,0.22); }
+  }
+  @keyframes gold-pulse {
+    0%, 100% { opacity: 0.55; transform: scale(1);    }
+    50%       { opacity: 1;   transform: scale(1.08); }
   }
 }
 
-/* Base styles */
-html {
-  color-scheme: dark;
-}
+/* ─── Base ────────────────────────────────────────────────── */
+html { color-scheme: dark; }
 
 body {
-  background-color: #0F172A;
-  color: #CBD5E1;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  background-color: #0B0B0D;
+  color: #F4F1EA;
+  font-family: var(--font-jakarta), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #1E293B; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+/* ─── Glassmorphism panel ─────────────────────────────────── */
+.glass {
+  background: rgba(22, 21, 25, 0.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(242, 193, 78, 0.12);
+}
+
+/* ─── Gold ring on keyboard focus ────────────────────────── */
+.gold-focus:focus-within {
+  border-color: rgba(242, 193, 78, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.07);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #0B0B0D; }
+::-webkit-scrollbar-thumb { background: #2A2730; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #F2C14E; }
+
+/* ─── Respect reduced-motion preference ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
