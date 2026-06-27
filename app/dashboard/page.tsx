@@ -59,7 +59,7 @@ export default async function DashboardPage() {
             <p className="text-canvas/70 text-sm">Your messages are unlocked. Open your birthday book!</p>
             <Link
               href="/reveal"
-              className="inline-block mt-4 bg-canvas text-gold font-semibold px-6 py-2 rounded-full hover:bg-canvas/90 transition-colors min-h-[44px] leading-[44px] py-0"
+              className="inline-flex items-center mt-4 bg-canvas text-gold font-semibold px-6 py-3 rounded-full hover:bg-canvas/90 transition-colors min-h-[44px]"
             >
               Open My Whispers
             </Link>

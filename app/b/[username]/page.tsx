@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Gift } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isBirthdayToday, daysUntilBirthday, formatBirthday, getBirthdayYear } from "@/lib/utils";
 import MessageForm from "./MessageForm";
@@ -26,6 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicBirthdayPage({ params }: Props) {
   const { username } = await params;
+  const { userId } = await auth();
+  const isSignedIn = !!userId;
 
   const user = await prisma.user
     .findUnique({
@@ -116,6 +119,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
           recipientName={user.displayName}
           birthdayYear={birthdayYear}
           isToday={isToday}
+          isSignedIn={isSignedIn}
         />
       </main>
     </div>

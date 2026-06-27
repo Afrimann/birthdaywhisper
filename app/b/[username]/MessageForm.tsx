@@ -9,14 +9,16 @@ interface Props {
   recipientName: string;
   birthdayYear: number;
   isToday: boolean;
+  isSignedIn: boolean;
 }
 
-export default function MessageForm({ recipientId, recipientName, birthdayYear, isToday }: Props) {
+export default function MessageForm({ recipientId, recipientName, birthdayYear, isToday, isSignedIn }: Props) {
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [senderName, setSenderName] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [needsAccount, setNeedsAccount] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
   const [error, setError] = useState("");
 
@@ -42,7 +44,12 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
       });
 
       if (res.status === 429) {
-        setRateLimited(true);
+        const data = await res.json().catch(() => ({})) as { needsAccount?: boolean };
+        if (data.needsAccount) {
+          setNeedsAccount(true);
+        } else {
+          setRateLimited(true);
+        }
         return;
       }
       if (res.status === 422) {
@@ -60,6 +67,37 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
     }
   };
 
+  // Account gate — guest tried to send a second message
+  if (needsAccount) {
+    return (
+      <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
+        <div className="w-16 h-16 rounded-full bg-[rgba(242,193,78,0.06)] border border-[rgba(242,193,78,0.18)] flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-gold" />
+        </div>
+        <h2 className="font-fraunces text-xl font-bold text-cream mb-2">
+          Create a free account to send more
+        </h2>
+        <p className="text-stone text-sm mb-6">
+          You&apos;ve already sent {firstName} a whisper. Sign up free to send
+          another — it only takes a moment.
+        </p>
+        <a
+          href="/sign-up"
+          className="inline-flex items-center gap-2 bg-gold hover:bg-gold-bright text-canvas font-semibold px-6 py-3 rounded-xl transition-all min-h-[44px]"
+        >
+          Create Free Account
+        </a>
+        <p className="text-ghost text-xs mt-4">
+          Already have one?{" "}
+          <a href="/sign-in" className="text-gold hover:text-gold-bright transition-colors underline underline-offset-2">
+            Sign in
+          </a>
+        </p>
+      </div>
+    );
+  }
+
+  // IP rate limit (signed-in users hitting the 5/hour cap)
   if (rateLimited) {
     return (
       <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
@@ -70,16 +108,9 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           Message limit reached
         </h2>
         <p className="text-stone text-sm mb-6">
-          You&apos;ve already sent a whisper to {firstName}. Create a free account to send
-          another one.
+          You&apos;ve hit the hourly limit for whispers to {firstName}. Try again in an hour.
         </p>
-        <a
-          href="/sign-up"
-          className="inline-flex items-center gap-2 bg-gold hover:bg-gold-bright text-canvas font-semibold px-6 py-3 rounded-xl transition-all min-h-[44px]"
-        >
-          Create Free Account
-        </a>
-        <p className="text-ghost text-xs mt-4">Or try again in an hour</p>
+        <p className="text-ghost text-xs">You can try again in about an hour</p>
       </div>
     );
   }
@@ -99,12 +130,30 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
         <p className="text-ghost text-xs mb-6">
           {isAnonymous ? "Sent anonymously" : `Sent as ${senderName || "you"}`}
         </p>
-        <button
-          onClick={() => { setContent(""); setSent(false); }}
-          className="text-gold hover:text-gold-bright text-sm transition-colors underline underline-offset-2"
-        >
-          Send another message
-        </button>
+
+        {isSignedIn ? (
+          <button
+            onClick={() => { setContent(""); setSent(false); }}
+            className="text-gold hover:text-gold-bright text-sm transition-colors underline underline-offset-2"
+          >
+            Send another message
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <a
+              href="/sign-up"
+              className="block w-full bg-gold hover:bg-gold-bright text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px] flex items-center justify-center text-sm"
+            >
+              Create free account to send more
+            </a>
+            <button
+              onClick={() => { setContent(""); setSent(false); }}
+              className="text-ghost hover:text-stone text-xs transition-colors underline underline-offset-2"
+            >
+              Send another (guests limited to 1 per person)
+            </button>
+          </div>
+        )}
       </div>
     );
   }

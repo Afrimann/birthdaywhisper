@@ -2,29 +2,39 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // ─────────────────────────────────────────────────────────────
 // Acceptance criteria (F-03 — Send message):
-//   AC-1: Returns 201 on a valid anonymous message
-//   AC-2: Returns 400 when content is empty
-//   AC-3: Returns 400 when content exceeds 500 characters
-//   AC-4: Returns 400 when recipientId is missing
-//   AC-5: Returns 404 when recipient does not exist in DB
-//   AC-6: Returns 429 when the sender has hit the rate limit
-//   AC-7: Saves isAnonymous=true by default; strips senderName
-//   AC-8: Saves senderName when isAnonymous=false
-//   AC-9: Returns 422 when content fails the profanity filter
+//   AC-1:  Returns 201 on a valid anonymous message
+//   AC-2:  Returns 400 when content is empty
+//   AC-3:  Returns 400 when content exceeds 500 characters
+//   AC-4:  Returns 400 when recipientId is missing
+//   AC-5:  Returns 404 when recipient does not exist in DB
+//   AC-6:  Returns 429 when an authed sender hits the 5/hour rate limit
+//   AC-6b: Returns 429 with needsAccount=true when a guest sends a second message
+//   AC-7:  Saves isAnonymous=true by default; strips senderName
+//   AC-8:  Saves senderName when isAnonymous=false
+//   AC-9:  Returns 422 when content fails the profanity filter
 // ─────────────────────────────────────────────────────────────
 
 const {
+  mockAuth,
   mockUserFindUnique,
   mockSessionFindUnique,
   mockMessageCreate,
   mockSessionUpsert,
   mockContainsProfanity,
 } = vi.hoisted(() => ({
+  mockAuth:              vi.fn().mockResolvedValue({ userId: "user_1" }),
   mockUserFindUnique:    vi.fn(),
   mockSessionFindUnique: vi.fn(),
   mockMessageCreate:     vi.fn(),
   mockSessionUpsert:     vi.fn(),
   mockContainsProfanity: vi.fn(),
+}));
+
+vi.mock("@clerk/nextjs/server", () => ({
+  auth:                mockAuth,
+  currentUser:         vi.fn(),
+  clerkMiddleware:     (fn: unknown) => fn,
+  createRouteMatcher:  () => () => false,
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -60,6 +70,7 @@ function makeRequest(body: unknown) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockAuth.mockResolvedValue({ userId: "user_1" }); // signed in by default
   mockUserFindUnique.mockResolvedValue(RECIPIENT);
   mockSessionFindUnique.mockResolvedValue(null); // no prior session
   mockMessageCreate.mockResolvedValue({});
@@ -101,21 +112,42 @@ describe("POST /api/messages", () => {
     expect(mockMessageCreate).not.toHaveBeenCalled();
   });
 
-  it("AC-6: returns 429 when rate limit is exceeded", async () => {
+  it("AC-6: returns 429 when authed sender hits the 5/hour rate limit", async () => {
     mockSessionFindUnique.mockResolvedValue({
       messageCount: 5,
-      lastSentAt:   new Date(), // within the last hour
+      lastSentAt:   new Date(),
     });
     const res = await POST(makeRequest(VALID_BODY));
     expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.needsAccount).toBe(false);
     expect(mockMessageCreate).not.toHaveBeenCalled();
+  });
+
+  it("AC-6b: returns 429 with needsAccount=true when guest sends a second message", async () => {
+    mockAuth.mockResolvedValueOnce({ userId: null }); // guest
+    mockSessionFindUnique.mockResolvedValue({
+      messageCount: 1,
+      lastSentAt:   new Date(),
+    });
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.needsAccount).toBe(true);
+    expect(mockMessageCreate).not.toHaveBeenCalled();
+  });
+
+  it("AC-6: guest can send first message (no prior session)", async () => {
+    mockAuth.mockResolvedValueOnce({ userId: null }); // guest
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(201);
   });
 
   it("AC-6: allows send when previous session window has expired", async () => {
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
     mockSessionFindUnique.mockResolvedValue({
       messageCount: 5,
-      lastSentAt:   twoHoursAgo, // outside the window
+      lastSentAt:   twoHoursAgo,
     });
     const res = await POST(makeRequest(VALID_BODY));
     expect(res.status).toBe(201);
