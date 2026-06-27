@@ -25,13 +25,13 @@ export async function PATCH(
 
   const user = await prisma.user.findUnique({
     where:  { clerkId: userId },
-    select: { id: true },
+    select: { id: true, displayName: true },
   });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
   const message = await prisma.message.findUnique({
     where:  { id },
-    select: { id: true, recipientId: true },
+    select: { id: true, recipientId: true, senderId: true, reactionEmoji: true },
   });
   if (!message) return NextResponse.json({ error: "Message not found" }, { status: 404 });
   if (message.recipientId !== user.id)
@@ -41,6 +41,17 @@ export async function PATCH(
     where: { id },
     data:  { reactionEmoji: emoji },
   });
+
+  // Notify the sender in-app if they have an account and haven't already been notified for this message
+  if (message.senderId && message.reactionEmoji === null) {
+    prisma.notification.create({
+      data: {
+        userId:  message.senderId,
+        type:    "REACTION_RECEIVED",
+        payload: { recipientName: user.displayName, emoji, messageId: id },
+      },
+    }).catch(() => null);
+  }
 
   return NextResponse.json({ success: true });
 }

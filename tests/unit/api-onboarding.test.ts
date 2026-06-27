@@ -9,10 +9,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 //   AC-5: Returns 200 with user object on success
 // ─────────────────────────────────────────────────────────────
 
+vi.mock("@/lib/email", () => ({
+  sendWelcomeEmail: vi.fn().mockResolvedValue(undefined),
+  sendBirthdayUnlockEmail: vi.fn().mockResolvedValue(undefined),
+  sendBirthdayReminderEmail: vi.fn().mockResolvedValue(undefined),
+  sendReactionReceivedEmail: vi.fn().mockResolvedValue(undefined),
+}));
+
 // vi.hoisted ensures mock vars are initialised before vi.mock hoisting
-const { mockFindUnique, mockUpsert } = vi.hoisted(() => ({
+const { mockFindUnique, mockUpsert, mockCount, mockScheduledUpsert } = vi.hoisted(() => ({
   mockFindUnique: vi.fn(),
   mockUpsert: vi.fn(),
+  mockCount: vi.fn().mockResolvedValue(0),
+  mockScheduledUpsert: vi.fn().mockResolvedValue({}),
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -20,6 +29,12 @@ vi.mock("@/lib/prisma", () => ({
     user: {
       findUnique: mockFindUnique,
       upsert: mockUpsert,
+    },
+    message: {
+      count: mockCount,
+    },
+    scheduledEmail: {
+      upsert: mockScheduledUpsert,
     },
   },
 }));

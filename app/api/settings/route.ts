@@ -13,7 +13,7 @@ export async function PATCH(req: Request) {
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
 
-  const { displayName, birthdayMonth, birthdayDay, username } = body as Record<string, unknown>;
+  const { displayName, birthdayMonth, birthdayDay, username, notifPrefs } = body as Record<string, unknown>;
 
   if (typeof displayName !== "string" || displayName.trim().length < 2) {
     return NextResponse.json({ error: "Display name must be at least 2 characters." }, { status: 400 });
@@ -57,6 +57,24 @@ export async function PATCH(req: Request) {
       username,
     },
   });
+
+  if (notifPrefs && typeof notifPrefs === "object") {
+    const prefs = notifPrefs as Record<string, unknown>;
+    await prisma.notificationPreference.upsert({
+      where:  { userId: currentUser.id },
+      create: {
+        userId:                currentUser.id,
+        emailOnBirthdayUnlock: prefs.emailOnBirthdayUnlock !== false,
+        emailReminders:        prefs.emailReminders !== false,
+        emailReactions:        prefs.emailReactions !== false,
+      },
+      update: {
+        emailOnBirthdayUnlock: prefs.emailOnBirthdayUnlock !== false,
+        emailReminders:        prefs.emailReminders !== false,
+        emailReactions:        prefs.emailReactions !== false,
+      },
+    });
+  }
 
   return NextResponse.json({ success: true });
 }

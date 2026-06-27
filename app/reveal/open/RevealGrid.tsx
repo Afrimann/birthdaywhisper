@@ -14,7 +14,17 @@ export interface MessageCard {
   isAnonymous: boolean;
   status: string;
   reactionEmoji: string | null;
+  cardTheme: string | null;
 }
+
+const THEME_STYLES: Record<string, { bg: string; accent: string; glow: string }> = {
+  CLASSIC:        { bg: "bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",  accent: "text-gold",       glow: "rgba(242,193,78,0.25)"  },
+  GOLDEN_HOUR:    { bg: "bg-gradient-to-br from-[#2d1b00] to-[#5c3200]",  accent: "text-amber-400",  glow: "rgba(251,191,36,0.25)"  },
+  MIDNIGHT_STARS: { bg: "bg-gradient-to-br from-[#0a0015] to-[#1a0030]",  accent: "text-purple-400", glow: "rgba(192,132,252,0.25)" },
+  BLOOM:          { bg: "bg-gradient-to-br from-[#1a0012] to-[#3d0030]",  accent: "text-rose-400",   glow: "rgba(251,113,133,0.25)" },
+  RETRO:          { bg: "bg-gradient-to-br from-[#0f1500] to-[#1e2e00]",  accent: "text-lime-400",   glow: "rgba(163,230,53,0.25)"  },
+  NEON:           { bg: "bg-gradient-to-br from-[#001520] to-[#002a40]",  accent: "text-cyan-400",   glow: "rgba(34,211,238,0.25)"  },
+};
 
 function launchConfetti() {
   const canvas = document.createElement("canvas");
@@ -135,6 +145,7 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
         {messages.map((msg, i) => {
           const isFlipped  = flipped.has(msg.id);
           const reaction   = reactions[msg.id];
+          const theme      = THEME_STYLES[msg.cardTheme ?? "CLASSIC"] ?? THEME_STYLES.CLASSIC;
 
           return (
             <motion.div
@@ -155,19 +166,20 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
                   height: "100%",
                 }}
               >
-                {/* ── Front (sealed) ── */}
+                {/* ── Front (sealed, themed) ── */}
                 <div
                   style={{
                     backfaceVisibility: "hidden",
                     WebkitBackfaceVisibility: "hidden",
+                    boxShadow: `0 0 24px ${theme.glow}`,
                   }}
                   onClick={() => flipCard(msg.id)}
-                  className="absolute inset-0 glass rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[rgba(242,193,78,0.35)] transition-all group"
+                  className={`absolute inset-0 ${theme.bg} border border-[rgba(255,255,255,0.08)] rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[rgba(255,255,255,0.18)] transition-all group`}
                 >
-                  <div className="w-14 h-14 rounded-xl bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.2)] flex items-center justify-center animate-lantern">
-                    <Gift className="w-7 h-7 text-gold" />
+                  <div className="w-14 h-14 rounded-xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] flex items-center justify-center animate-lantern">
+                    <Gift className={`w-7 h-7 ${theme.accent}`} />
                   </div>
-                  <p className="text-ghost text-xs group-hover:text-stone transition-colors">
+                  <p className="text-white/40 text-xs group-hover:text-white/60 transition-colors">
                     Tap to open
                   </p>
                 </div>

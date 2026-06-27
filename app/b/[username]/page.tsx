@@ -2,9 +2,11 @@ import { notFound } from "next/navigation";
 import { Gift } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isBirthdayToday, daysUntilBirthday, formatBirthday, getBirthdayYear } from "@/lib/utils";
 import MessageForm from "./MessageForm";
+import FollowButton from "./FollowButton";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -26,22 +28,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicBirthdayPage({ params }: Props) {
   const { username } = await params;
+  const { userId } = await auth();
+  const isSignedIn = !!userId;
 
-  const user = await prisma.user
-    .findUnique({
-      where: { username },
-      select: {
-        id: true,
-        displayName: true,
-        username: true,
-        avatarUrl: true,
-        birthdayMonth: true,
-        birthdayDay: true,
-      },
-    })
-    .catch(() => null);
+  const [user, viewerDb] = await Promise.all([
+    prisma.user
+      .findUnique({
+        where: { username },
+        select: {
+          id: true,
+          displayName: true,
+          username: true,
+          avatarUrl: true,
+          birthdayMonth: true,
+          birthdayDay: true,
+        },
+      })
+      .catch(() => null),
+    userId
+      ? prisma.user.findUnique({ where: { clerkId: userId }, select: { id: true } }).catch(() => null)
+      : null,
+  ]);
 
   if (!user) notFound();
+
+  const isOwnProfile = viewerDb?.id === user.id;
+  const initialFollowing = isSignedIn && !isOwnProfile && viewerDb
+    ? await prisma.birthdayFollow
+        .findUnique({
+          where: { followerId_followedId: { followerId: viewerDb.id, followedId: user.id } },
+        })
+        .then((f) => !!f)
+        .catch(() => false)
+    : false;
 
   const isToday = isBirthdayToday(user.birthdayMonth, user.birthdayDay);
   const days = daysUntilBirthday(user.birthdayMonth, user.birthdayDay);
@@ -108,6 +127,12 @@ export default async function PublicBirthdayPage({ params }: Props) {
               <span className="text-gold font-semibold">{days} day{days !== 1 ? "s" : ""} away</span>
             </p>
           )}
+
+          {isSignedIn && !isOwnProfile && (
+            <div className="mt-4 flex justify-center">
+              <FollowButton username={username} initialFollowing={initialFollowing} />
+            </div>
+          )}
         </div>
 
         {/* Message form */}
@@ -116,6 +141,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
           recipientName={user.displayName}
           birthdayYear={birthdayYear}
           isToday={isToday}
+          isSignedIn={isSignedIn}
         />
       </main>
     </div>
