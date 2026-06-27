@@ -10,6 +10,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 //   AC-6: Returns 429 when the sender has hit the rate limit
 //   AC-7: Saves isAnonymous=true by default; strips senderName
 //   AC-8: Saves senderName when isAnonymous=false
+//   AC-9: Returns 422 when content fails the profanity filter
 // ─────────────────────────────────────────────────────────────
 
 const {
@@ -17,11 +18,13 @@ const {
   mockSessionFindUnique,
   mockMessageCreate,
   mockSessionUpsert,
+  mockContainsProfanity,
 } = vi.hoisted(() => ({
   mockUserFindUnique:    vi.fn(),
   mockSessionFindUnique: vi.fn(),
   mockMessageCreate:     vi.fn(),
   mockSessionUpsert:     vi.fn(),
+  mockContainsProfanity: vi.fn(),
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -30,6 +33,10 @@ vi.mock("@/lib/prisma", () => ({
     senderSession: { findUnique: mockSessionFindUnique, upsert: mockSessionUpsert },
     message:       { create: mockMessageCreate },
   },
+}));
+
+vi.mock("@/lib/profanity", () => ({
+  containsProfanity: mockContainsProfanity,
 }));
 
 import { POST } from "@/app/api/messages/route";
@@ -57,6 +64,7 @@ beforeEach(() => {
   mockSessionFindUnique.mockResolvedValue(null); // no prior session
   mockMessageCreate.mockResolvedValue({});
   mockSessionUpsert.mockResolvedValue({});
+  mockContainsProfanity.mockReturnValue(false); // clean by default
 });
 
 describe("POST /api/messages", () => {
@@ -125,5 +133,12 @@ describe("POST /api/messages", () => {
     expect(mockMessageCreate).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ isAnonymous: false, senderName: "Peter" }) })
     );
+  });
+
+  it("AC-9: returns 422 when content fails the profanity filter", async () => {
+    mockContainsProfanity.mockReturnValue(true);
+    const res = await POST(makeRequest(VALID_BODY));
+    expect(res.status).toBe(422);
+    expect(mockMessageCreate).not.toHaveBeenCalled();
   });
 });

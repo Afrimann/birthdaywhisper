@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Send, User, EyeOff, Check } from "lucide-react";
+import { Send, User, EyeOff, Check, Lock } from "lucide-react";
 
 const MAX_CHARS = 500;
 
@@ -17,6 +17,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   const [senderName, setSenderName] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
   const [error, setError] = useState("");
 
   const firstName = recipientName.split(" ")[0];
@@ -41,7 +42,11 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
       });
 
       if (res.status === 429) {
-        setError("You've sent too many messages recently. Try again in an hour.");
+        setRateLimited(true);
+        return;
+      }
+      if (res.status === 422) {
+        setError("Your message contains inappropriate content. Please revise it.");
         return;
       }
       if (!res.ok) {
@@ -54,6 +59,30 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
       setLoading(false);
     }
   };
+
+  if (rateLimited) {
+    return (
+      <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
+        <div className="w-16 h-16 rounded-full bg-[rgba(242,193,78,0.06)] border border-[rgba(242,193,78,0.18)] flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-gold" />
+        </div>
+        <h2 className="font-fraunces text-xl font-bold text-cream mb-2">
+          Message limit reached
+        </h2>
+        <p className="text-stone text-sm mb-6">
+          You&apos;ve already sent a whisper to {firstName}. Create a free account to send
+          another one.
+        </p>
+        <a
+          href="/sign-up"
+          className="inline-flex items-center gap-2 bg-gold hover:bg-gold-bright text-canvas font-semibold px-6 py-3 rounded-xl transition-all min-h-[44px]"
+        >
+          Create Free Account
+        </a>
+        <p className="text-ghost text-xs mt-4">Or try again in an hour</p>
+      </div>
+    );
+  }
 
   if (sent) {
     return (
