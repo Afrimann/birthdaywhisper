@@ -18,10 +18,10 @@ export default function SignInPage() {
 
   const handleGoogleSignIn = async () => {
     if (!signIn) return;
-    await signIn.authenticateWithRedirect({
+    await signIn.sso({
       strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: "/dashboard",
+      redirectUrl: "/dashboard",
+      redirectCallbackUrl: "/sso-callback",
     });
   };
 

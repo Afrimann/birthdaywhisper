@@ -22,10 +22,10 @@ export default function SignUpPage() {
 
   const handleGoogleSignUp = async () => {
     if (!signUp) return;
-    await signUp.authenticateWithRedirect({
+    await signUp.sso({
       strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: "/onboarding",
+      redirectUrl: "/onboarding",
+      redirectCallbackUrl: "/sso-callback",
     });
   };
 

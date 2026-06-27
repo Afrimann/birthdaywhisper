@@ -9,18 +9,18 @@ import userEvent from "@testing-library/user-event";
 // strategy and redirect URLs.
 // ─────────────────────────────────────────────────────────────
 
-const mockAuthenticateWithRedirect = vi.fn();
+const mockSso = vi.fn();
 
 vi.mock("@clerk/nextjs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@clerk/nextjs")>();
   return {
     ...actual,
     useSignIn: () => ({
-      signIn: { authenticateWithRedirect: mockAuthenticateWithRedirect },
+      signIn: { sso: mockSso },
       fetchStatus: "idle",
     }),
     useSignUp: () => ({
-      signUp: { authenticateWithRedirect: mockAuthenticateWithRedirect },
+      signUp: { sso: mockSso },
       fetchStatus: "idle",
     }),
   };
@@ -30,7 +30,7 @@ import SignInPage from "@/app/sign-in/[[...sign-in]]/page";
 import SignUpPage from "@/app/sign-up/[[...sign-up]]/page";
 
 beforeEach(() => {
-  mockAuthenticateWithRedirect.mockReset();
+  mockSso.mockReset();
 });
 
 describe("Sign-In — Continue with Google", () => {
@@ -41,16 +41,16 @@ describe("Sign-In — Continue with Google", () => {
     ).toBeInTheDocument();
   });
 
-  it("calls authenticateWithRedirect with oauth_google on click", async () => {
+  it("calls sso with oauth_google on click", async () => {
     render(<SignInPage />);
     await userEvent.click(
       screen.getByRole("button", { name: /continue with google/i }),
     );
-    expect(mockAuthenticateWithRedirect).toHaveBeenCalledOnce();
-    expect(mockAuthenticateWithRedirect).toHaveBeenCalledWith({
+    expect(mockSso).toHaveBeenCalledOnce();
+    expect(mockSso).toHaveBeenCalledWith({
       strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: "/dashboard",
+      redirectUrl: "/dashboard",
+      redirectCallbackUrl: "/sso-callback",
     });
   });
 });
@@ -63,16 +63,16 @@ describe("Sign-Up — Continue with Google", () => {
     ).toBeInTheDocument();
   });
 
-  it("calls authenticateWithRedirect with oauth_google on click", async () => {
+  it("calls sso with oauth_google on click", async () => {
     render(<SignUpPage />);
     await userEvent.click(
       screen.getByRole("button", { name: /continue with google/i }),
     );
-    expect(mockAuthenticateWithRedirect).toHaveBeenCalledOnce();
-    expect(mockAuthenticateWithRedirect).toHaveBeenCalledWith({
+    expect(mockSso).toHaveBeenCalledOnce();
+    expect(mockSso).toHaveBeenCalledWith({
       strategy: "oauth_google",
-      redirectUrl: "/sso-callback",
-      redirectUrlComplete: "/onboarding",
+      redirectUrl: "/onboarding",
+      redirectCallbackUrl: "/sso-callback",
     });
   });
 
