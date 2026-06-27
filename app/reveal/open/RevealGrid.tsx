@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -85,6 +86,20 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
   );
   const [celebrated, setCelebrated] = useState(false);
 
+  const revealCard = useMutation({
+    mutationFn: (id: string) =>
+      fetch(`/api/messages/${id}/reveal`, { method: "PATCH" }),
+  });
+
+  const reactToCard = useMutation({
+    mutationFn: ({ id, emoji }: { id: string; emoji: string }) =>
+      fetch(`/api/messages/${id}/react`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emoji }),
+      }),
+  });
+
   const flipCard = useCallback(
     (id: string) => {
       if (flipped.has(id)) return;
@@ -99,18 +114,17 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
         }, 650);
       }
 
-      fetch(`/api/messages/${id}/reveal`, { method: "PATCH" }).catch(() => null);
+      revealCard.mutate(id);
     },
+    // revealCard.mutate is a stable reference from useMutation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [flipped, messages.length, celebrated]
   );
 
   const pickReaction = useCallback((id: string, emoji: string) => {
     setReactions((prev) => ({ ...prev, [id]: emoji }));
-    fetch(`/api/messages/${id}/react`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ emoji }),
-    }).catch(() => null);
+    reactToCard.mutate({ id, emoji });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (messages.length === 0) {

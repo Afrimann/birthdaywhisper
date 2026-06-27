@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Gift, ChevronRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import CustomSelect from "@/app/_components/CustomSelect";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -10,7 +12,6 @@ const MONTHS = [
 ];
 
 function getDaysInMonth(month: number) {
-  // Use a leap year for February to show 29 days
   return new Date(2000, month, 0).getDate();
 }
 
@@ -21,8 +22,42 @@ export default function OnboardingForm() {
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [username, setUsername] = useState("");
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const [loading, setLoading] = useState(false);
+  const [debouncedUsername, setDebouncedUsername] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedUsername(username), 500);
+    return () => clearTimeout(timer);
+  }, [username]);
+
+  const { data: usernameCheckData, isFetching: isCheckingUsername } = useQuery<{ available: boolean }>({
+    queryKey: ["username-check", debouncedUsername],
+    queryFn: () =>
+      fetch(`/api/username/check?username=${encodeURIComponent(debouncedUsername)}`).then((r) => r.json()),
+    enabled: debouncedUsername.length >= 3,
+  });
+
+  const isTyping = username !== debouncedUsername;
+  const usernameStatus: "idle" | "checking" | "available" | "taken" =
+    username.length < 3 ? "idle" :
+    isTyping || isCheckingUsername ? "checking" :
+    usernameCheckData == null ? "idle" :
+    usernameCheckData.available ? "available" :
+    "taken";
+
+  const finish = useMutation({
+    mutationFn: () =>
+      fetch("/api/onboarding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName,
+          birthdayMonth: parseInt(month),
+          birthdayDay: parseInt(day),
+          username,
+        }),
+      }).then((r) => { if (!r.ok) throw new Error("setup failed"); return r.json(); }),
+    onSuccess: () => router.push("/dashboard"),
+  });
 
   const handleNameNext = () => {
     if (displayName.trim().length < 2) return;
@@ -34,35 +69,6 @@ export default function OnboardingForm() {
   const handleBirthdayNext = () => {
     if (!month || !day) return;
     setStep(3);
-  };
-
-  const checkUsername = async (value: string) => {
-    setUsername(value);
-    if (value.length < 3) { setUsernameStatus("idle"); return; }
-    setUsernameStatus("checking");
-    await new Promise(r => setTimeout(r, 500));
-    // TODO: replace with real API check
-    setUsernameStatus("available");
-  };
-
-  const handleFinish = async () => {
-    if (!username || usernameStatus !== "available") return;
-    setLoading(true);
-    try {
-      const res = await fetch("/api/onboarding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          displayName,
-          birthdayMonth: parseInt(month),
-          birthdayDay: parseInt(day),
-          username,
-        }),
-      });
-      if (res.ok) router.push("/dashboard");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const steps = [
@@ -144,25 +150,26 @@ export default function OnboardingForm() {
               <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">When&apos;s your birthday?</h2>
               <p className="text-stone text-sm mb-6">We only need the day and month — no year required.</p>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <select
+                <CustomSelect
                   value={month}
-                  onChange={e => { setMonth(e.target.value); setDay(""); }}
-                  className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
-                >
-                  <option value="">Month</option>
-                  {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
-                </select>
-                <select
+                  onChange={(v) => { setMonth(v); setDay(""); }}
+                  options={MONTHS.map((m, i) => ({ value: String(i + 1), label: m }))}
+                  placeholder="Month"
+                />
+                <CustomSelect
                   value={day}
-                  onChange={e => setDay(e.target.value)}
+                  onChange={setDay}
+                  options={
+                    month
+                      ? [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => ({
+                          value: String(i + 1),
+                          label: String(i + 1),
+                        }))
+                      : []
+                  }
+                  placeholder="Day"
                   disabled={!month}
-                  className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] disabled:opacity-40 rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
-                >
-                  <option value="">Day</option>
-                  {month && [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>{i + 1}</option>
-                  ))}
-                </select>
+                />
               </div>
               <button
                 onClick={handleBirthdayNext}
@@ -183,7 +190,7 @@ export default function OnboardingForm() {
                 <input
                   type="text"
                   value={username}
-                  onChange={e => checkUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                  onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
                   placeholder="yourname"
                   className="flex-1 bg-transparent text-cream outline-none min-w-0"
                   autoFocus
@@ -200,13 +207,16 @@ export default function OnboardingForm() {
                   <span className="text-rose-400">@{username} is taken — try another</span>
                 )}
               </div>
+              {finish.isError && (
+                <p className="text-rose-400 text-xs mt-2">Setup failed — please try again.</p>
+              )}
               <button
-                onClick={handleFinish}
-                disabled={usernameStatus !== "available" || username.length < 3 || loading}
+                onClick={() => finish.mutate()}
+                disabled={usernameStatus !== "available" || username.length < 3 || finish.isPending}
                 className="mt-6 w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
-                {loading ? "Setting up..." : "Finish Setup"}
-                {!loading && <ChevronRight className="w-4 h-4" />}
+                {finish.isPending ? "Setting up..." : "Finish Setup"}
+                {!finish.isPending && <ChevronRight className="w-4 h-4" />}
               </button>
             </div>
           )}

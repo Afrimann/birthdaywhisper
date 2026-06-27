@@ -17,6 +17,7 @@ model User {
   birthdayDay   Int
   timezone      String           @default("UTC")
   isPremium     Boolean          @default(false)
+  showWishlist  Boolean          @default(false)
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   followers      BirthdayFollow[]        @relation("FollowedUser")

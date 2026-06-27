@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Check, ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import CustomSelect from "@/app/_components/CustomSelect";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -34,50 +36,41 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
   const [month, setMonth]             = useState(String(initialData.birthdayMonth));
   const [day, setDay]                 = useState(String(initialData.birthdayDay));
   const [username, setUsername]       = useState(initialData.username);
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [debouncedUsername, setDebouncedUsername] = useState(initialData.username);
   const [notifPrefs, setNotifPrefs]   = useState<NotifPrefs>(initialData.notifPrefs);
 
-  const [saving, setSaving]     = useState(false);
-  const [success, setSuccess]   = useState(false);
-  const [error, setError]       = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError]     = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedUsername(username), 500);
+    return () => clearTimeout(timer);
+  }, [username]);
 
   const usernameChanged = username !== initialData.username;
+  const debouncedChanged = debouncedUsername !== initialData.username;
+
+  const { data: usernameCheckData, isFetching: isCheckingUsername, isError: usernameCheckError } = useQuery<{ available: boolean }>({
+    queryKey: ["username-check", debouncedUsername],
+    queryFn: () =>
+      fetch(`/api/username/check?username=${encodeURIComponent(debouncedUsername)}`).then((r) => r.json()),
+    enabled: debouncedChanged && debouncedUsername.length >= 3,
+  });
+
+  const isTyping = username !== debouncedUsername;
+  const usernameStatus: "idle" | "checking" | "available" | "taken" =
+    !usernameChanged ? "idle" :
+    username.length < 3 ? "idle" :
+    isTyping || isCheckingUsername ? "checking" :
+    usernameCheckError || usernameCheckData == null ? "idle" :
+    usernameCheckData.available ? "available" :
+    "taken";
+
   const usernameOk = !usernameChanged || (usernameStatus === "available" && username.length >= 3);
-  const canSave =
-    displayName.trim().length >= 2 &&
-    month !== "" &&
-    day !== "" &&
-    username.length >= 3 &&
-    usernameOk &&
-    !saving;
 
-  // Real-time username check (only when changed)
-  useEffect(() => {
-    if (!usernameChanged) { setUsernameStatus("idle"); return; }
-    if (username.length < 3) { setUsernameStatus("idle"); return; }
-
-    setUsernameStatus("checking");
-    const timer = setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/username/check?username=${encodeURIComponent(username)}`);
-        const data = await res.json();
-        setUsernameStatus(data.available ? "available" : "taken");
-      } catch {
-        setUsernameStatus("idle");
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [username, usernameChanged]);
-
-  const handleSave = async () => {
-    if (!canSave) return;
-    setSaving(true);
-    setError("");
-    setSuccess(false);
-
-    try {
-      const res = await fetch("/api/settings", {
+  const save = useMutation({
+    mutationFn: () =>
+      fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -87,18 +80,30 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           username,
           notifPrefs,
         }),
-      });
-
-      if (res.status === 409) { setError("That username is already taken."); return; }
-      if (!res.ok)            { setError("Something went wrong. Please try again."); return; }
-
+      }).then(async (r) => {
+        const json = await r.json().catch(() => ({})) as { error?: string };
+        if (!r.ok) throw Object.assign(new Error(json.error ?? "save failed"), { status: r.status });
+        return json;
+      }),
+    onSuccess: () => {
       setSuccess(true);
+      setError("");
       setTimeout(() => setSuccess(false), 3000);
       router.refresh();
-    } finally {
-      setSaving(false);
-    }
-  };
+    },
+    onError: (err: Error & { status?: number }) => {
+      if (err.status === 409) setError("That username is already taken.");
+      else setError("Something went wrong. Please try again.");
+    },
+  });
+
+  const canSave =
+    displayName.trim().length >= 2 &&
+    month !== "" &&
+    day !== "" &&
+    username.length >= 3 &&
+    usernameOk &&
+    !save.isPending;
 
   return (
     <div className="space-y-6">
@@ -140,27 +145,26 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           Birthday
         </label>
         <div className="grid grid-cols-2 gap-3">
-          <select
+          <CustomSelect
             value={month}
-            onChange={(e) => { setMonth(e.target.value); setDay(""); }}
-            className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
-          >
-            <option value="">Month</option>
-            {MONTHS.map((m, i) => (
-              <option key={m} value={i + 1}>{m}</option>
-            ))}
-          </select>
-          <select
+            onChange={(v) => { setMonth(v); setDay(""); }}
+            options={MONTHS.map((m, i) => ({ value: String(i + 1), label: m }))}
+            placeholder="Month"
+          />
+          <CustomSelect
             value={day}
-            onChange={(e) => setDay(e.target.value)}
+            onChange={setDay}
+            options={
+              month
+                ? [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => ({
+                    value: String(i + 1),
+                    label: String(i + 1),
+                  }))
+                : []
+            }
+            placeholder="Day"
             disabled={!month}
-            className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] disabled:opacity-40 rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
-          >
-            <option value="">Day</option>
-            {month && [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
+          />
         </div>
         <p className="text-ghost text-xs mt-2">
           Only the day and month are stored — no year.
@@ -250,7 +254,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
 
       {/* Save button */}
       <button
-        onClick={handleSave}
+        onClick={() => save.mutate()}
         disabled={!canSave}
         className={cn(
           "w-full flex items-center justify-center gap-2 text-base font-semibold py-4 rounded-2xl transition-all min-h-[56px]",
@@ -259,7 +263,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
             : "bg-pitch text-ghost cursor-not-allowed"
         )}
       >
-        {saving ? (
+        {save.isPending ? (
           <><Loader2 className="w-5 h-5 animate-spin" /> Saving...</>
         ) : (
           <><ChevronRight className="w-5 h-5" /> Save Changes</>

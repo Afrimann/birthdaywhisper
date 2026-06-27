@@ -1,0 +1,47 @@
+name: Features — CI & Open PR
+
+on:
+  push:
+    branches: [features]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ci:
+    name: Type check & tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
+      - run: npx tsc --noEmit
+
+      - run: npm test
+
+  open-pr:
+    name: Open PR → master
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create PR (skip if already open)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base master \
+            --head features \
+            --title "feat: features → master" \
+            --body "Automated PR — all CI checks passed on the \`features\` branch." \
+          || true

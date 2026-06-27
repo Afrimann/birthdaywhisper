@@ -198,7 +198,7 @@ export default async function DashboardPage() {
               className="glass rounded-xl p-4 flex flex-col items-center gap-2 text-center transition-all hover:border-[rgba(242,193,78,0.3)] group min-h-[80px] justify-center"
             >
               <Icon className="w-5 h-5 text-stone group-hover:text-gold transition-colors" />
-              <span className="text-stone group-hover:text-cream text-xs transition-colors">{label}</span>
+              <span className="text-stone group-hover:text-cream text-xs transition-colors whitespace-nowrap">{label}</span>
             </Link>
           ))}
         </div>
