@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { containsProfanity } from "@/lib/profanity";
+import { moderateContent } from "@/lib/moderation";
 
 const MAX_CHARS = 500;
 const RATE_LIMIT_AUTHED = 5;
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
   }
 
-  if (containsProfanity(content)) {
+  if (await moderateContent(content)) {
     return NextResponse.json({ error: "Message contains inappropriate content" }, { status: 422 });
   }
 
