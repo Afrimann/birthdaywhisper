@@ -72,12 +72,15 @@ export default function OnboardingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-navy-800 flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-4">
+      {/* Ambient glow */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(242,193,78,0.04)] rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-10">
-          <Gift className="text-violet-500 w-6 h-6" />
-          <span className="font-playfair text-2xl font-bold text-white">BirthdayWhisper</span>
+          <Gift className="text-gold w-6 h-6" />
+          <span className="font-fraunces text-2xl font-bold text-cream tracking-tight">BirthdayWhisper</span>
         </div>
 
         {/* Progress */}
@@ -87,41 +90,49 @@ export default function OnboardingPage() {
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold border transition-all",
                 step > n
-                  ? "bg-violet-600 border-violet-600 text-white"
+                  ? "bg-gold border-gold text-canvas"
                   : step === n
-                  ? "border-violet-500 text-violet-400 bg-violet-600/10"
-                  : "border-navy-600 text-slate-500"
+                  ? "border-[rgba(242,193,78,0.4)] text-gold bg-[rgba(242,193,78,0.08)]"
+                  : "border-pitch text-ghost"
               )}>
                 {step > n ? <Check className="w-4 h-4" /> : n}
               </div>
-              <span className={cn("text-xs hidden sm:block", step === n ? "text-violet-400" : "text-slate-500")}>
+              <span className={cn(
+                "text-xs hidden sm:block",
+                step === n ? "text-gold" : "text-ghost"
+              )}>
                 {label}
               </span>
-              {n < 3 && <div className={cn("w-8 h-px", step > n ? "bg-violet-600" : "bg-navy-600")} />}
+              {n < 3 && (
+                <div className={cn(
+                  "w-8 h-px",
+                  step > n ? "bg-gold" : "bg-pitch"
+                )} />
+              )}
             </div>
           ))}
         </div>
 
         {/* Card */}
-        <div className="bg-navy-700 border border-navy-600 rounded-2xl p-8">
+        <div className="glass rounded-2xl p-8">
 
           {step === 1 && (
             <div>
-              <h2 className="font-playfair text-2xl font-bold text-white mb-2">What should we call you?</h2>
-              <p className="text-slate-400 text-sm mb-6">This is how you&apos;ll appear on your birthday page.</p>
+              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">What should we call you?</h2>
+              <p className="text-stone text-sm mb-6">This is how you&apos;ll appear on your birthday page.</p>
               <input
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleNameNext()}
                 placeholder="Your name..."
-                className="w-full bg-navy-800 border border-navy-600 focus:border-violet-500 rounded-xl px-4 py-3 text-white placeholder-slate-500 outline-none transition-colors text-lg"
+                className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] focus:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 text-cream placeholder-ghost outline-none transition-all text-lg"
                 autoFocus
               />
               <button
                 onClick={handleNameNext}
                 disabled={displayName.trim().length < 2}
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all"
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -130,13 +141,13 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <div>
-              <h2 className="font-playfair text-2xl font-bold text-white mb-2">When&apos;s your birthday?</h2>
-              <p className="text-slate-400 text-sm mb-6">We only need the day and month — no year required.</p>
+              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">When&apos;s your birthday?</h2>
+              <p className="text-stone text-sm mb-6">We only need the day and month — no year required.</p>
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <select
                   value={month}
                   onChange={e => { setMonth(e.target.value); setDay(""); }}
-                  className="bg-navy-800 border border-navy-600 focus:border-violet-500 rounded-xl px-4 py-3 text-white outline-none transition-colors"
+                  className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
                 >
                   <option value="">Month</option>
                   {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
@@ -145,7 +156,7 @@ export default function OnboardingPage() {
                   value={day}
                   onChange={e => setDay(e.target.value)}
                   disabled={!month}
-                  className="bg-navy-800 border border-navy-600 focus:border-violet-500 disabled:opacity-40 rounded-xl px-4 py-3 text-white outline-none transition-colors"
+                  className="bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] disabled:opacity-40 rounded-xl px-4 py-3 text-cream outline-none transition-all min-h-[44px]"
                 >
                   <option value="">Day</option>
                   {month && [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => (
@@ -156,7 +167,7 @@ export default function OnboardingPage() {
               <button
                 onClick={handleBirthdayNext}
                 disabled={!month || !day}
-                className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all"
+                className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -165,30 +176,34 @@ export default function OnboardingPage() {
 
           {step === 3 && (
             <div>
-              <h2 className="font-playfair text-2xl font-bold text-white mb-2">Choose your link</h2>
-              <p className="text-slate-400 text-sm mb-6">This is your permanent birthday page URL.</p>
-              <div className="bg-navy-800 border border-navy-600 focus-within:border-violet-500 rounded-xl px-4 py-3 flex items-center gap-2 transition-colors">
-                <span className="text-slate-500 text-sm whitespace-nowrap">birthdaywhisper.com/b/</span>
+              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">Choose your link</h2>
+              <p className="text-stone text-sm mb-6">This is your permanent birthday page URL.</p>
+              <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
+                <span className="text-ghost text-sm whitespace-nowrap">birthdaywhisper.com/b/</span>
                 <input
                   type="text"
                   value={username}
                   onChange={e => checkUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
                   placeholder="yourname"
-                  className="flex-1 bg-transparent text-white outline-none min-w-0"
+                  className="flex-1 bg-transparent text-cream outline-none min-w-0"
                   autoFocus
                 />
               </div>
               <div className="mt-2 h-5 text-xs">
-                {usernameStatus === "checking" && <span className="text-slate-400">Checking...</span>}
+                {usernameStatus === "checking" && <span className="text-stone">Checking...</span>}
                 {usernameStatus === "available" && username.length >= 3 && (
-                  <span className="text-green-400 flex items-center gap-1"><Check className="w-3 h-3" /> @{username} is available</span>
+                  <span className="text-gold flex items-center gap-1">
+                    <Check className="w-3 h-3" /> @{username} is available
+                  </span>
                 )}
-                {usernameStatus === "taken" && <span className="text-rose-400">@{username} is taken — try another</span>}
+                {usernameStatus === "taken" && (
+                  <span className="text-rose-400">@{username} is taken — try another</span>
+                )}
               </div>
               <button
                 onClick={handleFinish}
                 disabled={usernameStatus !== "available" || username.length < 3 || loading}
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all"
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 {loading ? "Setting up..." : "Finish Setup"}
                 {!loading && <ChevronRight className="w-4 h-4" />}

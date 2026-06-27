@@ -10,6 +10,8 @@ vi.mock("next/navigation", () => ({
 
 // Mock next/font/google — returns CSS variable names
 vi.mock("next/font/google", () => ({
+  Fraunces: () => ({ variable: "--font-fraunces", className: "fraunces" }),
+  Plus_Jakarta_Sans: () => ({ variable: "--font-jakarta", className: "jakarta" }),
   Inter: () => ({ variable: "--font-inter", className: "inter" }),
   Playfair_Display: () => ({ variable: "--font-playfair", className: "playfair" }),
   Dancing_Script: () => ({ variable: "--font-dancing", className: "dancing" }),
