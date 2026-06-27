@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Gift, Star, Lock, BookOpen, Sparkles, LayoutDashboard } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
-import { UserButton } from "@clerk/nextjs";
+import LandingNav from "./_components/LandingNav";
 
 export default async function LandingPage() {
   const { userId } = await auth();
@@ -9,40 +9,7 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-canvas text-cream overflow-x-hidden">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-[rgba(11,11,13,0.75)] backdrop-blur-md border-b border-[rgba(242,193,78,0.08)]">
-        <div className="flex items-center gap-2">
-          <Gift className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-xl font-bold text-cream tracking-tight">BirthdayWhisper</span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {isSignedIn ? (
-            <>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-1.5 text-stone hover:text-cream text-sm transition-colors"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
-              <UserButton />
-            </>
-          ) : (
-            <>
-              <Link href="/sign-in" className="text-stone hover:text-cream text-sm transition-colors">
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="bg-gold hover:bg-gold-bright text-canvas text-sm font-semibold px-4 py-2 rounded-full transition-all hover:shadow-gold"
-              >
-                Get Started
-              </Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <LandingNav isSignedIn={isSignedIn} />
 
       {/* Hero */}
       <section className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center pt-20">
