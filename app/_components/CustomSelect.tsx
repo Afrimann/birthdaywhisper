@@ -67,7 +67,7 @@ export default function CustomSelect({
       </button>
 
       {open && (
-        <div className="select-dropdown absolute z-50 left-0 right-0 mt-1 rounded-xl overflow-hidden">
+        <div className="select-dropdown absolute z-50 left-0 right-0 mt-1 rounded-xl top-full z-[9999]">
           <div role="listbox" className="select-list max-h-52 overflow-y-auto py-1">
             {options.map((opt, i) => (
               <button
