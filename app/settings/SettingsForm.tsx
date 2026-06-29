@@ -140,7 +140,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
       </div>
 
       {/* Birthday */}
-      <div className="glass rounded-2xl p-6">
+      <div className="glass rounded-2xl p-6 relative z-10">
         <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-3">
           Birthday
         </label>
