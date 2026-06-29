@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Gift, Star, Lock, BookOpen, Sparkles, LayoutDashboard, Heart, Zap } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import LandingNav from "./_components/LandingNav";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "BirthdayWhisper — The messages they'll never expect",
+  },
+  description:
+    "Create your birthday page, share the link, and let people leave you secret messages — sealed and revealed only on your birthday. Free forever.",
+  alternates: { canonical: "/" },
+};
 
 export default async function LandingPage() {
   const { userId } = await auth();

@@ -19,11 +19,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .findUnique({ where: { username }, select: { displayName: true } })
     .catch(() => null);
 
-  if (!user) return { title: "Not Found — BirthdayWhisper" };
+  if (!user) return { title: "Not Found" };
+
+  const title = `Send ${user.displayName} a birthday whisper`;
+  const description = `Leave ${user.displayName} a secret birthday message — sealed until their birthday. Only they can open it on their special day.`;
 
   return {
-    title: `Send ${user.displayName} a birthday message | BirthdayWhisper`,
-    description: `Leave ${user.displayName} a secret birthday message — sealed until their birthday!`,
+    title,
+    description,
+    openGraph: {
+      title: `${title} 🎂`,
+      description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} 🎂`,
+      description,
+    },
   };
 }
 
