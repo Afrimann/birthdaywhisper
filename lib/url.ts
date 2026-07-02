@@ -19,3 +19,19 @@ export function getBaseUrl(): string {
   }
   return "http://localhost:3000";
 }
+
+/**
+ * Returns the shareable URL for a user's birthday page.
+ *
+ * When NEXT_PUBLIC_SHARE_URL is set (e.g. https://bdwpr.com), share surfaces
+ * emit `https://bdwpr.com/<username>` and proxy.ts 308-redirects those to the
+ * canonical /b/<username> page. Until the short domain is configured, this
+ * falls back to the canonical URL, so it is safe to use unconditionally.
+ */
+export function getShareUrl(username: string): string {
+  const short = process.env.NEXT_PUBLIC_SHARE_URL;
+  if (short) {
+    return `${short.replace(/\/+$/, "")}/${username}`;
+  }
+  return `${getBaseUrl()}/b/${username}`;
+}
