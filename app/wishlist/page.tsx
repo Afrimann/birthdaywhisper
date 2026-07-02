@@ -134,7 +134,7 @@ export default function WishlistPage() {
   if (isPending) {
     return (
       <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-gold animate-spin" />
+        <Loader2 className="w-6 h-6 text-accent-500 animate-spin" />
       </div>
     );
   }
@@ -146,7 +146,7 @@ export default function WishlistPage() {
           <p className="text-rose-400 text-sm mb-4">{error.message}</p>
           <button
             onClick={() => qc.invalidateQueries({ queryKey: ["wishlist"] })}
-            className="text-gold hover:text-gold-bright text-sm underline touch-manipulation"
+            className="text-accent-500 hover:text-accent-600 text-sm underline touch-manipulation"
           >
             Try again
           </button>
@@ -159,13 +159,13 @@ export default function WishlistPage() {
   const showWishlist = data?.showWishlist ?? false;
 
   return (
-    <div className="min-h-screen bg-canvas text-cream">
-      <nav className="border-b border-[rgba(242,193,78,0.08)] px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-canvas text-accent-900">
+      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Star className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-cream tracking-tight">Wishlist</span>
+          <Star className="text-accent-500 w-5 h-5" />
+          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Wishlist</span>
         </div>
-        <Link href="/dashboard" className="text-stone hover:text-cream text-sm transition-colors">
+        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
           ← Dashboard
         </Link>
       </nav>
@@ -175,8 +175,8 @@ export default function WishlistPage() {
         {/* Visibility toggle */}
         <div className="glass rounded-2xl p-5 flex items-center justify-between gap-4">
           <div>
-            <p className="text-cream font-medium text-sm">Show on my birthday page</p>
-            <p className="text-stone text-xs mt-0.5">
+            <p className="text-accent-900 font-medium text-sm">Show on my birthday page</p>
+            <p className="text-accent-700 text-xs mt-0.5">
               {showWishlist
                 ? "Visitors can see your wishlist and claim items."
                 : "Your wishlist is hidden from visitors."}
@@ -187,8 +187,8 @@ export default function WishlistPage() {
             disabled={toggleVisibility.isPending}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all touch-manipulation ${
               showWishlist
-                ? "bg-[rgba(242,193,78,0.15)] border border-[rgba(242,193,78,0.3)] text-gold"
-                : "bg-pitch border border-[rgba(255,255,255,0.08)] text-stone hover:text-cream"
+                ? "bg-[rgba(212,83,126,0.15)] border border-[rgba(212,83,126,0.3)] text-accent-500"
+                : "bg-blush border border-[rgba(212,83,126,0.15)] text-accent-700 hover:text-accent-900"
             }`}
           >
             {showWishlist ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -200,8 +200,8 @@ export default function WishlistPage() {
         <div className="space-y-3">
           {items.length === 0 && !addOpen && (
             <div className="glass rounded-2xl p-10 text-center">
-              <Star className="w-8 h-8 text-gold opacity-40 mx-auto mb-3" />
-              <p className="text-stone text-sm">No items yet — add things you&apos;d love!</p>
+              <Star className="w-8 h-8 text-accent-500 opacity-40 mx-auto mb-3" />
+              <p className="text-accent-700 text-sm">No items yet — add things you&apos;d love!</p>
             </div>
           )}
 
@@ -213,39 +213,39 @@ export default function WishlistPage() {
                   value={editForm.title}
                   onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
                   placeholder="Item name *"
-                  className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <input
                   value={editForm.description}
                   onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
                   placeholder="Description (optional)"
-                  className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <div className="flex gap-2">
                   <input
                     value={editForm.url}
                     onChange={(e) => setEditForm((f) => ({ ...f, url: e.target.value }))}
                     placeholder="Link (optional)"
-                    className="flex-1 bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                    className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                   />
                   <input
                     value={editForm.priceRange}
                     onChange={(e) => setEditForm((f) => ({ ...f, priceRange: e.target.value }))}
                     placeholder="Price (optional)"
-                    className="w-28 bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                    className="w-28 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                   />
                 </div>
                 <div className="flex gap-2 justify-end">
                   <button
                     onClick={() => setEditId(null)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-stone hover:text-cream text-sm transition-colors touch-manipulation"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-accent-700 hover:text-accent-900 text-sm transition-colors touch-manipulation"
                   >
                     <X className="w-4 h-4" /> Cancel
                   </button>
                   <button
                     onClick={() => saveEdit.mutate({ id: editId!, f: editForm })}
                     disabled={saveEdit.isPending || !editForm.title.trim()}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-gold hover:bg-gold-bright disabled:opacity-50 text-canvas text-sm font-medium rounded-xl transition-all touch-manipulation"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-50 text-canvas text-sm font-medium rounded-xl transition-all touch-manipulation"
                   >
                     {saveEdit.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                     Save
@@ -256,7 +256,7 @@ export default function WishlistPage() {
               <div key={item.id} className="glass rounded-2xl p-5 flex items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-cream font-medium text-sm truncate">{item.title}</p>
+                    <p className="text-accent-900 font-medium text-sm truncate">{item.title}</p>
                     {item.isPurchased && (
                       <span className="text-xs bg-[rgba(74,222,128,0.12)] border border-[rgba(74,222,128,0.25)] text-green-400 px-2 py-0.5 rounded-full">
                         Claimed
@@ -264,18 +264,18 @@ export default function WishlistPage() {
                     )}
                   </div>
                   {item.description && (
-                    <p className="text-stone text-xs mt-1 line-clamp-2">{item.description}</p>
+                    <p className="text-accent-700 text-xs mt-1 line-clamp-2">{item.description}</p>
                   )}
                   <div className="flex items-center gap-3 mt-2 flex-wrap">
                     {item.priceRange && (
-                      <span className="text-gold text-xs font-medium">{item.priceRange}</span>
+                      <span className="text-accent-500 text-xs font-medium">{item.priceRange}</span>
                     )}
                     {item.url && (
                       <a
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-stone hover:text-gold text-xs transition-colors"
+                        className="flex items-center gap-1 text-accent-700 hover:text-accent-600 text-xs transition-colors"
                       >
                         <ExternalLink className="w-3 h-3" /> View link
                       </a>
@@ -285,7 +285,7 @@ export default function WishlistPage() {
                 <div className="flex items-center gap-1 shrink-0">
                   <button
                     onClick={() => startEdit(item)}
-                    className="p-2 text-stone hover:text-cream rounded-lg transition-colors touch-manipulation"
+                    className="p-2 text-accent-700 hover:text-accent-900 rounded-lg transition-colors touch-manipulation"
                     aria-label="Edit item"
                   >
                     <Pencil className="w-4 h-4" />
@@ -293,7 +293,7 @@ export default function WishlistPage() {
                   <button
                     onClick={() => deleteItem.mutate(item.id)}
                     disabled={deleteItem.isPending}
-                    className="p-2 text-stone hover:text-rose-400 rounded-lg transition-colors touch-manipulation"
+                    className="p-2 text-accent-700 hover:text-rose-400 rounded-lg transition-colors touch-manipulation"
                     aria-label="Delete item"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -306,7 +306,7 @@ export default function WishlistPage() {
           {/* Add form */}
           {addOpen ? (
             <div className="glass rounded-2xl p-5 space-y-3 animate-fade-rise">
-              <p className="text-cream font-medium text-sm">New item</p>
+              <p className="text-accent-900 font-medium text-sm">New item</p>
               <input
                 autoFocus
                 value={form.title}
@@ -314,26 +314,26 @@ export default function WishlistPage() {
                 onKeyDown={(e) => e.key === "Enter" && addItem.mutate(form)}
                 placeholder="Item name *"
                 maxLength={120}
-                className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
               />
               <input
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 placeholder="Description (optional)"
-                className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
               />
               <div className="flex gap-2">
                 <input
                   value={form.url}
                   onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
                   placeholder="Link (optional)"
-                  className="flex-1 bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                  className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <input
                   value={form.priceRange}
                   onChange={(e) => setForm((f) => ({ ...f, priceRange: e.target.value }))}
                   placeholder="~$50"
-                  className="w-24 bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] rounded-xl px-4 py-2.5 text-cream placeholder-ghost outline-none text-sm"
+                  className="w-24 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
               </div>
               {addItem.error && (
@@ -342,14 +342,14 @@ export default function WishlistPage() {
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => { setAddOpen(false); setForm(emptyForm); addItem.reset(); }}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-stone hover:text-cream text-sm transition-colors touch-manipulation"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-accent-700 hover:text-accent-900 text-sm transition-colors touch-manipulation"
                 >
                   <X className="w-4 h-4" /> Cancel
                 </button>
                 <button
                   onClick={() => addItem.mutate(form)}
                   disabled={addItem.isPending || !form.title.trim()}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-gold hover:bg-gold-bright disabled:opacity-50 text-canvas text-sm font-medium rounded-xl transition-all touch-manipulation"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-50 text-canvas text-sm font-medium rounded-xl transition-all touch-manipulation"
                 >
                   {addItem.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                   Add
@@ -360,7 +360,7 @@ export default function WishlistPage() {
             items.length < 20 && (
               <button
                 onClick={() => setAddOpen(true)}
-                className="w-full flex items-center justify-center gap-2 border border-dashed border-[rgba(242,193,78,0.2)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-gold rounded-2xl p-4 text-sm transition-all touch-manipulation"
+                className="w-full flex items-center justify-center gap-2 border border-dashed border-[rgba(212,83,126,0.2)] hover:border-[rgba(212,83,126,0.4)] text-accent-700 hover:text-accent-600 rounded-2xl p-4 text-sm transition-all touch-manipulation"
               >
                 <Plus className="w-4 h-4" /> Add item
               </button>

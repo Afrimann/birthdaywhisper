@@ -56,12 +56,12 @@ export default function CustomSelect({
           open ? "select-trigger-open" : ""
         } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
       >
-        <span className={`text-sm truncate ${selected ? "text-cream" : "text-ghost"}`}>
+        <span className={`text-sm truncate ${selected ? "text-accent-900" : "text-ghost"}`}>
           {selected?.label ?? placeholder}
         </span>
         <ChevronDown
           className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${
-            open ? "rotate-180 text-gold" : "text-stone"
+            open ? "rotate-180 text-accent-500" : "text-accent-700"
           }`}
         />
       </button>
@@ -79,8 +79,8 @@ export default function CustomSelect({
                 style={{ animationDelay: `${Math.min(i * 14, 160)}ms` }}
                 className={`select-option w-full px-4 py-2.5 text-left text-sm transition-colors ${
                   opt.value === value
-                    ? "text-gold bg-[rgba(200,88,28,0.08)]"
-                    : "text-brown hover:text-[#E06B28] hover:bg-[rgba(200,88,28,0.1)]"
+                    ? "text-accent-500 bg-[rgba(212,83,126,0.1)]"
+                    : "text-accent-700 hover:text-accent-600 hover:bg-[rgba(212,83,126,0.08)]"
                 }`}
               >
                 {opt.label}

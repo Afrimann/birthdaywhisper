@@ -80,13 +80,13 @@ export default function OnboardingForm() {
   return (
     <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-4">
       {/* Ambient glow */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(242,193,78,0.04)] rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-10">
-          <Gift className="text-gold w-6 h-6" />
-          <span className="font-fraunces text-2xl font-bold text-cream tracking-tight">BirthdayWhisper</span>
+          <Gift className="text-accent-500 w-6 h-6" />
+          <span className="font-fraunces text-2xl font-bold text-accent-900 tracking-tight">BirthdayWhisper</span>
         </div>
 
         {/* Progress */}
@@ -96,23 +96,23 @@ export default function OnboardingForm() {
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold border transition-all",
                 step > n
-                  ? "bg-gold border-gold text-canvas"
+                  ? "bg-accent-500 border-accent-500 text-canvas"
                   : step === n
-                  ? "border-[rgba(242,193,78,0.4)] text-gold bg-[rgba(242,193,78,0.08)]"
-                  : "border-pitch text-ghost"
+                  ? "border-[rgba(212,83,126,0.4)] text-accent-500 bg-[rgba(212,83,126,0.08)]"
+                  : "border-blush text-ghost"
               )}>
                 {step > n ? <Check className="w-4 h-4" /> : n}
               </div>
               <span className={cn(
                 "text-xs hidden sm:block",
-                step === n ? "text-gold" : "text-ghost"
+                step === n ? "text-accent-500" : "text-ghost"
               )}>
                 {label}
               </span>
               {n < 3 && (
                 <div className={cn(
                   "w-8 h-px",
-                  step > n ? "bg-gold" : "bg-pitch"
+                  step > n ? "bg-accent-500" : "bg-blush"
                 )} />
               )}
             </div>
@@ -124,21 +124,21 @@ export default function OnboardingForm() {
 
           {step === 1 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">What should we call you?</h2>
-              <p className="text-stone text-sm mb-6">This is how you&apos;ll appear on your birthday page.</p>
+              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">What should we call you?</h2>
+              <p className="text-accent-700 text-sm mb-6">This is how you&apos;ll appear on your birthday page.</p>
               <input
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleNameNext()}
                 placeholder="Your name..."
-                className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] focus:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 text-cream placeholder-ghost outline-none transition-all text-lg"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-lg"
                 autoFocus
               />
               <button
                 onClick={handleNameNext}
                 disabled={displayName.trim().length < 2}
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -147,8 +147,8 @@ export default function OnboardingForm() {
 
           {step === 2 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">When&apos;s your birthday?</h2>
-              <p className="text-stone text-sm mb-6">We only need the day and month — no year required.</p>
+              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">When&apos;s your birthday?</h2>
+              <p className="text-accent-700 text-sm mb-6">We only need the day and month — no year required.</p>
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <CustomSelect
                   value={month}
@@ -174,7 +174,7 @@ export default function OnboardingForm() {
               <button
                 onClick={handleBirthdayNext}
                 disabled={!month || !day}
-                className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -183,23 +183,23 @@ export default function OnboardingForm() {
 
           {step === 3 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-cream mb-2">Choose your link</h2>
-              <p className="text-stone text-sm mb-6">This is your permanent birthday page URL.</p>
-              <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
+              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">Choose your link</h2>
+              <p className="text-accent-700 text-sm mb-6">This is your permanent birthday page URL.</p>
+              <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(212,83,126,0.45)] focus-within:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
                 <span className="text-ghost text-sm whitespace-nowrap">birthdaywhisper.com/b/</span>
                 <input
                   type="text"
                   value={username}
                   onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
                   placeholder="yourname"
-                  className="flex-1 bg-transparent text-cream outline-none min-w-0"
+                  className="flex-1 bg-transparent text-accent-900 outline-none min-w-0"
                   autoFocus
                 />
               </div>
               <div className="mt-2 h-5 text-xs">
-                {usernameStatus === "checking" && <span className="text-stone">Checking...</span>}
+                {usernameStatus === "checking" && <span className="text-accent-700">Checking...</span>}
                 {usernameStatus === "available" && username.length >= 3 && (
-                  <span className="text-gold flex items-center gap-1">
+                  <span className="text-accent-500 flex items-center gap-1">
                     <Check className="w-3 h-3" /> @{username} is available
                   </span>
                 )}
@@ -213,7 +213,7 @@ export default function OnboardingForm() {
               <button
                 onClick={() => finish.mutate()}
                 disabled={usernameStatus !== "available" || username.length < 3 || finish.isPending}
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-bright disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-40 disabled:cursor-not-allowed text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px]"
               >
                 {finish.isPending ? "Setting up..." : "Finish Setup"}
                 {!finish.isPending && <ChevronRight className="w-4 h-4" />}

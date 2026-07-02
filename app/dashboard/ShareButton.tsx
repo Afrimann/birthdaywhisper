@@ -18,7 +18,7 @@ export default function ShareButton({ url, title = "BirthdayWhisper" }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex-1 flex items-center justify-center gap-2 border border-[rgba(242,193,78,0.15)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-cream text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
+      className="flex-1 flex items-center justify-center gap-2 border border-[rgba(212,83,126,0.15)] hover:border-[rgba(212,83,126,0.4)] text-accent-700 hover:text-accent-900 text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
     >
       <Share2 className="w-4 h-4" /> Share
     </button>

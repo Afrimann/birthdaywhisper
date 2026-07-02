@@ -23,7 +23,7 @@ export default async function OgImage({
     (
       <div
         style={{
-          background: "#0B0B0D",
+          background: "#FFFDFB",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -40,7 +40,7 @@ export default async function OgImage({
             width: 500,
             height: 500,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(242,193,78,0.12) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(212,83,126,0.12) 0%, transparent 70%)",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
@@ -55,7 +55,7 @@ export default async function OgImage({
           style={{
             fontSize: 52,
             fontWeight: 700,
-            color: "#F4F1EA",
+            color: "#4B1528",
             textAlign: "center",
             marginBottom: 16,
             lineHeight: 1.2,
@@ -68,7 +68,7 @@ export default async function OgImage({
         <div
           style={{
             fontSize: 26,
-            color: "#9A968C",
+            color: "#993556",
             textAlign: "center",
             marginBottom: 32,
           }}
@@ -80,7 +80,7 @@ export default async function OgImage({
         <div
           style={{
             fontSize: 22,
-            color: "#F2C14E",
+            color: "#D4537E",
             fontWeight: 600,
             letterSpacing: 2,
           }}

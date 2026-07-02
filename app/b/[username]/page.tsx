@@ -98,21 +98,21 @@ export default async function PublicBirthdayPage({ params }: Props) {
     .slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-canvas text-cream">
+    <div className="min-h-screen bg-canvas text-accent-900">
       {/* Nav */}
-      <nav className="px-6 py-4 flex items-center justify-between border-b border-[rgba(242,193,78,0.08)]">
+      <nav className="px-6 py-4 flex items-center justify-between border-b border-[rgba(212,83,126,0.08)]">
         <Link href="/" className="flex items-center gap-2">
-          <Gift className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-cream tracking-tight">
+          <Gift className="text-accent-500 w-5 h-5" />
+          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">
             BirthdayWhisper
           </span>
         </Link>
         {isSignedIn ? (
-          <Link href="/dashboard" className="text-stone hover:text-cream text-sm transition-colors">
+          <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
             Dashboard →
           </Link>
         ) : (
-          <Link href="/sign-up" className="text-stone hover:text-cream text-sm transition-colors">
+          <Link href="/sign-up" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
             Create your page →
           </Link>
         )}
@@ -121,7 +121,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
       <main className="max-w-lg mx-auto px-6 py-12">
         {/* Birthday today banner */}
         {isToday && (
-          <div className="bg-gradient-to-r from-gold to-gold-bright rounded-2xl p-4 text-center mb-8 animate-fade-rise">
+          <div className="bg-gradient-to-r from-accent-500 to-accent-400 rounded-2xl p-4 text-center mb-8 animate-fade-rise">
             <p className="text-canvas font-bold text-lg">
               🎂 It&apos;s {firstName}&apos;s birthday today!
             </p>
@@ -130,7 +130,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
 
         {/* Profile header */}
         <div className="text-center mb-10 animate-fade-rise">
-          <div className="w-20 h-20 rounded-full bg-[rgba(242,193,78,0.12)] border-2 border-[rgba(242,193,78,0.28)] flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 rounded-full bg-[rgba(212,83,126,0.12)] border-2 border-[rgba(212,83,126,0.28)] flex items-center justify-center mx-auto mb-4">
             {user.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -139,21 +139,21 @@ export default async function PublicBirthdayPage({ params }: Props) {
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
-              <span className="font-fraunces text-2xl font-bold text-gold">{initials}</span>
+              <span className="font-fraunces text-2xl font-bold text-accent-500">{initials}</span>
             )}
           </div>
 
-          <h1 className="font-fraunces text-3xl font-bold text-cream mb-2">
+          <h1 className="font-fraunces text-3xl font-bold text-accent-900 mb-2">
             {user.displayName}
           </h1>
 
           {isToday ? (
-            <p className="text-gold font-semibold">Their birthday is today!</p>
+            <p className="text-accent-500 font-semibold">Their birthday is today!</p>
           ) : (
-            <p className="text-stone text-sm">
-              Birthday: <span className="text-cream">{birthdayLabel}</span>
+            <p className="text-accent-700 text-sm">
+              Birthday: <span className="text-accent-900">{birthdayLabel}</span>
               {" · "}
-              <span className="text-gold font-semibold">{days} day{days !== 1 ? "s" : ""} away</span>
+              <span className="text-accent-500 font-semibold">{days} day{days !== 1 ? "s" : ""} away</span>
             </p>
           )}
 
@@ -187,8 +187,8 @@ export default async function PublicBirthdayPage({ params }: Props) {
           <div className="mt-4 animate-fade-rise" style={{ animationDelay: "180ms" }}>
             {isSignedIn ? (
               <div className="flex items-start gap-3 glass rounded-2xl px-4 py-3">
-                <Bell className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                <p className="text-stone text-xs leading-relaxed">
+                <Bell className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
+                <p className="text-accent-700 text-xs leading-relaxed">
                   When {firstName} reacts to your whisper, you&apos;ll get a notification — check the bell icon on your dashboard.
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default async function PublicBirthdayPage({ params }: Props) {
               <div className="flex items-start gap-3 glass rounded-2xl px-4 py-3">
                 <Bell className="w-4 h-4 text-ghost flex-shrink-0 mt-0.5" />
                 <p className="text-ghost text-xs leading-relaxed">
-                  <Link href="/sign-up" className="text-gold hover:text-gold-bright underline underline-offset-2 transition-colors">
+                  <Link href="/sign-up" className="text-accent-500 hover:text-accent-600 underline underline-offset-2 transition-colors">
                     Create a free account
                   </Link>{" "}
                   to be notified when {firstName} reacts to your whisper.

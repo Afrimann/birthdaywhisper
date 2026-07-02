@@ -6,7 +6,7 @@ import { Gift, Lock, Clock, BookOpen, Star, Settings, Bell } from "lucide-react"
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
-import { getBaseUrl } from "@/lib/url";
+import { getShareUrl } from "@/lib/url";
 import CopyLinkButton from "./CopyLinkButton";
 import ShareButton from "./ShareButton";
 import SignOutButton from "@/app/_components/SignOutButton";
@@ -57,23 +57,23 @@ export default async function DashboardPage() {
   const isToday = isBirthdayToday(user.birthdayMonth, user.birthdayDay);
   const days = daysUntilBirthday(user.birthdayMonth, user.birthdayDay);
   const birthdayLabel = formatBirthday(user.birthdayMonth, user.birthdayDay);
-  const profileUrl = `${getBaseUrl()}/b/${user.username}`;
+  const profileUrl = getShareUrl(user.username);
 
   return (
-    <div className="min-h-screen bg-canvas text-cream">
+    <div className="min-h-screen bg-canvas text-accent-900">
       {/* Nav */}
-      <nav className="border-b border-[rgba(242,193,78,0.08)] px-6 py-4 flex items-center justify-between">
+      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Gift className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-cream tracking-tight">BirthdayWhisper</span>
+          <Gift className="text-accent-500 w-5 h-5" />
+          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">BirthdayWhisper</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-stone text-sm hidden sm:block">
+          <span className="text-accent-700 text-sm hidden sm:block">
             Hi, {clerkUser?.firstName ?? user.displayName}
           </span>
           <NotificationBell />
           <Link href="/settings">
-            <Settings className="w-5 h-5 text-stone hover:text-cream transition-colors" />
+            <Settings className="w-5 h-5 text-accent-700 hover:text-accent-900 transition-colors" />
           </Link>
           <SignOutButton variant="icon" />
         </div>
@@ -82,12 +82,12 @@ export default async function DashboardPage() {
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-4">
         {/* Birthday today banner */}
         {isToday && (
-          <div className="bg-gradient-to-r from-gold to-gold-bright rounded-2xl p-6 text-center animate-fade-rise">
+          <div className="bg-gradient-to-r from-accent-500 to-accent-400 rounded-2xl p-6 text-center animate-fade-rise">
             <p className="font-fraunces text-2xl font-bold text-canvas mb-1">Happy Birthday!</p>
             <p className="text-canvas/70 text-sm">Your messages are unlocked. Open your birthday book!</p>
             <Link
               href="/reveal"
-              className="inline-flex items-center mt-4 bg-canvas text-gold font-semibold px-6 py-3 rounded-full hover:bg-canvas/90 transition-colors min-h-[44px]"
+              className="inline-flex items-center mt-4 bg-canvas text-accent-500 font-semibold px-6 py-3 rounded-full hover:bg-canvas/90 transition-colors min-h-[44px]"
             >
               Open My Whispers
             </Link>
@@ -96,9 +96,9 @@ export default async function DashboardPage() {
 
         {/* Share link card */}
         <div className="glass rounded-2xl p-6 animate-fade-rise">
-          <p className="text-stone text-xs font-semibold uppercase tracking-wider mb-3">Your Birthday Link</p>
-          <div className="flex items-center gap-3 bg-[rgba(11,11,13,0.6)] rounded-xl px-4 py-3 mb-4 border border-[rgba(242,193,78,0.07)]">
-            <span className="text-cream text-sm flex-1 truncate">{profileUrl}</span>
+          <p className="text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">Your Birthday Link</p>
+          <div className="flex items-center gap-3 bg-[rgba(255,255,255,0.6)] rounded-xl px-4 py-3 mb-4 border border-[rgba(212,83,126,0.18)]">
+            <span className="text-accent-900 text-sm flex-1 truncate">{profileUrl}</span>
             <CopyLinkButton url={profileUrl} />
           </div>
           <div className="flex gap-3">
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Leave me a secret birthday message! 🎂 ${profileUrl}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 border border-[rgba(242,193,78,0.15)] hover:border-[rgba(242,193,78,0.4)] text-stone hover:text-cream text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
+              className="flex-1 flex items-center justify-center gap-2 border border-[rgba(212,83,126,0.15)] hover:border-[rgba(212,83,126,0.4)] text-accent-700 hover:text-accent-900 text-sm py-2.5 rounded-xl transition-all min-h-[44px]"
             >
               𝕏
             </a>
@@ -126,9 +126,9 @@ export default async function DashboardPage() {
         <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "60ms" }}>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <p className="text-stone text-xs font-semibold uppercase tracking-wider mb-1">Whispers Waiting</p>
-              <p className="font-fraunces text-4xl font-bold text-cream">{messageCount}</p>
-              <p className="text-stone text-sm mt-1">
+              <p className="text-accent-700 text-xs font-semibold uppercase tracking-wider mb-1">Whispers Waiting</p>
+              <p className="font-fraunces text-4xl font-bold text-accent-900">{messageCount}</p>
+              <p className="text-accent-700 text-sm mt-1">
                 {messageCount === 0
                   ? "No messages yet — share your link!"
                   : messageCount === 1
@@ -136,15 +136,15 @@ export default async function DashboardPage() {
                   : `${messageCount} secret messages sealed for you`}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.18)] flex items-center justify-center">
-              <Lock className="w-5 h-5 text-gold" />
+            <div className="w-12 h-12 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center">
+              <Lock className="w-5 h-5 text-accent-500" />
             </div>
           </div>
 
           {messageCount > 0 && (
-            <div className="h-1.5 bg-pitch rounded-full overflow-hidden">
+            <div className="h-1.5 bg-blush rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-gold to-gold-bright rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-accent-500 to-accent-400 rounded-full transition-all"
                 style={{ width: `${Math.min((messageCount / 20) * 100, 100)}%` }}
               />
             </div>
@@ -155,20 +155,20 @@ export default async function DashboardPage() {
         <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "120ms" }}>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <p className="text-stone text-xs font-semibold uppercase tracking-wider mb-1">Your Birthday</p>
-              <p className="text-cream font-semibold">{birthdayLabel}</p>
+              <p className="text-accent-700 text-xs font-semibold uppercase tracking-wider mb-1">Your Birthday</p>
+              <p className="text-accent-900 font-semibold">{birthdayLabel}</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.18)] flex items-center justify-center">
-              <Clock className="w-5 h-5 text-gold" />
+            <div className="w-12 h-12 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center">
+              <Clock className="w-5 h-5 text-accent-500" />
             </div>
           </div>
           {isToday ? (
-            <p className="text-gold font-semibold text-lg">It&apos;s your birthday today!</p>
+            <p className="text-accent-500 font-semibold text-lg">It&apos;s your birthday today!</p>
           ) : (
             <div className="flex gap-4">
               {[{ value: days, label: "days" }].map(({ value, label }) => (
                 <div key={label} className="text-center">
-                  <div className="font-fraunces text-4xl font-bold text-gold">{value}</div>
+                  <div className="font-fraunces text-4xl font-bold text-accent-500">{value}</div>
                   <div className="text-ghost text-xs mt-1">{label} to go</div>
                 </div>
               ))}
@@ -177,7 +177,7 @@ export default async function DashboardPage() {
           {!isToday && (
             <Link
               href="/reveal"
-              className="mt-4 inline-flex items-center gap-2 text-stone hover:text-cream text-sm transition-colors"
+              className="mt-4 inline-flex items-center gap-2 text-accent-700 hover:text-accent-900 text-sm transition-colors"
             >
               <BookOpen className="w-4 h-4" /> See your countdown page
             </Link>
@@ -195,10 +195,10 @@ export default async function DashboardPage() {
             <Link
               key={href}
               href={href}
-              className="glass rounded-xl p-4 flex flex-col items-center gap-2 text-center transition-all hover:border-[rgba(242,193,78,0.3)] group min-h-[80px] justify-center"
+              className="glass rounded-xl p-4 flex flex-col items-center gap-2 text-center transition-all hover:border-[rgba(212,83,126,0.3)] group min-h-[80px] justify-center"
             >
-              <Icon className="w-5 h-5 text-stone group-hover:text-gold transition-colors" />
-              <span className="text-stone group-hover:text-cream text-xs transition-colors whitespace-nowrap">{label}</span>
+              <Icon className="w-5 h-5 text-accent-700 group-hover:text-accent-600 transition-colors" />
+              <span className="text-accent-700 group-hover:text-accent-900 text-xs transition-colors whitespace-nowrap">{label}</span>
             </Link>
           ))}
         </div>
@@ -207,8 +207,8 @@ export default async function DashboardPage() {
         {upcomingFollows.length > 0 && (
           <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "240ms" }}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-stone text-xs font-semibold uppercase tracking-wider">Upcoming Birthdays</p>
-              <Link href="/following" className="text-gold text-xs hover:text-gold-bright transition-colors">
+              <p className="text-accent-700 text-xs font-semibold uppercase tracking-wider">Upcoming Birthdays</p>
+              <Link href="/following" className="text-accent-500 text-xs hover:text-accent-600 transition-colors">
                 View all
               </Link>
             </div>
@@ -219,16 +219,16 @@ export default async function DashboardPage() {
                   href={`/b/${followed.username}`}
                   className="flex items-center gap-3 group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[rgba(242,193,78,0.1)] border border-[rgba(242,193,78,0.2)] flex items-center justify-center flex-shrink-0">
-                    <span className="font-fraunces text-xs font-bold text-gold">
+                  <div className="w-8 h-8 rounded-full bg-[rgba(212,83,126,0.1)] border border-[rgba(212,83,126,0.2)] flex items-center justify-center flex-shrink-0">
+                    <span className="font-fraunces text-xs font-bold text-accent-500">
                       {followed.displayName[0].toUpperCase()}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-cream text-sm font-medium truncate group-hover:text-gold transition-colors">{followed.displayName}</p>
+                    <p className="text-accent-900 text-sm font-medium truncate group-hover:text-accent-600 transition-colors">{followed.displayName}</p>
                     <p className="text-ghost text-xs">{label}</p>
                   </div>
-                  <span className="text-gold text-sm font-bold font-fraunces flex-shrink-0">
+                  <span className="text-accent-500 text-sm font-bold font-fraunces flex-shrink-0">
                     {fIsToday ? "🎂" : `${days}d`}
                   </span>
                 </Link>

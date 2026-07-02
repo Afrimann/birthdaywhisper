@@ -31,6 +31,9 @@ import SignUpPage from "@/app/sign-up/[[...sign-up]]/page";
 
 beforeEach(() => {
   mockSso.mockReset();
+  // Real Clerk sso() always resolves with { error }; handlers chain
+  // .then()/.catch() off that promise, so the mock must return one too.
+  mockSso.mockResolvedValue({ error: null });
 });
 
 describe("Sign-In — Continue with Google", () => {

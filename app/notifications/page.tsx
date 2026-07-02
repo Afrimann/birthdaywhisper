@@ -37,13 +37,13 @@ export default async function NotificationsPage() {
   }).catch(() => null);
 
   return (
-    <div className="min-h-screen bg-canvas text-cream">
-      <nav className="border-b border-[rgba(242,193,78,0.08)] px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-canvas text-accent-900">
+      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bell className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-cream tracking-tight">Notifications</span>
+          <Bell className="text-accent-500 w-5 h-5" />
+          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Notifications</span>
         </div>
-        <Link href="/dashboard" className="text-stone hover:text-cream text-sm transition-colors">
+        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
           ← Dashboard
         </Link>
       </nav>
@@ -51,10 +51,10 @@ export default async function NotificationsPage() {
       <main className="max-w-lg mx-auto px-6 py-10">
         {notifications.length === 0 ? (
           <div className="glass rounded-2xl p-10 text-center animate-fade-rise">
-            <div className="w-16 h-16 rounded-2xl bg-[rgba(242,193,78,0.07)] border border-[rgba(242,193,78,0.15)] flex items-center justify-center mx-auto mb-4">
-              <Gift className="w-7 h-7 text-gold opacity-50" />
+            <div className="w-16 h-16 rounded-2xl bg-[rgba(212,83,126,0.07)] border border-[rgba(212,83,126,0.15)] flex items-center justify-center mx-auto mb-4">
+              <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
-            <p className="text-stone text-sm">No notifications yet. When someone reacts to your message you&apos;ll see it here.</p>
+            <p className="text-accent-700 text-sm">No notifications yet. When someone reacts to your message you&apos;ll see it here.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -66,11 +66,11 @@ export default async function NotificationsPage() {
                   className="glass rounded-2xl p-4 flex items-start gap-4 animate-fade-rise"
                   style={{ animationDelay: `${i * 40}ms` }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
+                  <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
                     {p.emoji ?? "💌"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-cream text-sm">
+                    <p className="text-accent-900 text-sm">
                       <span className="font-semibold">{p.recipientName}</span>
                       {" reacted "}
                       <span>{p.emoji}</span>

@@ -109,9 +109,9 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
     <div className="space-y-6">
       {/* Success banner */}
       {success && (
-        <div className="flex items-center gap-3 bg-[rgba(242,193,78,0.1)] border border-[rgba(242,193,78,0.3)] rounded-xl px-4 py-3 animate-fade-rise">
-          <Check className="w-4 h-4 text-gold flex-shrink-0" />
-          <p className="text-gold text-sm font-medium">Changes saved successfully.</p>
+        <div className="flex items-center gap-3 bg-[rgba(212,83,126,0.1)] border border-[rgba(212,83,126,0.3)] rounded-xl px-4 py-3 animate-fade-rise">
+          <Check className="w-4 h-4 text-accent-500 flex-shrink-0" />
+          <p className="text-accent-500 text-sm font-medium">Changes saved successfully.</p>
         </div>
       )}
 
@@ -124,7 +124,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
 
       {/* Display name */}
       <div className="glass rounded-2xl p-6">
-        <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-3">
+        <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Display Name
         </label>
         <input
@@ -132,7 +132,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Your name..."
-          className="w-full bg-[rgba(11,11,13,0.8)] border border-pitch focus:border-[rgba(242,193,78,0.45)] focus:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 text-cream placeholder-ghost outline-none transition-all"
+          className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all"
         />
         <p className="text-ghost text-xs mt-2">
           Shown on your birthday page and in messages.
@@ -141,7 +141,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
 
       {/* Birthday */}
       <div className="glass rounded-2xl p-6 relative z-10">
-        <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-3">
+        <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Birthday
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -173,10 +173,10 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
 
       {/* Username */}
       <div className="glass rounded-2xl p-6">
-        <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-3">
+        <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Username
         </label>
-        <div className="bg-[rgba(11,11,13,0.8)] border border-pitch focus-within:border-[rgba(242,193,78,0.45)] focus-within:shadow-[0_0_0_3px_rgba(242,193,78,0.07)] rounded-xl px-4 py-3 flex items-center gap-1.5 transition-all">
+        <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(212,83,126,0.45)] focus-within:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 flex items-center gap-1.5 transition-all">
           <span className="text-ghost text-sm whitespace-nowrap select-none">/b/</span>
           <input
             type="text"
@@ -184,20 +184,20 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
             onChange={(e) =>
               setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))
             }
-            className="flex-1 bg-transparent text-cream outline-none min-w-0"
+            className="flex-1 bg-transparent text-accent-900 outline-none min-w-0"
           />
         </div>
         <p className="text-ghost text-xs mt-1.5 truncate">
-          {baseUrl}/b/<span className="text-stone">{username || "your-username"}</span>
+          {baseUrl}/b/<span className="text-accent-700">{username || "your-username"}</span>
         </p>
         <div className="mt-1 h-5 text-xs">
           {usernameChanged && usernameStatus === "checking" && (
-            <span className="text-stone flex items-center gap-1">
+            <span className="text-accent-700 flex items-center gap-1">
               <Loader2 className="w-3 h-3 animate-spin" /> Checking...
             </span>
           )}
           {usernameChanged && usernameStatus === "available" && username.length >= 3 && (
-            <span className="text-gold flex items-center gap-1">
+            <span className="text-accent-500 flex items-center gap-1">
               <Check className="w-3 h-3" /> @{username} is available
             </span>
           )}
@@ -215,7 +215,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
 
       {/* Notification preferences */}
       <div className="glass rounded-2xl p-6">
-        <label className="block text-stone text-xs font-semibold uppercase tracking-wider mb-4">
+        <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-4">
           Email Notifications
         </label>
         <div className="space-y-4">
@@ -233,12 +233,12 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
               className="w-full flex items-center justify-between gap-4 text-left"
             >
               <div>
-                <p className="text-cream text-sm font-medium">{label}</p>
+                <p className="text-accent-900 text-sm font-medium">{label}</p>
                 <p className="text-ghost text-xs">{desc}</p>
               </div>
               <div
                 className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
-                  notifPrefs[key] ? "bg-gold" : "bg-pitch border border-[rgba(242,193,78,0.2)]"
+                  notifPrefs[key] ? "bg-accent-500" : "bg-blush border border-[rgba(212,83,126,0.2)]"
                 }`}
               >
                 <span
@@ -259,8 +259,8 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
         className={cn(
           "w-full flex items-center justify-center gap-2 text-base font-semibold py-4 rounded-2xl transition-all min-h-[56px]",
           canSave
-            ? "bg-gold hover:bg-gold-bright text-canvas"
-            : "bg-pitch text-ghost cursor-not-allowed"
+            ? "bg-accent-500 hover:bg-accent-600 text-canvas"
+            : "bg-blush text-ghost cursor-not-allowed"
         )}
       >
         {save.isPending ? (

@@ -15,7 +15,7 @@ export default function CopyLinkButton({ url }: { url: string }) {
     <button
       onClick={handleCopy}
       title={copied ? "Copied!" : "Copy link"}
-      className="text-gold hover:text-gold-bright transition-colors flex-shrink-0"
+      className="text-accent-500 hover:text-accent-600 transition-colors flex-shrink-0"
     >
       {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
     </button>
