@@ -51,8 +51,8 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
   return (
     <div className="mb-10 animate-fade-rise" style={{ animationDelay: "120ms" }}>
       <div className="flex items-center gap-2 mb-4">
-        <Star className="w-4 h-4 text-gold" />
-        <h2 className="text-cream font-semibold text-sm uppercase tracking-wider">
+        <Star className="w-4 h-4 text-accent-500" />
+        <h2 className="text-accent-900 font-semibold text-sm uppercase tracking-wider">
           {firstName}&apos;s Wishlist
         </h2>
       </div>
@@ -67,7 +67,7 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
             <div key={item.id} className="glass rounded-2xl p-4 flex items-start gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-cream font-medium text-sm">{item.title}</p>
+                  <p className="text-accent-900 font-medium text-sm">{item.title}</p>
                   {item.isPurchased && !isOwnProfile && (
                     <span className="text-xs bg-[rgba(74,222,128,0.12)] border border-[rgba(74,222,128,0.25)] text-green-400 px-2 py-0.5 rounded-full">
                       Someone&apos;s getting this!
@@ -75,18 +75,18 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
                   )}
                 </div>
                 {item.description && (
-                  <p className="text-stone text-xs mt-1">{item.description}</p>
+                  <p className="text-accent-700 text-xs mt-1">{item.description}</p>
                 )}
                 <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                   {item.priceRange && (
-                    <span className="text-gold text-xs font-medium">{item.priceRange}</span>
+                    <span className="text-accent-500 text-xs font-medium">{item.priceRange}</span>
                   )}
                   {item.url && (
                     <a
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-stone hover:text-gold text-xs transition-colors"
+                      className="flex items-center gap-1 text-accent-700 hover:text-accent-600 text-xs transition-colors"
                     >
                       <ExternalLink className="w-3 h-3" /> View
                     </a>
@@ -109,7 +109,7 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
                     <button
                       onClick={() => claimMutation.mutate(item.id)}
                       disabled={isClaiming}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(242,193,78,0.08)] border border-[rgba(242,193,78,0.2)] text-gold text-xs font-medium rounded-xl transition-all hover:bg-[rgba(242,193,78,0.15)] disabled:opacity-50 touch-manipulation"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.2)] text-accent-500 text-xs font-medium rounded-xl transition-all hover:bg-[rgba(212,83,126,0.15)] disabled:opacity-50 touch-manipulation"
                     >
                       I&apos;ll get it
                     </button>

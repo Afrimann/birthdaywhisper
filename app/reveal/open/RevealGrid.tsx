@@ -19,10 +19,10 @@ export interface MessageCard {
 }
 
 const THEME_STYLES: Record<string, { bg: string; accent: string; glow: string }> = {
-  CLASSIC:        { bg: "bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",  accent: "text-gold",       glow: "rgba(242,193,78,0.25)"  },
-  GOLDEN_HOUR:    { bg: "bg-gradient-to-br from-[#2d1b00] to-[#5c3200]",  accent: "text-amber-400",  glow: "rgba(251,191,36,0.25)"  },
+  CLASSIC:        { bg: "bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",  accent: "text-[#ED93B1]",  glow: "rgba(237,147,177,0.25)" },
+  GOLDEN_HOUR:    { bg: "bg-gradient-to-br from-[#2d1b00] to-[#5c3200]",  accent: "text-[#FAC775]",  glow: "rgba(251,191,36,0.25)"  },
   MIDNIGHT_STARS: { bg: "bg-gradient-to-br from-[#0a0015] to-[#1a0030]",  accent: "text-purple-400", glow: "rgba(192,132,252,0.25)" },
-  BLOOM:          { bg: "bg-gradient-to-br from-[#1a0012] to-[#3d0030]",  accent: "text-rose-400",   glow: "rgba(251,113,133,0.25)" },
+  BLOOM:          { bg: "bg-gradient-to-br from-[#1a0012] to-[#3d0030]",  accent: "text-[#FB7185]",  glow: "rgba(251,113,133,0.25)" },
   RETRO:          { bg: "bg-gradient-to-br from-[#0f1500] to-[#1e2e00]",  accent: "text-lime-400",   glow: "rgba(163,230,53,0.25)"  },
   NEON:           { bg: "bg-gradient-to-br from-[#001520] to-[#002a40]",  accent: "text-cyan-400",   glow: "rgba(34,211,238,0.25)"  },
 };
@@ -36,7 +36,7 @@ function launchConfetti() {
   canvas.height = window.innerHeight;
   const ctx = canvas.getContext("2d")!;
 
-  const colors = ["#F2C14E", "#FFD874", "#F4F1EA", "#ffffff", "#E8C547", "#FFC2E2"];
+  const colors = ["#F4C0D1", "#ED93B1", "#D4537E", "#FAC775", "#F5C4B3"];
   type P = { x:number; y:number; vx:number; vy:number; w:number; h:number; color:string; angle:number; spin:number; alpha:number };
 
   const particles: P[] = Array.from({ length: 150 }, () => ({
@@ -130,8 +130,8 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
   if (messages.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="font-fraunces text-2xl font-bold text-cream mb-2">No whispers yet</p>
-        <p className="text-stone text-sm">Share your birthday link to collect messages.</p>
+        <p className="font-fraunces text-2xl font-bold text-accent-900 mb-2">No whispers yet</p>
+        <p className="text-accent-700 text-sm">Share your birthday link to collect messages.</p>
       </div>
     );
   }
@@ -145,7 +145,7 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mb-8 bg-gradient-to-r from-gold to-gold-bright rounded-2xl p-6 text-center"
+            className="mb-8 bg-gradient-to-r from-accent-500 to-accent-400 rounded-2xl p-6 text-center"
           >
             <p className="font-fraunces text-2xl font-bold text-canvas">
               You&apos;ve read all your whispers!
@@ -207,11 +207,11 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
                   }}
                   className="absolute inset-0 glass rounded-2xl p-4 flex flex-col gap-3 overflow-hidden"
                 >
-                  <p className="text-cream text-sm leading-relaxed flex-1 overflow-y-auto">
+                  <p className="text-accent-900 text-sm leading-relaxed flex-1 overflow-y-auto">
                     {msg.content}
                   </p>
 
-                  <div className="border-t border-[rgba(242,193,78,0.08)] pt-3 flex-shrink-0">
+                  <div className="border-t border-[rgba(212,83,126,0.18)] pt-3 flex-shrink-0">
                     <p className="text-ghost text-xs mb-2">
                       — {msg.isAnonymous ? "Anonymous" : (msg.senderName ?? "Anonymous")}
                     </p>
@@ -223,8 +223,8 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
                           className={cn(
                             "text-base leading-none rounded-lg px-1.5 py-1 transition-all",
                             reaction === emoji
-                              ? "bg-[rgba(242,193,78,0.2)] ring-1 ring-[rgba(242,193,78,0.5)] scale-110"
-                              : "hover:bg-[rgba(242,193,78,0.1)] hover:scale-110"
+                              ? "bg-[rgba(212,83,126,0.2)] ring-1 ring-[rgba(212,83,126,0.5)] scale-110"
+                              : "hover:bg-[rgba(212,83,126,0.1)] hover:scale-110"
                           )}
                         >
                           {emoji}

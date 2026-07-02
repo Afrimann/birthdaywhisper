@@ -40,30 +40,30 @@ export default async function RevealOpenPage() {
   }).catch(() => []);
 
   return (
-    <div className="min-h-screen bg-canvas text-cream">
+    <div className="min-h-screen bg-canvas text-accent-900">
       {/* Ambient glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[rgba(242,193,78,0.04)] rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
 
       {/* Nav */}
-      <nav className="relative z-10 border-b border-[rgba(242,193,78,0.08)] px-6 py-4 flex items-center justify-between">
+      <nav className="relative z-10 border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Gift className="text-gold w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-cream tracking-tight">
+          <Gift className="text-accent-500 w-5 h-5" />
+          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">
             {user.displayName}&apos;s Whispers
           </span>
         </div>
-        <Link href="/dashboard" className="text-stone hover:text-cream text-sm transition-colors">
+        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
           ← Dashboard
         </Link>
       </nav>
 
       <main className="relative z-10 max-w-3xl mx-auto px-6 py-10">
         <div className="mb-8 text-center animate-fade-rise">
-          <p className="text-stone text-sm italic mb-2">Birthday {birthdayYear}</p>
-          <h1 className="font-fraunces text-3xl font-bold text-cream">
+          <p className="text-accent-700 text-sm italic mb-2">Birthday {birthdayYear}</p>
+          <h1 className="font-fraunces text-3xl font-bold text-accent-900">
             Your Birthday Whispers
           </h1>
-          <p className="text-stone text-sm mt-2">
+          <p className="text-accent-700 text-sm mt-2">
             {messages.length === 0
               ? "No messages this year — share your link!"
               : `${messages.length} message${messages.length !== 1 ? "s" : ""} waiting for you`}
