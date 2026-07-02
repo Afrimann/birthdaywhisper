@@ -5,7 +5,17 @@ import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
 
 function SSOCallback() {
-  return <AuthenticateWithRedirectCallback />;
+  // New Google users arrive here without a session (the sign-in → sign-up
+  // "transfer" path) — without explicit URLs Clerk falls back to defaults
+  // and the flow can stall or strand them on the landing page.
+  return (
+    <AuthenticateWithRedirectCallback
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInForceRedirectUrl="/dashboard"
+      signUpForceRedirectUrl="/onboarding"
+    />
+  );
 }
 
 export default function SSOCallbackPage() {
@@ -13,7 +23,7 @@ export default function SSOCallbackPage() {
     <div className="min-h-screen bg-canvas flex items-center justify-center">
       <Suspense
         fallback={
-          <Loader2 className="w-6 h-6 text-gold animate-spin" />
+          <Loader2 className="w-6 h-6 text-accent-500 animate-spin" />
         }
       >
         <SSOCallback />
