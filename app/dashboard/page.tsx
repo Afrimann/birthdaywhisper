@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Gift, Lock, Clock, BookOpen, Star, Settings, Bell } from "lucide-react";
+import { Gift, Lock, Clock, BookOpen, Star, Settings, Bell, Wallet } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
             Hi, {clerkUser?.firstName ?? user.displayName}
           </span>
           <NotificationBell />
-          <Link href="/settings">
+          <Link href="/settings" aria-label="Settings">
             <Settings className="w-5 h-5 text-accent-700 hover:text-accent-900 transition-colors" />
           </Link>
           <SignOutButton variant="icon" />
@@ -185,10 +185,11 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick links */}
-        <div className="grid grid-cols-4 gap-3 animate-fade-rise" style={{ animationDelay: "180ms" }}>
+        <div className="grid grid-cols-5 gap-2 animate-fade-rise" style={{ animationDelay: "180ms" }}>
           {[
             { href: "/jar",       icon: BookOpen,  label: "Memory Jar" },
             { href: "/wishlist",  icon: Star,      label: "Wishlist"   },
+            { href: "/payouts",   icon: Wallet,    label: "Payouts"    },
             { href: "/following", icon: Bell,      label: "Following"  },
             { href: "/settings",  icon: Settings,  label: "Settings"   },
           ].map(({ href, icon: Icon, label }) => (

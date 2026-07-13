@@ -21,6 +21,12 @@ export default async function RevealOpenPage() {
 
   const birthdayYear = getBirthdayYear(user.birthdayMonth, user.birthdayDay);
 
+  const heldGifts = await prisma.gift.aggregate({
+    where: { recipientId: user.id, status: "HELD" },
+    _sum: { amountKobo: true },
+  }).catch(() => ({ _sum: { amountKobo: null } }));
+  const heldGiftKobo = heldGifts._sum.amountKobo ?? 0;
+
   const messages = await prisma.message.findMany({
     where: {
       recipientId: user.id,
@@ -70,7 +76,11 @@ export default async function RevealOpenPage() {
           </p>
         </div>
 
-        <RevealGrid messages={messages} />
+        <RevealGrid
+          messages={messages}
+          firstName={user.displayName.split(" ")[0]}
+          heldGiftKobo={heldGiftKobo}
+        />
       </main>
     </div>
   );

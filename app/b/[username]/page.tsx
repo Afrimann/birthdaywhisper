@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isBirthdayToday, daysUntilBirthday, formatBirthday, getBirthdayYear } from "@/lib/utils";
 import MessageForm from "./MessageForm";
+import GiftSection from "./GiftSection";
 import FollowButton from "./FollowButton";
 import WishlistSection from "./WishlistSection";
 
@@ -73,6 +74,10 @@ export default async function PublicBirthdayPage({ params }: Props) {
     ? await prisma.wishlistItem.findMany({
         where: { userId: user.id },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        // Explicit select: this ships to any anonymous visitor's browser as
+        // page props, so claimedByFingerprint (an identity-adjacent hash)
+        // must never be included here.
+        select: { id: true, title: true, description: true, url: true, priceRange: true, isPurchased: true },
       }).catch(() => [])
     : [];
 
@@ -181,6 +186,13 @@ export default async function PublicBirthdayPage({ params }: Props) {
           isToday={isToday}
           isSignedIn={isSignedIn}
         />
+
+        {/* Gift */}
+        {!isOwnProfile && (
+          <div className="mt-4">
+            <GiftSection recipientId={user.id} recipientName={user.displayName} />
+          </div>
+        )}
 
         {/* Reaction notification hint */}
         {!isOwnProfile && (

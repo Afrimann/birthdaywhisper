@@ -21,28 +21,47 @@ interface Props {
 
 export default function WishlistSection({ items: initial, firstName, isOwnProfile }: Props) {
   const [items, setItems] = useState(initial);
+  // Tracks which items THIS browser claimed during the current visit, so an
+  // undo button never appears for a claim that belongs to someone else.
+  // Session-only (not persisted): server-side ownership (see the claim API
+  // route) is the actual security boundary, not this — this is just so a
+  // stranger doesn't see an undo button that isn't theirs to use.
+  const [claimedByMe, setClaimedByMe] = useState<Set<string>>(new Set());
 
   const claimMutation = useMutation({
-    mutationFn: (id: string) =>
-      fetch(`/api/wishlist/${id}/claim`, { method: "POST" }).then((r) => r.json()),
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/wishlist/${id}/claim`, { method: "POST" });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error ?? "Could not claim this item");
+      return res.json();
+    },
     onMutate: (id) => {
       const snapshot = items;
       setItems((cur) => cur.map((i) => (i.id === id ? { ...i, isPurchased: true } : i)));
       return { prev: snapshot };
     },
+    onSuccess: (_data, id) => setClaimedByMe((cur) => new Set(cur).add(id)),
     onError: (_err, _id, ctx) => {
       if (ctx?.prev) setItems(ctx.prev);
     },
   });
 
   const unclaimMutation = useMutation({
-    mutationFn: (id: string) =>
-      fetch(`/api/wishlist/${id}/claim`, { method: "DELETE" }).then((r) => r.json()),
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/wishlist/${id}/claim`, { method: "DELETE" });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error ?? "Could not undo this claim");
+      return res.json();
+    },
     onMutate: (id) => {
       const snapshot = items;
       setItems((cur) => cur.map((i) => (i.id === id ? { ...i, isPurchased: false } : i)));
       return { prev: snapshot };
     },
+    onSuccess: (_data, id) =>
+      setClaimedByMe((cur) => {
+        const next = new Set(cur);
+        next.delete(id);
+        return next;
+      }),
     onError: (_err, _id, ctx) => {
       if (ctx?.prev) setItems(ctx.prev);
     },
@@ -94,18 +113,20 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
                 </div>
               </div>
 
-              {/* Owners see items without claim status to preserve surprise */}
+              {/* Owners see items without claim status to preserve surprise.
+                  A claimed item only shows an undo button to the browser
+                  that claimed it — anyone else just sees the badge above. */}
               {!isOwnProfile && (
                 <div className="shrink-0">
-                  {item.isPurchased ? (
+                  {item.isPurchased && claimedByMe.has(item.id) ? (
                     <button
                       onClick={() => unclaimMutation.mutate(item.id)}
                       disabled={isClaiming}
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(74,222,128,0.1)] border border-[rgba(74,222,128,0.25)] text-green-400 text-xs font-medium rounded-xl transition-all hover:bg-[rgba(74,222,128,0.18)] disabled:opacity-50 touch-manipulation"
                     >
-                      <Check className="w-3 h-3" /> I&apos;ll get it
+                      <Check className="w-3 h-3" /> Undo &mdash; I claimed this
                     </button>
-                  ) : (
+                  ) : !item.isPurchased ? (
                     <button
                       onClick={() => claimMutation.mutate(item.id)}
                       disabled={isClaiming}
@@ -113,7 +134,7 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
                     >
                       I&apos;ll get it
                     </button>
-                  )}
+                  ) : null}
                 </div>
               )}
             </div>

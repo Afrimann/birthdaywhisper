@@ -2,9 +2,10 @@ export const dynamic = "force-dynamic";
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Bell, Gift } from "lucide-react";
+import { Bell, Gift, Wallet, Clock } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { koboToNaira } from "@/lib/utils";
 
 function timeAgo(date: Date): string {
   const s = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -54,7 +55,7 @@ export default async function NotificationsPage() {
             <div className="w-16 h-16 rounded-2xl bg-[rgba(212,83,126,0.07)] border border-[rgba(212,83,126,0.15)] flex items-center justify-center mx-auto mb-4">
               <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
-            <p className="text-accent-700 text-sm">No notifications yet. When someone reacts to your message you&apos;ll see it here.</p>
+            <p className="text-accent-700 text-sm">No notifications yet. When someone reacts to your message or gifts you, you&apos;ll see it here.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -66,18 +67,86 @@ export default async function NotificationsPage() {
                   className="glass rounded-2xl p-4 flex items-start gap-4 animate-fade-rise"
                   style={{ animationDelay: `${i * 40}ms` }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
-                    {p.emoji ?? "💌"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-accent-900 text-sm">
-                      <span className="font-semibold">{p.recipientName}</span>
-                      {" reacted "}
-                      <span>{p.emoji}</span>
-                      {" to your birthday message"}
-                    </p>
-                    <p className="text-ghost text-xs mt-1">{timeAgo(new Date(n.createdAt))}</p>
-                  </div>
+                  {n.type === "PAYOUT_ACCOUNT_MISSING" ? (
+                    <>
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                        <Wallet className="w-4 h-4 text-accent-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-accent-900 text-sm">
+                          You have{" "}
+                          <span className="font-semibold">
+                            {koboToNaira(Number(p.totalKobo))}
+                          </span>{" "}
+                          in gift{Number(p.giftCount) !== 1 ? "s" : ""} waiting — add your bank details to receive them.
+                        </p>
+                        <Link
+                          href="/payouts"
+                          className="text-accent-500 hover:text-accent-600 text-xs underline underline-offset-2 transition-colors"
+                        >
+                          Add bank account →
+                        </Link>
+                        <p className="text-ghost text-xs mt-1">{timeAgo(new Date(n.createdAt))}</p>
+                      </div>
+                    </>
+                  ) : n.type === "GIFTS_READY_TO_WITHDRAW" ? (
+                    <>
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                        <Gift className="w-4 h-4 text-accent-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-accent-900 text-sm">
+                          It&apos;s your birthday!{" "}
+                          <span className="font-semibold">
+                            {koboToNaira(Number(p.totalKobo))}
+                          </span>{" "}
+                          in gift{Number(p.giftCount) !== 1 ? "s" : ""} is ready to withdraw.
+                        </p>
+                        <Link
+                          href="/payouts"
+                          className="text-accent-500 hover:text-accent-600 text-xs underline underline-offset-2 transition-colors"
+                        >
+                          Withdraw now →
+                        </Link>
+                        <p className="text-ghost text-xs mt-1">{timeAgo(new Date(n.createdAt))}</p>
+                      </div>
+                    </>
+                  ) : n.type === "TRANSFER_FAILED" ? (
+                    <>
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-4 h-4 text-accent-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-accent-900 text-sm">
+                          We couldn&apos;t send a{" "}
+                          <span className="font-semibold">{koboToNaira(Number(p.amountKobo))}</span>{" "}
+                          gift just now — head to Payouts and try withdrawing again.
+                        </p>
+                        <Link
+                          href="/payouts"
+                          className="text-accent-500 hover:text-accent-600 text-xs underline underline-offset-2 transition-colors"
+                        >
+                          Try again →
+                        </Link>
+                        <p className="text-ghost text-xs mt-1">{timeAgo(new Date(n.createdAt))}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
+                        {p.emoji ?? "💌"}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-accent-900 text-sm">
+                          <span className="font-semibold">{p.recipientName}</span>
+                          {" reacted "}
+                          <span>{p.emoji}</span>
+                          {" to your birthday message"}
+                        </p>
+                        <p className="text-ghost text-xs mt-1">{timeAgo(new Date(n.createdAt))}</p>
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}

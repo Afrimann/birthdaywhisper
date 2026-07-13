@@ -6,7 +6,6 @@ import {
   sendBirthdayUnlockEmail,
   sendBirthdayReminderEmail,
 } from "@/lib/email";
-import { getBaseUrl } from "@/lib/url";
 
 export async function GET(req: Request) {
   const secret = req.headers.get("x-cron-secret") ?? new URL(req.url).searchParams.get("secret");

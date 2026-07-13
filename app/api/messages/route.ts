@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { createHash } from "crypto";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { moderateContent } from "@/lib/moderation";
+import { getFingerprintHash } from "@/lib/fingerprint";
 
 const MAX_CHARS = 500;
 const RATE_LIMIT_AUTHED = 5;
@@ -56,11 +56,7 @@ export async function POST(req: Request) {
   const { userId } = await auth();
   const isSignedIn = !!userId;
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-  const fingerprintHash = createHash("sha256").update(ip).digest("hex");
+  const fingerprintHash = getFingerprintHash(req);
 
   const session = await prisma.senderSession
     .findUnique({

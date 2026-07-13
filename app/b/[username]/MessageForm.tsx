@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 import { Send, User, EyeOff, Check, Lock } from "lucide-react";
 
 const MAX_CHARS = 500;
@@ -85,17 +86,17 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           You&apos;ve already sent {firstName} a whisper. Sign up free to send
           another — it only takes a moment.
         </p>
-        <a
+        <Link
           href="/sign-up"
           className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-canvas font-semibold px-6 py-3 rounded-xl transition-all min-h-[44px]"
         >
           Create Free Account
-        </a>
+        </Link>
         <p className="text-ghost text-xs mt-4">
           Already have one?{" "}
-          <a href="/sign-in" className="text-accent-500 hover:text-accent-600 transition-colors underline underline-offset-2">
+          <Link href="/sign-in" className="text-accent-500 hover:text-accent-600 transition-colors underline underline-offset-2">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     );
@@ -144,12 +145,12 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           </button>
         ) : (
           <div className="space-y-3">
-            <a
+            <Link
               href="/sign-up"
               className="block w-full bg-accent-500 hover:bg-accent-600 text-canvas font-semibold py-3 rounded-xl transition-all min-h-[44px] flex items-center justify-center text-sm"
             >
               Create free account to send more
-            </a>
+            </Link>
             <button
               onClick={() => { setContent(""); setSent(false); }}
               className="text-ghost hover:text-accent-700 text-xs transition-colors underline underline-offset-2"

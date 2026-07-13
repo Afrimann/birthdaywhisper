@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { ChevronDown } from "lucide-react";
 
 export interface SelectOption {
@@ -27,6 +27,7 @@ export default function CustomSelect({
 }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
 
   useEffect(() => {
     const onDown = (e: MouseEvent) => {
@@ -50,6 +51,7 @@ export default function CustomSelect({
         role="combobox"
         aria-expanded={open}
         aria-haspopup="listbox"
+        aria-controls={listboxId}
         disabled={disabled}
         onClick={() => !disabled && setOpen((o) => !o)}
         className={`select-trigger w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl text-left min-h-[44px] touch-manipulation ${
@@ -68,7 +70,7 @@ export default function CustomSelect({
 
       {open && (
         <div className="select-dropdown absolute left-0 right-0 mt-1 rounded-xl top-full z-[9999]">
-          <div role="listbox" className="select-list max-h-52 overflow-y-auto py-1">
+          <div id={listboxId} role="listbox" className="select-list max-h-52 overflow-y-auto py-1">
             {options.map((opt, i) => (
               <button
                 key={opt.value}
