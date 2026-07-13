@@ -70,7 +70,7 @@ export default async function FollowingPage() {
               <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
             <p className="text-accent-700 text-sm mb-4">
-              Visit someone's birthday page and tap "Follow birthday" to get reminded before their big day.
+              Visit someone&apos;s birthday page and tap &quot;Follow birthday&quot; to get reminded before their big day.
             </p>
           </div>
         ) : (

@@ -5,14 +5,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
 import { daysUntilBirthday, getBirthdayYear } from "@/lib/utils";
-import { getBaseUrl } from "@/lib/url";
 
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const clerkUser = await currentUser();
-  const { displayName, birthdayMonth, birthdayDay, username } = await req.json();
+  const { displayName, birthdayMonth, birthdayDay, username, timezone } = await req.json();
 
   if (!displayName || !birthdayMonth || !birthdayDay || !username) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -22,12 +21,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid username" }, { status: 400 });
   }
 
+  const resolvedTimezone = typeof timezone === "string" && timezone.trim() ? timezone : "UTC";
+
   const existing = await prisma.user.findUnique({ where: { username } });
   if (existing) return NextResponse.json({ error: "Username taken" }, { status: 409 });
 
   const user = await prisma.user.upsert({
     where: { clerkId: userId },
-    update: { displayName, birthdayMonth, birthdayDay, username },
+    update: { displayName, birthdayMonth, birthdayDay, username, timezone: resolvedTimezone },
     create: {
       clerkId: userId,
       email: clerkUser?.emailAddresses[0]?.emailAddress ?? "",
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
       birthdayMonth,
       birthdayDay,
       username,
+      timezone: resolvedTimezone,
       avatarUrl: clerkUser?.imageUrl ?? null,
     },
   });
@@ -54,9 +56,9 @@ export async function POST(req: Request) {
       .catch(() => 0);
 
     prisma.scheduledEmail.upsert({
-      where: { id: `unlock_${user.id}_${getBirthdayYear(birthdayMonth, birthdayDay)}` },
+      where: { id: `unlock_${user.id}_${getBirthdayYear(birthdayMonth, birthdayDay, resolvedTimezone)}` },
       create: {
-        id: `unlock_${user.id}_${getBirthdayYear(birthdayMonth, birthdayDay)}`,
+        id: `unlock_${user.id}_${getBirthdayYear(birthdayMonth, birthdayDay, resolvedTimezone)}`,
         recipientEmail: email,
         type: "BIRTHDAY_UNLOCK",
         payload: { displayName, messageCount: pendingCount },

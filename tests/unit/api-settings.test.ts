@@ -11,6 +11,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 //   AC-7: Returns 409 when username is taken by another user
 //   AC-8: Returns 200 and updates when username is unchanged
 //   AC-9: Returns 200 on a valid update with new username
+//   AC-10: Returns 403 when the submitted birthday differs from what's stored
 // ─────────────────────────────────────────────────────────────
 
 const { mockAuth, mockUserFindUnique, mockUserUpdate } = vi.hoisted(() => ({
@@ -34,7 +35,7 @@ vi.mock("@/lib/prisma", () => ({
 
 import { PATCH } from "@/app/api/settings/route";
 
-const CURRENT_USER = { id: "db_user_1", username: "peter" };
+const CURRENT_USER = { id: "db_user_1", username: "peter", birthdayMonth: 6, birthdayDay: 27 };
 
 const VALID_BODY = {
   displayName:   "Peter O",
@@ -136,5 +137,11 @@ describe("PATCH /api/settings", () => {
         data: expect.objectContaining({ username: "peter_new" }),
       })
     );
+  });
+
+  it("AC-10: returns 403 when the submitted birthday differs from what's stored", async () => {
+    const res = await PATCH(makeRequest({ ...VALID_BODY, birthdayMonth: 12, birthdayDay: 1 }));
+    expect(res.status).toBe(403);
+    expect(mockUserUpdate).not.toHaveBeenCalled();
   });
 });

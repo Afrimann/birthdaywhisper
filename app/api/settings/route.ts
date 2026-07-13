@@ -13,7 +13,7 @@ export async function PATCH(req: Request) {
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
 
-  const { displayName, birthdayMonth, birthdayDay, username, notifPrefs } = body as Record<string, unknown>;
+  const { displayName, birthdayMonth, birthdayDay, username, notifPrefs, timezone } = body as Record<string, unknown>;
 
   if (typeof displayName !== "string" || displayName.trim().length < 2) {
     return NextResponse.json({ error: "Display name must be at least 2 characters." }, { status: 400 });
@@ -33,9 +33,20 @@ export async function PATCH(req: Request) {
   // Find current user
   const currentUser = await prisma.user.findUnique({
     where:  { clerkId: userId },
-    select: { id: true, username: true },
+    select: { id: true, username: true, birthdayMonth: true, birthdayDay: true },
   });
   if (!currentUser) return NextResponse.json({ error: "User not found." }, { status: 404 });
+
+  // Birthday is locked after onboarding — this is the exact field the
+  // disbursement cron trusts to decide when to pay out real money, so it
+  // can't be self-service editable. Corrections go through the admin
+  // "contact support" path (app/api/admin/users/[id]/route.ts) instead.
+  if (month !== currentUser.birthdayMonth || day !== currentUser.birthdayDay) {
+    return NextResponse.json(
+      { error: "Your birthday can't be changed after signup. Contact support if this needs to be corrected." },
+      { status: 403 },
+    );
+  }
 
   // Username uniqueness check (exclude self)
   if (username !== currentUser.username) {
@@ -51,10 +62,9 @@ export async function PATCH(req: Request) {
   await prisma.user.update({
     where: { id: currentUser.id },
     data: {
-      displayName:   displayName.trim(),
-      birthdayMonth: month,
-      birthdayDay:   day,
+      displayName: displayName.trim(),
       username,
+      ...(typeof timezone === "string" && timezone.trim() ? { timezone } : {}),
     },
   });
 

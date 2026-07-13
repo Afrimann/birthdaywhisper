@@ -33,8 +33,11 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
   const router = useRouter();
 
   const [displayName, setDisplayName] = useState(initialData.displayName);
-  const [month, setMonth]             = useState(String(initialData.birthdayMonth));
-  const [day, setDay]                 = useState(String(initialData.birthdayDay));
+  // Birthday selects are disabled below — the value can't change after
+  // signup (see PATCH /api/settings), so these are plain derived constants,
+  // not state.
+  const month = String(initialData.birthdayMonth);
+  const day   = String(initialData.birthdayDay);
   const [username, setUsername]       = useState(initialData.username);
   const [debouncedUsername, setDebouncedUsername] = useState(initialData.username);
   const [notifPrefs, setNotifPrefs]   = useState<NotifPrefs>(initialData.notifPrefs);
@@ -79,6 +82,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           birthdayDay: parseInt(day),
           username,
           notifPrefs,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       }).then(async (r) => {
         const json = await r.json().catch(() => ({})) as { error?: string };
@@ -147,13 +151,14 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
         <div className="grid grid-cols-2 gap-3">
           <CustomSelect
             value={month}
-            onChange={(v) => { setMonth(v); setDay(""); }}
+            onChange={() => {}}
             options={MONTHS.map((m, i) => ({ value: String(i + 1), label: m }))}
             placeholder="Month"
+            disabled
           />
           <CustomSelect
             value={day}
-            onChange={setDay}
+            onChange={() => {}}
             options={
               month
                 ? [...Array(getDaysInMonth(parseInt(month)))].map((_, i) => ({
@@ -163,11 +168,11 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
                 : []
             }
             placeholder="Day"
-            disabled={!month}
+            disabled
           />
         </div>
         <p className="text-ghost text-xs mt-2">
-          Only the day and month are stored — no year.
+          Birthday can&apos;t be changed after signup — it&apos;s what your gift payouts are timed against. Contact support if this needs correcting.
         </p>
       </div>
 

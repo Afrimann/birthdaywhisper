@@ -54,6 +54,7 @@ export default function OnboardingForm() {
           birthdayMonth: parseInt(month),
           birthdayDay: parseInt(day),
           username,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       }).then((r) => { if (!r.ok) throw new Error("setup failed"); return r.json(); }),
     onSuccess: () => router.push("/dashboard"),

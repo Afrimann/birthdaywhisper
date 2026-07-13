@@ -3,8 +3,9 @@
 import { useState, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Gift, Wallet } from "lucide-react";
+import Link from "next/link";
+import { cn, koboToNaira } from "@/lib/utils";
 
 const REACTIONS = ["🥰", "😭", "🤣", "🔥", "💖", "🫶"] as const;
 
@@ -26,6 +27,39 @@ const THEME_STYLES: Record<string, { bg: string; accent: string; glow: string }>
   RETRO:          { bg: "bg-gradient-to-br from-[#0f1500] to-[#1e2e00]",  accent: "text-lime-400",   glow: "rgba(163,230,53,0.25)"  },
   NEON:           { bg: "bg-gradient-to-br from-[#001520] to-[#002a40]",  accent: "text-cyan-400",   glow: "rgba(34,211,238,0.25)"  },
 };
+
+function PayoutNudge({
+  firstName,
+  heldGiftKobo,
+  className,
+  onDark,
+}: {
+  firstName: string;
+  heldGiftKobo: number;
+  className?: string;
+  onDark?: boolean;
+}) {
+  return (
+    <div className={cn("flex flex-col items-center gap-2 text-center", className)}>
+      <p className={onDark ? "text-canvas/90 text-sm" : "text-accent-700 text-sm"}>
+        Happy Birthday, {firstName}! You also have{" "}
+        <span className="font-semibold">{koboToNaira(heldGiftKobo)}</span> in gifts waiting.
+      </p>
+      <Link
+        href="/payouts"
+        className={cn(
+          "inline-flex items-center gap-2 font-semibold px-5 py-2.5 rounded-full text-sm transition-all min-h-[44px]",
+          onDark
+            ? "bg-canvas text-accent-500 hover:bg-canvas/90"
+            : "bg-accent-500 hover:bg-accent-600 text-canvas",
+        )}
+      >
+        <Wallet className="w-4 h-4" />
+        Go to your Payout
+      </Link>
+    </div>
+  );
+}
 
 function launchConfetti() {
   const canvas = document.createElement("canvas");
@@ -77,7 +111,13 @@ function launchConfetti() {
   requestAnimationFrame(tick);
 }
 
-export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
+interface Props {
+  messages: MessageCard[];
+  firstName: string;
+  heldGiftKobo: number;
+}
+
+export default function RevealGrid({ messages, firstName, heldGiftKobo }: Props) {
   const [flipped, setFlipped] = useState<Set<string>>(
     () => new Set(messages.filter((m) => m.status === "REVEALED").map((m) => m.id))
   );
@@ -132,6 +172,7 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
       <div className="text-center py-20">
         <p className="font-fraunces text-2xl font-bold text-accent-900 mb-2">No whispers yet</p>
         <p className="text-accent-700 text-sm">Share your birthday link to collect messages.</p>
+        {heldGiftKobo > 0 && <PayoutNudge firstName={firstName} heldGiftKobo={heldGiftKobo} className="mt-8 inline-flex" />}
       </div>
     );
   }
@@ -151,6 +192,9 @@ export default function RevealGrid({ messages }: { messages: MessageCard[] }) {
               You&apos;ve read all your whispers!
             </p>
             <p className="text-canvas/70 text-sm mt-1">Happy Birthday 🎂</p>
+            {heldGiftKobo > 0 && (
+              <PayoutNudge firstName={firstName} heldGiftKobo={heldGiftKobo} className="mt-4 inline-flex" onDark />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

@@ -28,9 +28,79 @@ model User {
   wishlistItems  WishlistItem[]
   notifPrefs     NotificationPreference?
   notifications  Notification[]
+  gifts          Gift[]
+  payoutAccount  PayoutAccount?
 
   @@index([username])
   @@index([birthdayMonth, birthdayDay])
+}
+
+model Gift {
+  id                    String       @id @default(cuid())
+  recipientId           String
+  senderName            String?
+  senderEmail           String
+  avatarSeed            String
+  avatarGender          AvatarGender
+  amountKobo            Int
+  platformFeeKobo       Int
+  note                  String?
+  birthdayYear          Int
+  status                GiftStatus   @default(PENDING_PAYMENT)
+  paystackReference     String       @unique
+  paystackTransferCode  String?
+  failureReason         String?
+  isDisputed            Boolean      @default(false)
+  disputedAt            DateTime?
+  disputeNote           String?
+  paidAt                DateTime?
+  disbursedAt           DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  recipient             User         @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, status])
+  @@index([recipientId, birthdayYear])
+  @@index([status, paystackTransferCode])
+  @@index([status, createdAt])
+}
+
+model PayoutAccount {
+  id                     String                    @id @default(cuid())
+  userId                 String                    @unique
+  bankCode               String
+  bankName               String
+  accountNumber          String
+  accountName            String
+  paystackRecipientCode  String?
+  verificationStatus     PayoutVerificationStatus  @default(PENDING_REVIEW)
+  nameMatchStrength      String?
+  reviewedByAdminId      String?
+  reviewedAt             DateTime?
+  rejectionReason        String?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  user                   User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum GiftStatus {
+  PENDING_PAYMENT
+  HELD
+  DISBURSED
+  FAILED
+  EXPIRED
+}
+
+enum PayoutVerificationStatus {
+  AUTO_APPROVED
+  PENDING_REVIEW
+  MANUALLY_APPROVED
+  REJECTED
+}
+
+enum AvatarGender {
+  MASCULINE
+  FEMININE
 }
 
 model Message {
@@ -75,16 +145,22 @@ model BirthdayFollow {
 }
 
 model WishlistItem {
-  id          String   @id @default(cuid())
-  userId      String
-  title       String
-  description String?
-  url         String?
-  priceRange  String?
-  isPurchased Boolean  @default(false)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String   @id @default(cuid())
+  userId                String
+  title                 String
+  description           String?
+  url                   String?
+  priceRange            String?
+  isPurchased           Boolean  @default(false)
+  // Hash of the claimer's fingerprint (see lib/fingerprint.ts) — claiming is
+  // deliberately anonymous/no-login (like a gift registry), but only the
+  // browser that claimed an item may undo it, so a stranger can't grief a
+  // real claim and cause a duplicate purchase. Null for legacy rows claimed
+  // before this field existed, and for never-claimed items.
+  claimedByFingerprint  String?
+  sortOrder             Int      @default(0)
+  createdAt             DateTime @default(now())
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -106,12 +182,14 @@ model GroupCard {
 }
 
 model SenderSession {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   fingerprintHash String
   recipientId     String
-  messageCount    Int      @default(0)
-  lastSentAt      DateTime @default(now())
-  createdAt       DateTime @default(now())
+  messageCount    Int       @default(0)
+  lastSentAt      DateTime  @default(now())
+  giftCount       Int       @default(0)
+  giftLastSentAt  DateTime?
+  createdAt       DateTime  @default(now())
 
   @@unique([fingerprintHash, recipientId])
   @@index([fingerprintHash])
@@ -156,6 +234,9 @@ model Notification {
 
 enum NotifType {
   REACTION_RECEIVED
+  PAYOUT_ACCOUNT_MISSING
+  TRANSFER_FAILED
+  GIFTS_READY_TO_WITHDRAW
 }
 
 enum MessageStatus {
