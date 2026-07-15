@@ -83,7 +83,7 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
             (unclaimMutation.isPending && unclaimMutation.variables === item.id);
 
           return (
-            <div key={item.id} className="glass rounded-2xl p-4 flex items-start gap-4">
+            <div key={item.id} className="card rounded-xl p-4 flex items-start gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-accent-900 font-medium text-sm">{item.title}</p>
@@ -130,7 +130,7 @@ export default function WishlistSection({ items: initial, firstName, isOwnProfil
                     <button
                       onClick={() => claimMutation.mutate(item.id)}
                       disabled={isClaiming}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.2)] text-accent-500 text-xs font-medium rounded-xl transition-all hover:bg-[rgba(212,83,126,0.15)] disabled:opacity-50 touch-manipulation"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.2)] text-accent-500 text-xs font-medium rounded-xl transition-all hover:bg-[rgba(193,97,61,0.15)] disabled:opacity-50 touch-manipulation"
                     >
                       I&apos;ll get it
                     </button>

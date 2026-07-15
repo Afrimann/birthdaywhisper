@@ -75,7 +75,7 @@ export default function GiftSection({ recipientId, recipientName }: Props) {
   const canSubmit = validAmount && EMAIL_RE.test(senderEmail) && !sendGift.isPending;
 
   return (
-    <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "90ms" }}>
+    <div className="card rounded-xl p-6 animate-fade-rise" style={{ animationDelay: "90ms" }}>
       <h2 className="font-fraunces text-xl font-bold text-accent-900 mb-1">
         Send {firstName} a gift
       </h2>
@@ -92,8 +92,8 @@ export default function GiftSection({ recipientId, recipientName }: Props) {
             onClick={() => { setAmountKobo(preset); setCustomAmount(""); }}
             className={`py-2.5 rounded-xl text-sm font-medium border transition-all min-h-[44px] touch-manipulation ${
               !customAmount && amountKobo === preset
-                ? "border-accent-500 bg-[rgba(212,83,126,0.1)] text-accent-500"
-                : "border-blush text-accent-700 hover:border-[rgba(212,83,126,0.4)]"
+                ? "border-accent-500 bg-[rgba(193,97,61,0.1)] text-accent-500"
+                : "border-blush text-accent-700 hover:border-[rgba(193,97,61,0.4)]"
             }`}
           >
             {koboToNaira(preset)}
@@ -108,7 +108,7 @@ export default function GiftSection({ recipientId, recipientName }: Props) {
         value={customAmount}
         onChange={(e) => { setCustomAmount(e.target.value); setAmountKobo(null); }}
         placeholder="Or enter a custom amount (₦)"
-        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-4"
+        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-4"
       />
 
       {/* Avatar picker */}
@@ -155,21 +155,21 @@ export default function GiftSection({ recipientId, recipientName }: Props) {
         value={senderName}
         onChange={(e) => setSenderName(e.target.value.slice(0, NAME_MAX_CHARS))}
         placeholder="Your name (optional, shown to them)"
-        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-3"
+        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-3"
       />
       <input
         type="email"
         value={senderEmail}
         onChange={(e) => setSenderEmail(e.target.value)}
         placeholder="Your email (for payment receipt, kept private)"
-        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-3"
+        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-3"
       />
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value.slice(0, NOTE_MAX_CHARS))}
         placeholder="Add a short note (optional)"
         rows={2}
-        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all resize-none text-sm mb-4"
+        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all resize-none text-sm mb-4"
       />
 
       {/* Fee breakdown */}

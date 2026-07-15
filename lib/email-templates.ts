@@ -7,18 +7,18 @@ const wrapper = (content: string) => `
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { margin: 0; padding: 0; background: #FFFDFB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body { margin: 0; padding: 0; background: #FBF6EC; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .container { max-width: 560px; margin: 0 auto; padding: 40px 20px; }
-    .card { background: #FFFFFF; border: 1px solid rgba(212,83,126,0.2); border-radius: 20px; padding: 40px; }
+    .card { background: #FFFFFF; border: 1px solid rgba(193,97,61,0.2); border-radius: 20px; padding: 40px; }
     .logo { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
     .logo-icon { font-size: 20px; }
-    .logo-text { color: #4B1528; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-    .cta { display: inline-block; background: #D4537E; color: #FFFFFF; font-weight: 700; font-size: 15px; padding: 14px 28px; border-radius: 12px; text-decoration: none; margin: 24px 0; }
-    .footer { text-align: center; color: #8A6370; font-size: 12px; margin-top: 32px; }
-    h1 { color: #4B1528; font-size: 24px; font-weight: 700; margin: 0 0 12px; }
-    p { color: #993556; font-size: 15px; line-height: 1.6; margin: 8px 0; }
-    .accent { color: #D4537E; }
-    .divider { border: none; border-top: 1px solid rgba(212,83,126,0.15); margin: 24px 0; }
+    .logo-text { color: #3B2015; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .cta { display: inline-block; background: #C1613D; color: #FFFFFF; font-weight: 700; font-size: 15px; padding: 14px 28px; border-radius: 12px; text-decoration: none; margin: 24px 0; }
+    .footer { text-align: center; color: #7A7161; font-size: 12px; margin-top: 32px; }
+    h1 { color: #3B2015; font-size: 24px; font-weight: 700; margin: 0 0 12px; }
+    p { color: #86432A; font-size: 15px; line-height: 1.6; margin: 8px 0; }
+    .accent { color: #C1613D; }
+    .divider { border: none; border-top: 1px solid rgba(193,97,61,0.15); margin: 24px 0; }
   </style>
 </head>
 <body>
@@ -44,9 +44,9 @@ export function welcomeTemplate({ displayName }: { displayName: string }) {
     <p>Your birthday page is live. Share your link and start collecting secret messages from the people who matter most.</p>
     <hr class="divider" />
     <p>Here's what happens next:</p>
-    <p>🔗 <strong style="color:#4B1528">Share your birthday link</strong> — friends send you messages sealed until your birthday</p>
-    <p>🔒 <strong style="color:#4B1528">Watch the count grow</strong> — you'll see how many whispers are waiting, but not what's inside</p>
-    <p>🎁 <strong style="color:#4B1528">Unlock on your birthday</strong> — flip each card and read every message</p>
+    <p>🔗 <strong style="color:#3B2015">Share your birthday link</strong> — friends send you messages sealed until your birthday</p>
+    <p>🔒 <strong style="color:#3B2015">Watch the count grow</strong> — you'll see how many whispers are waiting, but not what's inside</p>
+    <p>🎁 <strong style="color:#3B2015">Unlock on your birthday</strong> — flip each card and read every message</p>
     <div style="text-align:center">
       <a href="${BASE_URL}/dashboard" class="cta">Go to your Dashboard →</a>
     </div>

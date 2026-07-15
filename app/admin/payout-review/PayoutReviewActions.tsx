@@ -43,13 +43,13 @@ export default function PayoutReviewActions() {
   });
 
   return (
-    <div className="glass rounded-2xl overflow-hidden">
+    <div className="card rounded-xl overflow-hidden">
       {isPending ? (
         <p className="text-accent-700 text-sm p-6">Loading...</p>
       ) : !data || data.accounts.length === 0 ? (
         <p className="text-accent-700 text-sm p-6">Nothing waiting for review.</p>
       ) : (
-        <div className="divide-y divide-[rgba(212,83,126,0.08)]">
+        <div className="divide-y divide-[rgba(193,97,61,0.08)]">
           {data.accounts.map((account) => (
             <div key={account.id} className="p-4 space-y-3">
               <div className="flex items-center justify-between gap-4 text-sm">

@@ -13,7 +13,7 @@ export default function LandingNav({ isSignedIn }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-[rgba(212,83,126,0.08)]">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-sand">
       {/* Main bar */}
       <div className="flex items-center justify-between px-5 py-4">
         {/* Logo */}
@@ -72,7 +72,7 @@ export default function LandingNav({ isSignedIn }: Props) {
               onClick={() => setOpen((o) => !o)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="p-1.5 text-accent-700 hover:text-accent-900 transition-colors rounded-lg hover:bg-[rgba(212,83,126,0.06)]"
+              className="p-1.5 text-accent-700 hover:text-accent-900 transition-colors rounded-lg hover:bg-[rgba(193,97,61,0.06)]"
             >
               {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -85,13 +85,13 @@ export default function LandingNav({ isSignedIn }: Props) {
         <div
           className={`sm:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             open ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
-          } border-t border-[rgba(212,83,126,0.08)]`}
+          } border-t border-sand`}
         >
           <div className="px-5 py-4 flex flex-col gap-3">
             <Link
               href="/sign-in"
               onClick={() => setOpen(false)}
-              className="w-full text-center border border-[rgba(212,83,126,0.2)] text-accent-700 hover:text-accent-900 hover:border-[rgba(212,83,126,0.4)] py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] flex items-center justify-center"
+              className="w-full text-center border border-[rgba(193,97,61,0.2)] text-accent-700 hover:text-accent-900 hover:border-[rgba(193,97,61,0.4)] py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] flex items-center justify-center"
             >
               Sign In
             </Link>

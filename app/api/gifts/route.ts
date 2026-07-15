@@ -11,6 +11,7 @@ import { getBirthdayYear } from "@/lib/utils";
 import { GIFT_AVATARS } from "@/lib/avatars";
 import { MIN_GIFT_KOBO, MAX_GIFT_KOBO, calculatePlatformFeeKobo } from "@/lib/constants";
 import { getFingerprintHash } from "@/lib/fingerprint";
+import { GIFTING_ENABLED } from "@/lib/feature-flags";
 
 const NOTE_MAX_CHARS = 300;
 const NAME_MAX_CHARS = 40;
@@ -23,6 +24,10 @@ const RATE_LIMIT_GUEST = 2;
 const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 export async function POST(req: Request) {
+  if (!GIFTING_ENABLED) {
+    return NextResponse.json({ error: "Gifting is temporarily unavailable." }, { status: 503 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

@@ -113,7 +113,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
     <div className="space-y-6">
       {/* Success banner */}
       {success && (
-        <div className="flex items-center gap-3 bg-[rgba(212,83,126,0.1)] border border-[rgba(212,83,126,0.3)] rounded-xl px-4 py-3 animate-fade-rise">
+        <div className="flex items-center gap-3 bg-[rgba(193,97,61,0.1)] border border-[rgba(193,97,61,0.3)] rounded-xl px-4 py-3 animate-fade-rise">
           <Check className="w-4 h-4 text-accent-500 flex-shrink-0" />
           <p className="text-accent-500 text-sm font-medium">Changes saved successfully.</p>
         </div>
@@ -127,7 +127,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
       )}
 
       {/* Display name */}
-      <div className="glass rounded-2xl p-6">
+      <div className="card rounded-xl p-6">
         <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Display Name
         </label>
@@ -136,7 +136,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Your name..."
-          className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all"
+          className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] focus:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all"
         />
         <p className="text-ghost text-xs mt-2">
           Shown on your birthday page and in messages.
@@ -144,7 +144,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
       </div>
 
       {/* Birthday */}
-      <div className="glass rounded-2xl p-6 relative z-10">
+      <div className="card rounded-xl p-6 relative z-10">
         <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Birthday
         </label>
@@ -172,16 +172,16 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           />
         </div>
         <p className="text-ghost text-xs mt-2">
-          Birthday can&apos;t be changed after signup — it&apos;s what your gift payouts are timed against. Contact support if this needs correcting.
+          Contact support to change your birthday.
         </p>
       </div>
 
       {/* Username */}
-      <div className="glass rounded-2xl p-6">
+      <div className="card rounded-xl p-6">
         <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-3">
           Username
         </label>
-        <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(212,83,126,0.45)] focus-within:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 flex items-center gap-1.5 transition-all">
+        <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(193,97,61,0.45)] focus-within:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 flex items-center gap-1.5 transition-all">
           <span className="text-ghost text-sm whitespace-nowrap select-none">/b/</span>
           <input
             type="text"
@@ -219,7 +219,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
       </div>
 
       {/* Notification preferences */}
-      <div className="glass rounded-2xl p-6">
+      <div className="card rounded-xl p-6">
         <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-4">
           Email Notifications
         </label>
@@ -243,7 +243,7 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
               </div>
               <div
                 className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
-                  notifPrefs[key] ? "bg-accent-500" : "bg-blush border border-[rgba(212,83,126,0.2)]"
+                  notifPrefs[key] ? "bg-accent-500" : "bg-blush border border-[rgba(193,97,61,0.2)]"
                 }`}
               >
                 <span

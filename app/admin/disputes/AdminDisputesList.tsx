@@ -24,13 +24,13 @@ export default function AdminDisputesList() {
   });
 
   return (
-    <div className="glass rounded-2xl overflow-hidden">
+    <div className="card rounded-xl overflow-hidden">
       {isPending ? (
         <p className="text-accent-700 text-sm p-6">Loading...</p>
       ) : !data || data.gifts.length === 0 ? (
         <p className="text-accent-700 text-sm p-6">No open disputes.</p>
       ) : (
-        <div className="divide-y divide-[rgba(212,83,126,0.08)]">
+        <div className="divide-y divide-[rgba(193,97,61,0.08)]">
           {data.gifts.map((gift) => (
             <div key={gift.id} className="p-4 flex items-center justify-between gap-4 text-sm">
               <div className="min-w-0 flex items-start gap-3">

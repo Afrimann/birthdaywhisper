@@ -97,7 +97,7 @@ export default function PayoutAccountForm({ initialAccount }: { initialAccount: 
   return (
     <div className="space-y-6">
       {/* Payout account */}
-      <div className="glass rounded-2xl p-6">
+      <div className="card rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <Wallet className="w-4 h-4 text-accent-500" />
           <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider">
@@ -110,7 +110,7 @@ export default function PayoutAccountForm({ initialAccount }: { initialAccount: 
             className={
               isPendingReview
                 ? "flex items-center gap-3 bg-[rgba(250,199,117,0.15)] border border-[rgba(250,199,117,0.4)] rounded-xl px-4 py-3 mb-4"
-                : "flex items-center gap-3 bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.2)] rounded-xl px-4 py-3 mb-4"
+                : "flex items-center gap-3 bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.2)] rounded-xl px-4 py-3 mb-4"
             }
           >
             {isPendingReview ? (
@@ -141,7 +141,7 @@ export default function PayoutAccountForm({ initialAccount }: { initialAccount: 
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
             placeholder="10-digit account number"
-            className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
+            className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
           />
         </div>
 
@@ -166,7 +166,7 @@ export default function PayoutAccountForm({ initialAccount }: { initialAccount: 
       </div>
 
       {/* Gifts received */}
-      <div className="glass rounded-2xl p-6">
+      <div className="card rounded-xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <GiftIcon className="w-4 h-4 text-accent-500" />
           <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider">

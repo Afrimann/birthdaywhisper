@@ -48,10 +48,10 @@ export default async function RevealOpenPage() {
   return (
     <div className="min-h-screen bg-canvas text-accent-900">
       {/* Ambient glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[rgba(193,97,61,0.04)] rounded-full blur-3xl pointer-events-none" />
 
       {/* Nav */}
-      <nav className="relative z-10 border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
+      <nav className="relative z-10 border-b border-[rgba(193,97,61,0.08)] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Gift className="text-accent-500 w-5 h-5" />
           <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">

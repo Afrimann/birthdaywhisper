@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { resolveAccountNumber, createTransferRecipient, PaystackError } from "@/lib/paystack";
 import { matchNameStrength } from "@/lib/nameMatch";
+import { GIFTING_ENABLED } from "@/lib/feature-flags";
 
 const ACCOUNT_NUMBER_RE = /^\d{10}$/;
 
@@ -22,6 +23,10 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  if (!GIFTING_ENABLED) {
+    return NextResponse.json({ error: "Payouts are temporarily unavailable." }, { status: 503 });
+  }
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

@@ -30,13 +30,13 @@ export default async function RevealPage() {
     return (
       <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-6 text-center overflow-hidden">
         {/* Ambient glows */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-[rgba(212,83,126,0.05)] rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-[rgba(212,83,126,0.03)] rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-[rgba(193,97,61,0.05)] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-[rgba(193,97,61,0.03)] rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 max-w-md animate-fade-rise">
           {/* Sealed lantern illustration */}
           <div className="w-32 h-32 mx-auto mb-8 relative">
-            <div className="w-full h-full rounded-2xl bg-gradient-to-br from-[rgba(212,83,126,0.15)] to-[rgba(255,255,255,0.8)] border border-[rgba(212,83,126,0.25)] flex items-center justify-center animate-lantern">
+            <div className="w-full h-full rounded-2xl bg-gradient-to-br from-[rgba(193,97,61,0.15)] to-[rgba(255,255,255,0.8)] border border-[rgba(193,97,61,0.25)] flex items-center justify-center animate-lantern">
               <Lock className="w-12 h-12 text-accent-500" />
             </div>
             {messageCount > 0 && (
@@ -59,7 +59,7 @@ export default async function RevealPage() {
           </p>
 
           {/* Countdown */}
-          <div className="glass rounded-2xl px-8 py-6 mb-8">
+          <div className="card rounded-xl px-8 py-6 mb-8">
             <p className="text-ghost text-xs uppercase tracking-widest mb-4">Opens in</p>
             <div className="flex justify-center gap-6">
               <div className="text-center">

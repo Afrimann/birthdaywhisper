@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Bell, Gift, Wallet, Clock } from "lucide-react";
+import { Gift, Wallet, Clock } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { koboToNaira } from "@/lib/utils";
+import AppShell from "@/app/_components/AppShell";
 
 function timeAgo(date: Date): string {
   const s = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -38,21 +39,12 @@ export default async function NotificationsPage() {
   }).catch(() => null);
 
   return (
-    <div className="min-h-screen bg-canvas text-accent-900">
-      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bell className="text-accent-500 w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Notifications</span>
-        </div>
-        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
-          ← Dashboard
-        </Link>
-      </nav>
-
-      <main className="max-w-lg mx-auto px-6 py-10">
+    <AppShell>
+      <div className="max-w-lg">
+        <h1 className="font-fraunces text-3xl md:text-4xl font-bold text-accent-900 mb-6">Notifications</h1>
         {notifications.length === 0 ? (
-          <div className="glass rounded-2xl p-10 text-center animate-fade-rise">
-            <div className="w-16 h-16 rounded-2xl bg-[rgba(212,83,126,0.07)] border border-[rgba(212,83,126,0.15)] flex items-center justify-center mx-auto mb-4">
+          <div className="card rounded-xl p-10 text-center animate-fade-rise">
+            <div className="w-16 h-16 rounded-2xl bg-[rgba(193,97,61,0.07)] border border-[rgba(193,97,61,0.15)] flex items-center justify-center mx-auto mb-4">
               <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
             <p className="text-accent-700 text-sm">No notifications yet. When someone reacts to your message or gifts you, you&apos;ll see it here.</p>
@@ -64,12 +56,12 @@ export default async function NotificationsPage() {
               return (
                 <div
                   key={n.id}
-                  className="glass rounded-2xl p-4 flex items-start gap-4 animate-fade-rise"
+                  className="card rounded-xl p-4 flex items-start gap-4 animate-fade-rise"
                   style={{ animationDelay: `${i * 40}ms` }}
                 >
                   {n.type === "PAYOUT_ACCOUNT_MISSING" ? (
                     <>
-                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center flex-shrink-0">
                         <Wallet className="w-4 h-4 text-accent-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -91,7 +83,7 @@ export default async function NotificationsPage() {
                     </>
                   ) : n.type === "GIFTS_READY_TO_WITHDRAW" ? (
                     <>
-                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center flex-shrink-0">
                         <Gift className="w-4 h-4 text-accent-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -113,7 +105,7 @@ export default async function NotificationsPage() {
                     </>
                   ) : n.type === "TRANSFER_FAILED" ? (
                     <>
-                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center flex-shrink-0">
                         <Clock className="w-4 h-4 text-accent-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -133,7 +125,7 @@ export default async function NotificationsPage() {
                     </>
                   ) : (
                     <>
-                      <div className="w-10 h-10 rounded-xl bg-[rgba(212,83,126,0.08)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
+                      <div className="w-10 h-10 rounded-xl bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center flex-shrink-0 text-xl leading-none">
                         {p.emoji ?? "💌"}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -152,7 +144,7 @@ export default async function NotificationsPage() {
             })}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }

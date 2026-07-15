@@ -38,24 +38,24 @@ export default function AdminBirthdaysMonthPicker() {
 
       {data && (
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="glass rounded-2xl p-5">
+          <div className="card rounded-xl p-5">
             <p className="text-accent-700 text-xs uppercase tracking-wider mb-1">Birthdays</p>
             <p className="font-fraunces text-3xl font-bold text-accent-900">{data.totalUsers}</p>
           </div>
-          <div className="glass rounded-2xl p-5">
+          <div className="card rounded-xl p-5">
             <p className="text-accent-700 text-xs uppercase tracking-wider mb-1">Total held</p>
             <p className="font-fraunces text-3xl font-bold text-accent-900">{koboToNaira(data.totalHeldKobo)}</p>
           </div>
         </div>
       )}
 
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="card rounded-xl overflow-hidden">
         {isPending ? (
           <p className="text-accent-700 text-sm p-6">Loading...</p>
         ) : !data || data.rows.length === 0 ? (
           <p className="text-accent-700 text-sm p-6">No birthdays this month.</p>
         ) : (
-          <div className="divide-y divide-[rgba(212,83,126,0.08)]">
+          <div className="divide-y divide-[rgba(193,97,61,0.08)]">
             {data.rows.map((row) => (
               <div key={row.username} className="p-4 flex items-center justify-between gap-4 text-sm">
                 <div className="min-w-0">

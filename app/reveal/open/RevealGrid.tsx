@@ -70,7 +70,7 @@ function launchConfetti() {
   canvas.height = window.innerHeight;
   const ctx = canvas.getContext("2d")!;
 
-  const colors = ["#F4C0D1", "#ED93B1", "#D4537E", "#FAC775", "#F5C4B3"];
+  const colors = ["#E8CBAE", "#E3A97F", "#C1613D", "#9BA86C", "#DC9B6E"];
   type P = { x:number; y:number; vx:number; vy:number; w:number; h:number; color:string; angle:number; spin:number; alpha:number };
 
   const particles: P[] = Array.from({ length: 150 }, () => ({
@@ -249,13 +249,13 @@ export default function RevealGrid({ messages, firstName, heldGiftKobo }: Props)
                     WebkitBackfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
                   }}
-                  className="absolute inset-0 glass rounded-2xl p-4 flex flex-col gap-3 overflow-hidden"
+                  className="absolute inset-0 card rounded-xl p-4 flex flex-col gap-3 overflow-hidden"
                 >
                   <p className="text-accent-900 text-sm leading-relaxed flex-1 overflow-y-auto">
                     {msg.content}
                   </p>
 
-                  <div className="border-t border-[rgba(212,83,126,0.18)] pt-3 flex-shrink-0">
+                  <div className="border-t border-[rgba(193,97,61,0.18)] pt-3 flex-shrink-0">
                     <p className="text-ghost text-xs mb-2">
                       — {msg.isAnonymous ? "Anonymous" : (msg.senderName ?? "Anonymous")}
                     </p>
@@ -267,8 +267,8 @@ export default function RevealGrid({ messages, firstName, heldGiftKobo }: Props)
                           className={cn(
                             "text-base leading-none rounded-lg px-1.5 py-1 transition-all",
                             reaction === emoji
-                              ? "bg-[rgba(212,83,126,0.2)] ring-1 ring-[rgba(212,83,126,0.5)] scale-110"
-                              : "hover:bg-[rgba(212,83,126,0.1)] hover:scale-110"
+                              ? "bg-[rgba(193,97,61,0.2)] ring-1 ring-[rgba(193,97,61,0.5)] scale-110"
+                              : "hover:bg-[rgba(193,97,61,0.1)] hover:scale-110"
                           )}
                         >
                           {emoji}

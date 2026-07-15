@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Bell, Gift } from "lucide-react";
+import { Gift } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { daysUntilBirthday, formatBirthday, isBirthdayToday } from "@/lib/utils";
+import AppShell from "@/app/_components/AppShell";
 
 export default async function FollowingPage() {
   const { userId } = await auth();
@@ -43,20 +44,10 @@ export default async function FollowingPage() {
     .sort((a, b) => a.days - b.days);
 
   return (
-    <div className="min-h-screen bg-canvas text-accent-900">
-      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bell className="text-accent-500 w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Following</span>
-        </div>
-        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
-          ← Dashboard
-        </Link>
-      </nav>
-
-      <main className="max-w-lg mx-auto px-6 py-10">
+    <AppShell>
+      <div className="max-w-lg">
         <div className="mb-8 animate-fade-rise">
-          <h1 className="font-fraunces text-2xl font-bold text-accent-900 mb-1">Birthdays you follow</h1>
+          <h1 className="font-fraunces text-3xl md:text-4xl font-bold text-accent-900 mb-1">Birthdays you follow</h1>
           <p className="text-accent-700 text-sm">
             {follows.length === 0
               ? "You're not following any birthdays yet."
@@ -65,8 +56,8 @@ export default async function FollowingPage() {
         </div>
 
         {follows.length === 0 ? (
-          <div className="glass rounded-2xl p-10 text-center animate-fade-rise">
-            <div className="w-16 h-16 rounded-2xl bg-[rgba(212,83,126,0.07)] border border-[rgba(212,83,126,0.15)] flex items-center justify-center mx-auto mb-4">
+          <div className="card rounded-xl p-10 text-center animate-fade-rise">
+            <div className="w-16 h-16 rounded-xl bg-[rgba(193,97,61,0.07)] border border-[rgba(193,97,61,0.15)] flex items-center justify-center mx-auto mb-4">
               <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
             <p className="text-accent-700 text-sm mb-4">
@@ -81,9 +72,9 @@ export default async function FollowingPage() {
                 <Link
                   key={id}
                   href={`/b/${followed.username}`}
-                  className="glass rounded-2xl p-4 flex items-center gap-4 hover:border-[rgba(212,83,126,0.3)] transition-all animate-fade-rise group"
+                  className="card rounded-xl p-4 flex items-center gap-4 hover:border-[rgba(193,97,61,0.3)] transition-all animate-fade-rise group"
                 >
-                  <div className="w-12 h-12 rounded-full bg-[rgba(212,83,126,0.1)] border border-[rgba(212,83,126,0.2)] flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-[rgba(193,97,61,0.1)] border border-[rgba(193,97,61,0.2)] flex items-center justify-center flex-shrink-0">
                     {followed.avatarUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={followed.avatarUrl} alt={followed.displayName} className="w-full h-full rounded-full object-cover" />
@@ -107,7 +98,7 @@ export default async function FollowingPage() {
             })}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { giftIsLocallyEligible } from "@/lib/giftEligibility";
+import { GIFTING_ENABLED } from "@/lib/feature-flags";
 
 const PENDING_PAYMENT_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
@@ -20,6 +21,15 @@ export async function GET(req: Request) {
     where: { status: "PENDING_PAYMENT", createdAt: { lt: new Date(now.getTime() - PENDING_PAYMENT_EXPIRY_MS) } },
     data: { status: "EXPIRED" },
   });
+
+  // Gifting/payouts are pulled from the product for now (see
+  // lib/feature-flags.ts) — skip the nudge notifications below so users
+  // already holding a gift from before the flag flipped don't keep getting
+  // "add your bank details" / "withdraw now" notifications pointing at a
+  // route that just redirects them back to the dashboard.
+  if (!GIFTING_ENABLED) {
+    return NextResponse.json({ usersConsidered: 0, notificationsAttempted: 0, succeeded: 0, expiredPendingPayments: expired.count });
+  }
 
   // Disbursement is no longer automatic — the recipient triggers it
   // themselves via POST /api/payouts/withdraw once their birthday has
