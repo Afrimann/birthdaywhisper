@@ -1,10 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Check, ChevronRight, Loader2 } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { Check, ChevronRight, Loader2, Camera, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CustomSelect from "@/app/_components/CustomSelect";
+import { fallbackAvatarDataUri } from "@/lib/avatars";
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -22,15 +26,23 @@ interface NotifPrefs {
 }
 
 interface InitialData {
+  id: string;
   displayName: string;
   birthdayMonth: number;
   birthdayDay: number;
   username: string;
+  avatarUrl: string | null;
   notifPrefs: NotifPrefs;
 }
 
 export default function SettingsForm({ initialData, baseUrl }: { initialData: InitialData; baseUrl: string }) {
   const router = useRouter();
+  const { user: clerkUser } = useUser();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [avatarUrl, setAvatarUrl] = useState(initialData.avatarUrl);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
 
   const [displayName, setDisplayName] = useState(initialData.displayName);
   // Birthday selects are disabled below — the value can't change after
@@ -101,6 +113,58 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
     },
   });
 
+  const persistAvatarUrl = (url: string | null) =>
+    fetch("/api/settings/avatar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatarUrl: url }),
+    });
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file || !clerkUser) return;
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please choose an image file.");
+      return;
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setAvatarError("Image must be under 5MB.");
+      return;
+    }
+
+    setAvatarError("");
+    setAvatarUploading(true);
+    try {
+      const image = await clerkUser.setProfileImage({ file });
+      const url = image.publicUrl ?? clerkUser.imageUrl;
+      await persistAvatarUrl(url);
+      setAvatarUrl(url);
+      router.refresh();
+    } catch {
+      setAvatarError("Couldn't update your photo. Try again.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (!clerkUser) return;
+    setAvatarError("");
+    setAvatarUploading(true);
+    try {
+      await clerkUser.setProfileImage({ file: null });
+      await persistAvatarUrl(null);
+      setAvatarUrl(null);
+      router.refresh();
+    } catch {
+      setAvatarError("Couldn't remove your photo. Try again.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   const canSave =
     displayName.trim().length >= 2 &&
     month !== "" &&
@@ -125,6 +189,59 @@ export default function SettingsForm({ initialData, baseUrl }: { initialData: In
           <p className="text-rose-400 text-sm">{error}</p>
         </div>
       )}
+
+      {/* Profile photo */}
+      <div className="card rounded-xl p-6">
+        <label className="block text-accent-700 text-xs font-semibold uppercase tracking-wider mb-4">
+          Profile Photo
+        </label>
+        <div className="flex items-center gap-4">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={avatarUrl || fallbackAvatarDataUri(initialData.id)}
+              alt=""
+              className="w-16 h-16 rounded-full object-cover border-2 border-blush"
+            />
+            {avatarUploading && (
+              <div className="absolute inset-0 rounded-full bg-[rgba(255,255,255,0.7)] flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-accent-500 animate-spin" />
+              </div>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={avatarUploading}
+                className="flex items-center gap-1.5 text-accent-500 hover:text-accent-600 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation"
+              >
+                <Camera className="w-4 h-4" /> {avatarUrl ? "Change photo" : "Add photo"}
+              </button>
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={handleAvatarRemove}
+                  disabled={avatarUploading}
+                  className="flex items-center gap-1 text-ghost hover:text-rose-400 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation"
+                >
+                  <X className="w-3.5 h-3.5" /> Remove
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+            <p className="text-ghost text-xs mt-1.5">JPG or PNG, up to 5MB.</p>
+          </div>
+        </div>
+        {avatarError && <p className="text-rose-400 text-xs mt-3">{avatarError}</p>}
+      </div>
 
       {/* Display name */}
       <div className="card rounded-xl p-6">

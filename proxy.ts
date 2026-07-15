@@ -2,10 +2,16 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getBaseUrl } from "@/lib/url";
 
-// Host of the short share domain (e.g. bdwpr.com), if configured.
-const SHARE_HOST = process.env.NEXT_PUBLIC_SHARE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SHARE_URL).host
-  : null;
+// Host of the short share domain (e.g. bdwpr.com), if configured. Guarded
+// against equalling the main app host — if the two env vars were ever
+// misconfigured to the same domain, the redirect below would bounce a
+// request back through this same branch instead of reaching /b/<username>.
+const APP_HOST = new URL(getBaseUrl()).host;
+const SHARE_HOST = (() => {
+  if (!process.env.NEXT_PUBLIC_SHARE_URL) return null;
+  const host = new URL(process.env.NEXT_PUBLIC_SHARE_URL).host;
+  return host === APP_HOST ? null : host;
+})();
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",

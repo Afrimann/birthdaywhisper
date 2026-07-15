@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isBirthdayToday, daysUntilBirthday, formatBirthday, getBirthdayYear } from "@/lib/utils";
+import { fallbackAvatarDataUri } from "@/lib/avatars";
 import { GIFTING_ENABLED } from "@/lib/feature-flags";
 import MessageForm from "./MessageForm";
 import GiftSection from "./GiftSection";
@@ -96,12 +97,6 @@ export default async function PublicBirthdayPage({ params }: Props) {
   const birthdayLabel = formatBirthday(user.birthdayMonth, user.birthdayDay);
   const birthdayYear = getBirthdayYear(user.birthdayMonth, user.birthdayDay);
   const firstName = user.displayName.split(" ")[0];
-  const initials = user.displayName
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
   return (
     <div className="min-h-screen bg-canvas text-accent-900">
@@ -137,16 +132,12 @@ export default async function PublicBirthdayPage({ params }: Props) {
         {/* Profile header */}
         <div className="text-center mb-10 animate-fade-rise">
           <div className="w-20 h-20 rounded-full bg-[rgba(193,97,61,0.12)] border-2 border-[rgba(193,97,61,0.28)] flex items-center justify-center mx-auto mb-4">
-            {user.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.avatarUrl}
-                alt={user.displayName}
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="font-fraunces text-2xl font-bold text-accent-500">{initials}</span>
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={user.avatarUrl || fallbackAvatarDataUri(user.id)}
+              alt={user.displayName}
+              className="w-full h-full rounded-full object-cover"
+            />
           </div>
 
           <h1 className="font-fraunces text-4xl md:text-5xl font-bold text-accent-900 mb-2">

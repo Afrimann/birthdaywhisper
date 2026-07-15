@@ -15,10 +15,12 @@ export default async function SettingsPage() {
   const user = await prisma.user.findUnique({
     where: { clerkId: userId },
     select: {
+      id:            true,
       displayName:   true,
       birthdayMonth: true,
       birthdayDay:   true,
       username:      true,
+      avatarUrl:     true,
       notifPrefs: {
         select: {
           emailOnBirthdayUnlock: true,
@@ -42,10 +44,12 @@ export default async function SettingsPage() {
         <div className="animate-fade-rise" style={{ animationDelay: "60ms" }}>
           <SettingsForm
             initialData={{
+              id:            user.id,
               displayName:   user.displayName,
               birthdayMonth: user.birthdayMonth,
               birthdayDay:   user.birthdayDay,
               username:      user.username,
+              avatarUrl:     user.avatarUrl,
               notifPrefs: {
                 emailOnBirthdayUnlock: user.notifPrefs?.emailOnBirthdayUnlock ?? true,
                 emailReminders:        user.notifPrefs?.emailReminders ?? true,

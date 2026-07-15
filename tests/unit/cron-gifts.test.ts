@@ -31,6 +31,12 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+// Gifting/payouts are pulled from the product behind this flag (see
+// lib/feature-flags.ts), which short-circuits this cron's notify loop —
+// force it on here so these tests keep covering that notify logic, which
+// still needs to be correct for whenever the flag flips back on.
+vi.mock("@/lib/feature-flags", () => ({ GIFTING_ENABLED: true }));
+
 import { GET } from "@/app/api/cron/gifts/route";
 
 function makeRequest(secret?: string) {

@@ -49,6 +49,11 @@ vi.mock("@/lib/paystack", () => ({
   PaystackError: class PaystackError extends Error {},
 }));
 
+// Payouts are pulled from the product behind this flag (see
+// lib/feature-flags.ts) — force it on so these tests keep covering the
+// route's real logic, which still needs to be correct for when it returns.
+vi.mock("@/lib/feature-flags", () => ({ GIFTING_ENABLED: true }));
+
 import { POST } from "@/app/api/payout-account/route";
 
 const VALID_BODY = { bankCode: "058", bankName: "GTBank", accountNumber: "0123456789" };
