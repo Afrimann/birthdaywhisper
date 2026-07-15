@@ -75,7 +75,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-4">
       {/* Ambient glow */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-[rgba(193,97,61,0.04)] rounded-full blur-3xl pointer-events-none" />
 
       {/* Logo + heading */}
       <div className="relative z-10 mb-8 text-center animate-fade-rise">
@@ -96,7 +96,7 @@ export default function SignInPage() {
         className="relative z-10 w-full max-w-sm animate-fade-rise"
         style={{ animationDelay: "60ms" }}
       >
-        <div className="glass rounded-2xl p-8">
+        <div className="card rounded-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
@@ -110,7 +110,7 @@ export default function SignInPage() {
                 placeholder="you@example.com"
                 required
                 autoComplete="email"
-                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] focus:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
               />
             </div>
 
@@ -127,7 +127,7 @@ export default function SignInPage() {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 pr-11 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
+                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] focus:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 pr-11 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
@@ -169,9 +169,9 @@ export default function SignInPage() {
 
           <div className="mt-5">
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex-1 h-px bg-[rgba(212,83,126,0.08)]" />
+              <div className="flex-1 h-px bg-[rgba(193,97,61,0.08)]" />
               <span className="text-ghost text-xs font-medium uppercase tracking-wider">or</span>
-              <div className="flex-1 h-px bg-[rgba(212,83,126,0.08)]" />
+              <div className="flex-1 h-px bg-[rgba(193,97,61,0.08)]" />
             </div>
 
             <button
@@ -198,7 +198,7 @@ export default function SignInPage() {
             </button>
           </div>
 
-          <div className="mt-6 pt-5 border-t border-[rgba(212,83,126,0.08)] text-center">
+          <div className="mt-6 pt-5 border-t border-[rgba(193,97,61,0.08)] text-center">
             <p className="text-accent-700 text-sm">
               Don&apos;t have an account?{" "}
               <Link

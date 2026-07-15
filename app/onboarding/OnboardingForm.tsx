@@ -80,9 +80,6 @@ export default function OnboardingForm() {
 
   return (
     <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-4">
-      {/* Ambient glow */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
-
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-10">
@@ -99,7 +96,7 @@ export default function OnboardingForm() {
                 step > n
                   ? "bg-accent-500 border-accent-500 text-canvas"
                   : step === n
-                  ? "border-[rgba(212,83,126,0.4)] text-accent-500 bg-[rgba(212,83,126,0.08)]"
+                  ? "border-[rgba(193,97,61,0.4)] text-accent-500 bg-[rgba(193,97,61,0.08)]"
                   : "border-blush text-ghost"
               )}>
                 {step > n ? <Check className="w-4 h-4" /> : n}
@@ -121,11 +118,11 @@ export default function OnboardingForm() {
         </div>
 
         {/* Card */}
-        <div className="glass rounded-2xl p-8">
+        <div className="card rounded-xl p-8">
 
           {step === 1 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">What should we call you?</h2>
+              <h2 className="font-fraunces text-3xl font-bold text-accent-900 mb-2">What should we call you?</h2>
               <p className="text-accent-700 text-sm mb-6">This is how you&apos;ll appear on your birthday page.</p>
               <input
                 type="text"
@@ -133,7 +130,7 @@ export default function OnboardingForm() {
                 onChange={e => setDisplayName(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleNameNext()}
                 placeholder="Your name..."
-                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-lg"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] focus:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-lg"
                 autoFocus
               />
               <button
@@ -148,7 +145,7 @@ export default function OnboardingForm() {
 
           {step === 2 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">When&apos;s your birthday?</h2>
+              <h2 className="font-fraunces text-3xl font-bold text-accent-900 mb-2">When&apos;s your birthday?</h2>
               <p className="text-accent-700 text-sm mb-6">We only need the day and month — no year required.</p>
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <CustomSelect
@@ -184,14 +181,19 @@ export default function OnboardingForm() {
 
           {step === 3 && (
             <div>
-              <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">Choose your link</h2>
+              <h2 className="font-fraunces text-3xl font-bold text-accent-900 mb-2">Choose your link</h2>
               <p className="text-accent-700 text-sm mb-6">This is your permanent birthday page URL.</p>
-              <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(212,83,126,0.45)] focus-within:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
+              <div className="bg-[rgba(255,255,255,0.8)] border border-blush focus-within:border-[rgba(193,97,61,0.45)] focus-within:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 flex items-center gap-2 transition-all">
                 <span className="text-ghost text-sm whitespace-nowrap">birthdaywhisper.com/b/</span>
                 <input
                   type="text"
                   value={username}
                   onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && usernameStatus === "available" && username.length >= 3 && !finish.isPending) {
+                      finish.mutate();
+                    }
+                  }}
                   placeholder="yourname"
                   className="flex-1 bg-transparent text-accent-900 outline-none min-w-0"
                   autoFocus

@@ -32,8 +32,8 @@ export default function FollowButton({ username, initialFollowing }: Props) {
       disabled={toggle.isPending}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all min-h-[44px] ${
         following
-          ? "border-[rgba(212,83,126,0.3)] bg-[rgba(212,83,126,0.08)] text-accent-500 hover:bg-[rgba(251,113,133,0.08)] hover:border-rose-400/30 hover:text-rose-400"
-          : "border-[rgba(212,83,126,0.2)] bg-transparent text-accent-700 hover:border-[rgba(212,83,126,0.4)] hover:text-accent-900"
+          ? "border-[rgba(193,97,61,0.3)] bg-[rgba(193,97,61,0.08)] text-accent-500 hover:bg-[rgba(251,113,133,0.08)] hover:border-rose-400/30 hover:text-rose-400"
+          : "border-[rgba(193,97,61,0.2)] bg-transparent text-accent-700 hover:border-[rgba(193,97,61,0.4)] hover:text-accent-900"
       }`}
     >
       {toggle.isPending ? (

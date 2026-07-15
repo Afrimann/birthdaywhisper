@@ -48,7 +48,7 @@ export default async function GiftCallbackPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-[rgba(212,83,126,0.12)] border border-[rgba(212,83,126,0.28)] flex items-center justify-center mx-auto mb-6">
+      <div className="w-16 h-16 rounded-full bg-[rgba(193,97,61,0.12)] border border-[rgba(193,97,61,0.28)] flex items-center justify-center mx-auto mb-6">
         {success ? (
           <Check className="w-8 h-8 text-accent-500" />
         ) : (

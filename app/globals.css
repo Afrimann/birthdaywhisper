@@ -6,47 +6,56 @@
   --font-jakarta:  var(--font-jakarta);
 
   /* ── Core palette ───────────────────────────────────────── */
-  --color-canvas:  #FFFDFB;  /* bg-base: warm off-white page background */
-  --color-surface: #FFFFFF;  /* glass panel base */
-  --color-ghost:   #8A6370;  /* muted/tertiary text, placeholders */
-  --color-blush:   #F3E0E8;  /* soft borders + subtle chip backgrounds */
+  --color-canvas:  #FBF6EC;  /* bg-base: warm cream page background */
+  --color-surface: #FFFDF8;  /* card panel base */
+  --color-ghost:   #7A7161;  /* muted/tertiary text, placeholders — warm neutral */
+  --color-blush:   #F0DFCF;  /* soft terracotta borders + chip backgrounds — brand moments only */
 
-  /* ── Accent (pink family) ───────────────────────────────── */
-  --color-accent-100: #F9E3EB;
-  --color-accent-300: #ED93B1;
-  --color-accent-400: #E27698;  /* gradient ends, light emphasis */
-  --color-accent-500: #D4537E;  /* primary CTAs, active states, buttons */
-  --color-accent-600: #B8446A;  /* hover state for accent-500 */
-  --color-accent-700: #993556;  /* secondary text, text on light pink surfaces */
-  --color-accent-900: #4B1528;  /* headings, high-contrast body text */
+  /* ── Neutral warm (structural borders/backgrounds — not brand terracotta) ── */
+  --color-sand:     #E8DFCF;
+  --color-sand-700: #8C8172;
+
+  /* ── Accent (terracotta family) — primary CTAs / active states only ──── */
+  --color-accent-100: #F5E4D6;
+  --color-accent-300: #E3A97F;
+  --color-accent-400: #D68A5F;  /* gradient ends, light emphasis */
+  --color-accent-500: #C1613D;  /* primary CTAs, active states, buttons */
+  --color-accent-600: #A54F30;  /* hover state for accent-500 */
+  --color-accent-700: #86432A;  /* secondary text, text on light terracotta surfaces */
+  --color-accent-900: #3B2015;  /* headings, high-contrast body text */
+
+  /* ── Olive (secondary accent — variety alongside terracotta) ───── */
+  --color-gold-100: #E4E6D3;
+  --color-gold:     #6F7A4A;
+  --color-gold-600: #57603A;
 
   /* ── Confetti palette (background animation only) ───────── */
-  --color-confetti-pink-100: #F4C0D1;
-  --color-confetti-pink-300: #ED93B1;
-  --color-confetti-pink-500: #D4537E;
-  --color-confetti-gold:     #FAC775;
-  --color-confetti-coral:    #F5C4B3;
+  --color-confetti-pink-100: #E8CBAE;
+  --color-confetti-pink-300: #E3A97F;
+  --color-confetti-pink-500: #C1613D;
+  --color-confetti-gold:     #9BA86C;
+  --color-confetti-coral:    #D68A5F;
 
   /* ── Legacy aliases — keeps existing classNames compiling ── */
   --color-violet-600: #7C3AED;
-  --color-amber-300:  #E27698;
-  --color-amber-400:  #D4537E;
-  --color-amber-500:  #B8446A;
+  --color-amber-300:  #D68A5F;
+  --color-amber-400:  #C1613D;
+  --color-amber-500:  #A54F30;
   --color-rose-400:   #C81E3C;
   --color-rose-500:   #A81632;
   --color-green-400:  #15803D;
   --color-green-600:  #166534;
-  --color-navy-900:   #FFFDFB;
-  --color-navy-800:   #FFFDFB;
-  --color-navy-700:   #FFFFFF;
-  --color-navy-600:   #F3E0E8;
+  --color-navy-900:   #FBF6EC;
+  --color-navy-800:   #FBF6EC;
+  --color-navy-700:   #FFFDF8;
+  --color-navy-600:   #F0DFCF;
 
   /* ── Shadows ─────────────────────────────────────────────── */
-  --shadow-accent:     0 0 24px rgba(212,83,126,0.28);
-  --shadow-accent-lg:  0 0 56px rgba(212,83,126,0.18), 0 0 20px rgba(212,83,126,0.3);
-  --shadow-card:       0 4px 24px rgba(75,21,40,0.08);
-  --shadow-glow:       0 0 20px rgba(212,83,126,0.3);
-  --shadow-glow-amber: 0 0 20px rgba(212,83,126,0.3);
+  --shadow-accent:     0 0 24px rgba(193,97,61,0.28);
+  --shadow-accent-lg:  0 0 56px rgba(193,97,61,0.18), 0 0 20px rgba(193,97,61,0.3);
+  --shadow-card:       0 4px 24px rgba(59,32,21,0.08);
+  --shadow-glow:       0 0 20px rgba(193,97,61,0.3);
+  --shadow-glow-amber: 0 0 20px rgba(193,97,61,0.3);
 
   /* ── Animations ──────────────────────────────────────────── */
   --animate-fade-rise:  fade-rise 0.45s ease-out both;
@@ -74,8 +83,8 @@
     100% { opacity: 1;   transform: scale(1.05); }
   }
   @keyframes lantern-glow {
-    from { box-shadow: 0 0 12px rgba(212,83,126,0.20), 0 0 40px rgba(212,83,126,0.06); }
-    to   { box-shadow: 0 0 32px rgba(212,83,126,0.50), 0 0 80px rgba(212,83,126,0.18); }
+    from { box-shadow: 0 0 12px rgba(193,97,61,0.20), 0 0 40px rgba(193,97,61,0.06); }
+    to   { box-shadow: 0 0 32px rgba(193,97,61,0.50), 0 0 80px rgba(193,97,61,0.18); }
   }
   @keyframes gold-pulse {
     0%, 100% { opacity: 0.55; transform: scale(1);    }
@@ -87,92 +96,54 @@
 html { color-scheme: light; }
 
 body {
-  background-color: #FFFDFB;
-  color: #4B1528;
+  background-color: #FBF6EC;
+  color: #3B2015;
   font-family: var(--font-jakarta), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Glassmorphism panel ─────────────────────────────────── */
-.glass {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  /* soft shadow keeps panels distinct from the off-white base */
-  box-shadow: 0 8px 32px rgba(75, 21, 40, 0.07);
+/* ─── Flat card surface ───────────────────────────────────── */
+.card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-sand);
+  box-shadow: 0 1px 2px rgba(20, 15, 15, 0.04);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card-hover:hover {
+  box-shadow: 0 4px 16px rgba(20, 15, 15, 0.06);
 }
 
 /* ─── Accent ring on keyboard focus ──────────────────────── */
 .accent-focus:focus-within {
-  border-color: rgba(212, 83, 126, 0.55) !important;
-  box-shadow: 0 0 0 3px rgba(212, 83, 126, 0.12);
+  border-color: rgba(193, 97, 61, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(193, 97, 61, 0.12);
 }
 
 /* ─── Scrollbar ───────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: #FFFDFB; }
-::-webkit-scrollbar-thumb { background: #F3E0E8; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #D4537E; }
+::-webkit-scrollbar-track { background: #FBF6EC; }
+::-webkit-scrollbar-thumb { background: #F0DFCF; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #C1613D; }
 
 /* ─── Custom Select ───────────────────────────────────────── */
 .select-trigger {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(212, 83, 126, 0.30);
-  position: relative;
-  overflow: hidden;
-  animation: select-aura 3s ease-in-out infinite;
-}
-
-.select-trigger::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(212, 83, 126, 0.08) 45%,
-    rgba(250, 199, 117, 0.14) 55%,
-    transparent 100%
-  );
-  background-size: 250% 100%;
-  animation: select-sweep 2.8s linear infinite;
-  pointer-events: none;
-  border-radius: inherit;
+  background: #FFFFFF;
+  border: 1px solid var(--color-sand);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .select-trigger-open {
-  border-color: rgba(212, 83, 126, 0.6) !important;
-  box-shadow: 0 0 0 3px rgba(212, 83, 126, 0.10), 0 0 22px rgba(212, 83, 126, 0.16) !important;
-  animation: none !important;
-}
-
-@keyframes select-aura {
-  0%, 100% {
-    border-color: rgba(212, 83, 126, 0.30);
-    box-shadow: 0 0 8px rgba(250, 199, 117, 0.18), inset 0 0 6px rgba(212, 83, 126, 0.04);
-  }
-  35% {
-    border-color: rgba(250, 199, 117, 0.65);
-    box-shadow: 0 0 18px rgba(250, 199, 117, 0.35), inset 0 0 10px rgba(250, 199, 117, 0.10);
-  }
-  70% {
-    border-color: rgba(212, 83, 126, 0.5);
-    box-shadow: 0 0 24px rgba(212, 83, 126, 0.20), inset 0 0 14px rgba(212, 83, 126, 0.06);
-  }
-}
-
-@keyframes select-sweep {
-  0%   { background-position:  160% 0; }
-  100% { background-position: -160% 0; }
+  border-color: rgba(193, 97, 61, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(193, 97, 61, 0.10) !important;
 }
 
 .select-dropdown {
   background: #FFFFFF;
-  border: 1px solid rgba(212, 83, 126, 0.35);
-  box-shadow: 0 14px 44px rgba(75, 21, 40, 0.18), 0 0 28px rgba(212, 83, 126, 0.10);
-  animation: select-burst 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  border: 1px solid var(--color-sand);
+  box-shadow: 0 8px 28px rgba(20, 15, 15, 0.10);
+  animation: select-burst 0.15s ease-out both;
   transform-origin: top center;
 }
 
@@ -193,8 +164,8 @@ body {
 
 .select-list::-webkit-scrollbar       { width: 3px; }
 .select-list::-webkit-scrollbar-track { background: #FFFFFF; }
-.select-list::-webkit-scrollbar-thumb { background: rgba(212, 83, 126, 0.5); border-radius: 999px; }
-.select-list::-webkit-scrollbar-thumb:hover { background: #D4537E; }
+.select-list::-webkit-scrollbar-thumb { background: rgba(193, 97, 61, 0.5); border-radius: 999px; }
+.select-list::-webkit-scrollbar-thumb:hover { background: #C1613D; }
 
 /* ─── Respect reduced-motion preference ──────────────────── */
 @media (prefers-reduced-motion: reduce) {

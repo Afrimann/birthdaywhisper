@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const PALETTE = ["#F4C0D1", "#ED93B1", "#D4537E", "#FAC775", "#F5C4B3"];
+const PALETTE = ["#E8CBAE", "#E3A97F", "#C1613D", "#9BA86C", "#DC9B6E"];
 
 interface Particle {
   x: number;

@@ -43,7 +43,7 @@ export default async function AdminOverviewPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {cards.map(({ label, value, sub, icon: Icon }) => (
-          <div key={label} className="glass rounded-2xl p-5">
+          <div key={label} className="card rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <Icon className="w-4 h-4 text-accent-500" />
               <p className="text-accent-700 text-xs font-semibold uppercase tracking-wider">{label}</p>

@@ -5,11 +5,16 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { giftIsLocallyEligible } from "@/lib/giftEligibility";
 import { disburseGift } from "@/lib/giftDisbursement";
+import { GIFTING_ENABLED } from "@/lib/feature-flags";
 
 // Disbursement is owner-initiated, not automatic: the recipient must be
 // signed in as themselves (auth() below) and their own birthday must have
 // locally arrived (giftIsLocallyEligible below) for anything to move.
 export async function POST() {
+  if (!GIFTING_ENABLED) {
+    return NextResponse.json({ error: "Payouts are temporarily unavailable." }, { status: 503 });
+  }
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

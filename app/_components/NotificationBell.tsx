@@ -8,6 +8,7 @@ function useNotifications() {
   return useQuery<{ notifications: { read: boolean }[] }>({
     queryKey: ["notifications"],
     queryFn: () => fetch("/api/notifications").then((r) => r.json()),
+    refetchInterval: 60_000,
   });
 }
 

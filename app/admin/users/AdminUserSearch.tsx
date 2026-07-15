@@ -110,18 +110,18 @@ export default function AdminUserSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by username..."
-          className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl pl-11 pr-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
+          className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl pl-11 pr-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm"
         />
       </div>
 
       {debounced.length >= 2 && (
-        <div className="glass rounded-2xl overflow-hidden">
+        <div className="card rounded-xl overflow-hidden">
           {isFetching ? (
             <p className="text-accent-700 text-sm p-6">Searching...</p>
           ) : !data || data.users.length === 0 ? (
             <p className="text-accent-700 text-sm p-6">No matching users.</p>
           ) : (
-            <div className="divide-y divide-[rgba(212,83,126,0.08)]">
+            <div className="divide-y divide-[rgba(193,97,61,0.08)]">
               {data.users.map((user) => (
                 <EditableUserRow key={user.id} user={user} />
               ))}

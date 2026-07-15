@@ -81,8 +81,8 @@ export default function CustomSelect({
                 style={{ animationDelay: `${Math.min(i * 14, 160)}ms` }}
                 className={`select-option w-full px-4 py-2.5 text-left text-sm transition-colors ${
                   opt.value === value
-                    ? "text-accent-500 bg-[rgba(212,83,126,0.1)]"
-                    : "text-accent-700 hover:text-accent-600 hover:bg-[rgba(212,83,126,0.08)]"
+                    ? "text-accent-500 bg-[rgba(193,97,61,0.1)]"
+                    : "text-accent-700 hover:text-accent-600 hover:bg-[rgba(193,97,61,0.08)]"
                 }`}
               >
                 {opt.label}

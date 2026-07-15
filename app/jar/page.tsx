@@ -2,9 +2,10 @@ export const dynamic = "force-dynamic";
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { BookOpen, Gift } from "lucide-react";
+import { Gift } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import AppShell from "@/app/_components/AppShell";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -40,22 +41,8 @@ export default async function JarPage() {
   }).catch(() => []);
 
   return (
-    <div className="min-h-screen bg-canvas text-accent-900">
-      {/* Ambient glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[240px] bg-[rgba(212,83,126,0.04)] rounded-full blur-3xl pointer-events-none" />
-
-      {/* Nav */}
-      <nav className="relative z-10 border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BookOpen className="text-accent-500 w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Memory Jar</span>
-        </div>
-        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
-          ← Dashboard
-        </Link>
-      </nav>
-
-      <main className="relative z-10 max-w-2xl mx-auto px-6 py-10">
+    <AppShell>
+      <div>
         {/* Header */}
         <div className="mb-8 animate-fade-rise">
           <h1 className="font-fraunces text-2xl font-bold text-accent-900 mb-1">
@@ -64,14 +51,14 @@ export default async function JarPage() {
           <p className="text-accent-700 text-sm">
             {messages.length === 0
               ? "No messages opened yet."
-              : `${messages.length} message${messages.length !== 1 ? "s" : ""} you&apos;ve read`}
+              : `${messages.length} message${messages.length !== 1 ? "s" : ""} you've read`}
           </p>
         </div>
 
         {/* Empty state */}
         {messages.length === 0 && (
-          <div className="glass rounded-2xl p-10 text-center animate-fade-rise">
-            <div className="w-16 h-16 rounded-2xl bg-[rgba(212,83,126,0.07)] border border-[rgba(212,83,126,0.15)] flex items-center justify-center mx-auto mb-4">
+          <div className="card rounded-xl p-10 text-center animate-fade-rise">
+            <div className="w-16 h-16 rounded-xl bg-[rgba(193,97,61,0.07)] border border-[rgba(193,97,61,0.15)] flex items-center justify-center mx-auto mb-4">
               <Gift className="w-7 h-7 text-accent-500 opacity-50" />
             </div>
             <p className="text-accent-700 text-sm mb-4">
@@ -93,7 +80,7 @@ export default async function JarPage() {
             return (
               <div
                 key={msg.id}
-                className="glass rounded-2xl p-6 animate-fade-rise"
+                className="card rounded-xl p-6 animate-fade-rise"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
                 <p className="text-accent-900 text-sm leading-relaxed mb-4">{msg.content}</p>
@@ -112,7 +99,7 @@ export default async function JarPage() {
             );
           })}
         </div>
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }

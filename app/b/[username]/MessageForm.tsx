@@ -75,8 +75,8 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   // Account gate — guest tried to send a second message
   if (needsAccount) {
     return (
-      <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
-        <div className="w-16 h-16 rounded-full bg-[rgba(212,83,126,0.06)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center mx-auto mb-4">
+      <div className="card rounded-xl p-8 text-center animate-fade-rise">
+        <div className="w-16 h-16 rounded-full bg-[rgba(193,97,61,0.06)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center mx-auto mb-4">
           <Lock className="w-8 h-8 text-accent-500" />
         </div>
         <h2 className="font-fraunces text-xl font-bold text-accent-900 mb-2">
@@ -105,8 +105,8 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   // IP rate limit (signed-in users hitting the 5/hour cap)
   if (rateLimited) {
     return (
-      <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
-        <div className="w-16 h-16 rounded-full bg-[rgba(212,83,126,0.06)] border border-[rgba(212,83,126,0.18)] flex items-center justify-center mx-auto mb-4">
+      <div className="card rounded-xl p-8 text-center animate-fade-rise">
+        <div className="w-16 h-16 rounded-full bg-[rgba(193,97,61,0.06)] border border-[rgba(193,97,61,0.18)] flex items-center justify-center mx-auto mb-4">
           <Lock className="w-8 h-8 text-accent-500" />
         </div>
         <h2 className="font-fraunces text-xl font-bold text-accent-900 mb-2">
@@ -122,8 +122,8 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
 
   if (sent) {
     return (
-      <div className="glass rounded-2xl p-8 text-center animate-fade-rise">
-        <div className="w-16 h-16 rounded-full bg-[rgba(212,83,126,0.12)] border border-[rgba(212,83,126,0.28)] flex items-center justify-center mx-auto mb-4 animate-lantern">
+      <div className="card rounded-xl p-8 text-center animate-fade-rise">
+        <div className="w-16 h-16 rounded-full bg-[rgba(193,97,61,0.12)] border border-[rgba(193,97,61,0.28)] flex items-center justify-center mx-auto mb-4 animate-lantern">
           <Check className="w-8 h-8 text-accent-500" />
         </div>
         <h2 className="font-fraunces text-2xl font-bold text-accent-900 mb-2">Whisper sent!</h2>
@@ -164,7 +164,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
   }
 
   return (
-    <div className="glass rounded-2xl p-6 animate-fade-rise" style={{ animationDelay: "60ms" }}>
+    <div className="card rounded-xl p-6 animate-fade-rise" style={{ animationDelay: "60ms" }}>
       <h2 className="font-fraunces text-xl font-bold text-accent-900 mb-1">
         Leave {firstName} a whisper
       </h2>
@@ -180,7 +180,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
         onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS))}
         placeholder={`Write something heartfelt for ${firstName}...`}
         rows={4}
-        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] focus:shadow-[0_0_0_3px_rgba(212,83,126,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all resize-none text-sm leading-relaxed mb-1"
+        className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] focus:shadow-[0_0_0_3px_rgba(193,97,61,0.07)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all resize-none text-sm leading-relaxed mb-1"
       />
       <div className="flex justify-end mb-4">
         <span className={`text-xs ${remaining < 50 ? "text-accent-500" : "text-ghost"}`}>
@@ -215,7 +215,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
         onClick={() => setIsAnonymous((a) => !a)}
         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all mb-4 text-left ${
           isAnonymous
-            ? "border-[rgba(212,83,126,0.22)] bg-[rgba(212,83,126,0.05)]"
+            ? "border-[rgba(193,97,61,0.22)] bg-[rgba(193,97,61,0.05)]"
             : "border-blush bg-[rgba(255,255,255,0.4)]"
         }`}
       >
@@ -240,7 +240,7 @@ export default function MessageForm({ recipientId, recipientName, birthdayYear, 
           value={senderName}
           onChange={(e) => setSenderName(e.target.value)}
           placeholder="Your name (optional)"
-          className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-4"
+          className="w-full bg-[rgba(255,255,255,0.7)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm mb-4"
         />
       )}
 

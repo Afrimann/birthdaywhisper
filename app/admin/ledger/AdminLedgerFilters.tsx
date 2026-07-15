@@ -61,13 +61,13 @@ export default function AdminLedgerFilters() {
           value={recipient}
           onChange={(e) => { setRecipient(e.target.value); setPage(1); }}
           placeholder="Search recipient..."
-          className="bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm w-56"
+          className="bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-3 text-accent-900 placeholder-ghost outline-none transition-all text-sm w-56"
         />
         <button
           onClick={() => { setDisputedOnly((d) => !d); setPage(1); }}
           className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
             disputedOnly
-              ? "border-[rgba(212,83,126,0.4)] bg-[rgba(212,83,126,0.1)] text-accent-500"
+              ? "border-[rgba(193,97,61,0.4)] bg-[rgba(193,97,61,0.1)] text-accent-500"
               : "border-blush text-accent-700"
           }`}
         >
@@ -75,13 +75,13 @@ export default function AdminLedgerFilters() {
         </button>
       </div>
 
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="card rounded-xl overflow-hidden">
         {isPending ? (
           <p className="text-accent-700 text-sm p-6">Loading...</p>
         ) : !data || data.gifts.length === 0 ? (
           <p className="text-accent-700 text-sm p-6">No gifts match these filters.</p>
         ) : (
-          <div className="divide-y divide-[rgba(212,83,126,0.08)]">
+          <div className="divide-y divide-[rgba(193,97,61,0.08)]">
             {data.gifts.map((gift) => (
               <div key={gift.id} className="p-4 flex items-center justify-between gap-4 text-sm">
                 <div className="min-w-0">
@@ -95,7 +95,7 @@ export default function AdminLedgerFilters() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {gift.isDisputed && <ShieldAlert className="w-4 h-4 text-rose-400" />}
-                  <span className="text-accent-700 text-xs px-2 py-1 rounded-full bg-[rgba(212,83,126,0.08)]">
+                  <span className="text-accent-700 text-xs px-2 py-1 rounded-full bg-[rgba(193,97,61,0.08)]">
                     {gift.status}
                   </span>
                   <span className="text-accent-900 font-semibold">{koboToNaira(gift.amountKobo)}</span>

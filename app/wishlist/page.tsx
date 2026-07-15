@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Star, Plus, Trash2, ExternalLink, Loader2, Eye, EyeOff, Pencil, Check, X } from "lucide-react";
-import Link from "next/link";
+import AppShell from "@/app/_components/AppShell";
 
 interface WishlistItem {
   id: string;
@@ -133,16 +133,18 @@ export default function WishlistPage() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-accent-500 animate-spin" />
-      </div>
+      <AppShell>
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 text-accent-500 animate-spin" />
+        </div>
+      </AppShell>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-canvas flex items-center justify-center px-6">
-        <div className="text-center">
+      <AppShell>
+        <div className="text-center py-20">
           <p className="text-rose-400 text-sm mb-4">{error.message}</p>
           <button
             onClick={() => qc.invalidateQueries({ queryKey: ["wishlist"] })}
@@ -151,7 +153,7 @@ export default function WishlistPage() {
             Try again
           </button>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
@@ -159,21 +161,12 @@ export default function WishlistPage() {
   const showWishlist = data?.showWishlist ?? false;
 
   return (
-    <div className="min-h-screen bg-canvas text-accent-900">
-      <nav className="border-b border-[rgba(212,83,126,0.08)] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Star className="text-accent-500 w-5 h-5" />
-          <span className="font-fraunces text-lg font-bold text-accent-900 tracking-tight">Wishlist</span>
-        </div>
-        <Link href="/dashboard" className="text-accent-700 hover:text-accent-900 text-sm transition-colors">
-          ← Dashboard
-        </Link>
-      </nav>
-
-      <main className="max-w-lg mx-auto px-6 py-10 space-y-6">
+    <AppShell>
+      <div className="max-w-lg space-y-6">
+        <h1 className="font-fraunces text-3xl md:text-4xl font-bold text-accent-900">Wishlist</h1>
 
         {/* Visibility toggle */}
-        <div className="glass rounded-2xl p-5 flex items-center justify-between gap-4">
+        <div className="card rounded-xl p-5 flex items-center justify-between gap-4">
           <div>
             <p className="text-accent-900 font-medium text-sm">Show on my birthday page</p>
             <p className="text-accent-700 text-xs mt-0.5">
@@ -187,8 +180,8 @@ export default function WishlistPage() {
             disabled={toggleVisibility.isPending}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all touch-manipulation ${
               showWishlist
-                ? "bg-[rgba(212,83,126,0.15)] border border-[rgba(212,83,126,0.3)] text-accent-500"
-                : "bg-blush border border-[rgba(212,83,126,0.15)] text-accent-700 hover:text-accent-900"
+                ? "bg-[rgba(193,97,61,0.15)] border border-[rgba(193,97,61,0.3)] text-accent-500"
+                : "bg-blush border border-[rgba(193,97,61,0.15)] text-accent-700 hover:text-accent-900"
             }`}
           >
             {showWishlist ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -199,7 +192,7 @@ export default function WishlistPage() {
         {/* Items list */}
         <div className="space-y-3">
           {items.length === 0 && !addOpen && (
-            <div className="glass rounded-2xl p-10 text-center">
+            <div className="card rounded-xl p-10 text-center">
               <Star className="w-8 h-8 text-accent-500 opacity-40 mx-auto mb-3" />
               <p className="text-accent-700 text-sm">No items yet — add things you&apos;d love!</p>
             </div>
@@ -207,32 +200,32 @@ export default function WishlistPage() {
 
           {items.map((item) =>
             editId === item.id ? (
-              <div key={item.id} className="glass rounded-2xl p-5 space-y-3">
+              <div key={item.id} className="card rounded-xl p-5 space-y-3">
                 <input
                   autoFocus
                   value={editForm.title}
                   onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
                   placeholder="Item name *"
-                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <input
                   value={editForm.description}
                   onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
                   placeholder="Description (optional)"
-                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                  className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <div className="flex gap-2">
                   <input
                     value={editForm.url}
                     onChange={(e) => setEditForm((f) => ({ ...f, url: e.target.value }))}
                     placeholder="Link (optional)"
-                    className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                    className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                   />
                   <input
                     value={editForm.priceRange}
                     onChange={(e) => setEditForm((f) => ({ ...f, priceRange: e.target.value }))}
                     placeholder="Price (optional)"
-                    className="w-28 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                    className="w-28 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                   />
                 </div>
                 <div className="flex gap-2 justify-end">
@@ -253,7 +246,7 @@ export default function WishlistPage() {
                 </div>
               </div>
             ) : (
-              <div key={item.id} className="glass rounded-2xl p-5 flex items-start gap-4">
+              <div key={item.id} className="card rounded-xl p-5 flex items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-accent-900 font-medium text-sm truncate">{item.title}</p>
@@ -305,7 +298,7 @@ export default function WishlistPage() {
 
           {/* Add form */}
           {addOpen ? (
-            <div className="glass rounded-2xl p-5 space-y-3 animate-fade-rise">
+            <div className="card rounded-xl p-5 space-y-3 animate-fade-rise">
               <p className="text-accent-900 font-medium text-sm">New item</p>
               <input
                 autoFocus
@@ -314,26 +307,26 @@ export default function WishlistPage() {
                 onKeyDown={(e) => e.key === "Enter" && addItem.mutate(form)}
                 placeholder="Item name *"
                 maxLength={120}
-                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
               />
               <input
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 placeholder="Description (optional)"
-                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                className="w-full bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
               />
               <div className="flex gap-2">
                 <input
                   value={form.url}
                   onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
                   placeholder="Link (optional)"
-                  className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                  className="flex-1 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
                 <input
                   value={form.priceRange}
                   onChange={(e) => setForm((f) => ({ ...f, priceRange: e.target.value }))}
                   placeholder="~$50"
-                  className="w-24 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(212,83,126,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
+                  className="w-24 bg-[rgba(255,255,255,0.8)] border border-blush focus:border-[rgba(193,97,61,0.45)] rounded-xl px-4 py-2.5 text-accent-900 placeholder-ghost outline-none text-sm"
                 />
               </div>
               {addItem.error && (
@@ -360,7 +353,7 @@ export default function WishlistPage() {
             items.length < 20 && (
               <button
                 onClick={() => setAddOpen(true)}
-                className="w-full flex items-center justify-center gap-2 border border-dashed border-[rgba(212,83,126,0.2)] hover:border-[rgba(212,83,126,0.4)] text-accent-700 hover:text-accent-600 rounded-2xl p-4 text-sm transition-all touch-manipulation"
+                className="w-full flex items-center justify-center gap-2 border border-dashed border-[rgba(193,97,61,0.2)] hover:border-[rgba(193,97,61,0.4)] text-accent-700 hover:text-accent-600 rounded-2xl p-4 text-sm transition-all touch-manipulation"
               >
                 <Plus className="w-4 h-4" /> Add item
               </button>
@@ -371,7 +364,7 @@ export default function WishlistPage() {
         {items.length >= 20 && (
           <p className="text-ghost text-xs text-center">Maximum 20 items reached.</p>
         )}
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }

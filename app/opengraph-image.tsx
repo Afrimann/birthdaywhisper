@@ -8,7 +8,7 @@ export default function OgImage() {
     (
       <div
         style={{
-          background: "#FFFDFB",
+          background: "#FBF6EC",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -25,7 +25,7 @@ export default function OgImage() {
             width: 700,
             height: 700,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(212,83,126,0.13) 0%, transparent 65%)",
+            background: "radial-gradient(circle, rgba(193,97,61,0.13) 0%, transparent 65%)",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
@@ -38,7 +38,7 @@ export default function OgImage() {
           style={{
             fontSize: 26,
             fontWeight: 600,
-            color: "#D4537E",
+            color: "#C1613D",
             letterSpacing: 4,
             textTransform: "uppercase",
             marginBottom: 22,
@@ -51,7 +51,7 @@ export default function OgImage() {
           style={{
             fontSize: 58,
             fontWeight: 700,
-            color: "#4B1528",
+            color: "#3B2015",
             textAlign: "center",
             lineHeight: 1.2,
             marginBottom: 22,
@@ -64,7 +64,7 @@ export default function OgImage() {
         <div
           style={{
             fontSize: 26,
-            color: "#993556",
+            color: "#86432A",
             textAlign: "center",
             maxWidth: 700,
           }}
