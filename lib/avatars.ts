@@ -1,5 +1,5 @@
 import { createAvatar } from "@dicebear/core";
-import { personas } from "@dicebear/collection";
+import { personas, thumbs } from "@dicebear/collection";
 import type { Options as PersonasOptions } from "@dicebear/personas";
 
 export type AvatarGender = "MASCULINE" | "FEMININE";
@@ -35,5 +35,17 @@ export function avatarDataUri(seed: string): string {
     seed: avatar.seed,
     hair: [avatar.hair],
     facialHairProbability: avatar.facialHairProbability,
+  }).toDataUri();
+}
+
+// Deterministic per-user fallback avatar (no uploaded photo) — seed with a
+// stable identifier (user id) so it doesn't reshuffle on every render, and
+// tint it with the site's own palette instead of dicebear's defaults so it
+// doesn't clash with everything around it.
+export function fallbackAvatarDataUri(seed: string): string {
+  return createAvatar(thumbs, {
+    seed,
+    backgroundColor: ["E3A97F", "D68A5F", "E4E6D3", "E8DFCF", "F0DFCF"],
+    shapeColor: ["C1613D", "6F7A4A", "86432A", "57603A"],
   }).toDataUri();
 }

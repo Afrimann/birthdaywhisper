@@ -33,6 +33,11 @@ vi.mock("@/lib/giftDisbursement", () => ({
   disburseGift: mockDisburseGift,
 }));
 
+// Payouts are pulled from the product behind this flag (see
+// lib/feature-flags.ts) — force it on so these tests keep covering the
+// route's real logic, which still needs to be correct for when it returns.
+vi.mock("@/lib/feature-flags", () => ({ GIFTING_ENABLED: true }));
+
 import { POST } from "@/app/api/payouts/withdraw/route";
 
 const THIS_YEAR = new Date().getFullYear();

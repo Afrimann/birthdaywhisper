@@ -1,4 +1,10 @@
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://birthdaywhisper.com";
+import { getBaseUrl } from "./url";
+
+// Single source of truth for base-URL resolution (NEXT_PUBLIC_APP_URL →
+// VERCEL_URL → localhost) — was previously duplicated here with its own
+// hardcoded production-domain fallback, which could silently disagree with
+// lib/url.ts if the two ever drifted.
+const BASE_URL = getBaseUrl();
 
 const wrapper = (content: string) => `
 <!DOCTYPE html>

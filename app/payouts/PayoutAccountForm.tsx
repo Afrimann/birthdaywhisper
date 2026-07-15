@@ -109,12 +109,12 @@ export default function PayoutAccountForm({ initialAccount }: { initialAccount: 
           <div
             className={
               isPendingReview
-                ? "flex items-center gap-3 bg-[rgba(250,199,117,0.15)] border border-[rgba(250,199,117,0.4)] rounded-xl px-4 py-3 mb-4"
+                ? "flex items-center gap-3 bg-[rgba(111,122,74,0.15)] border border-[rgba(111,122,74,0.4)] rounded-xl px-4 py-3 mb-4"
                 : "flex items-center gap-3 bg-[rgba(193,97,61,0.08)] border border-[rgba(193,97,61,0.2)] rounded-xl px-4 py-3 mb-4"
             }
           >
             {isPendingReview ? (
-              <Clock className="w-4 h-4 text-[#B8863C] flex-shrink-0" />
+              <Clock className="w-4 h-4 text-gold flex-shrink-0" />
             ) : (
               <Check className="w-4 h-4 text-accent-500 flex-shrink-0" />
             )}

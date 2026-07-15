@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 
 interface Props {
@@ -10,19 +9,31 @@ interface Props {
 }
 
 export default function FollowButton({ username, initialFollowing }: Props) {
-  const [following, setFollowing] = useState(initialFollowing);
+  const qc = useQueryClient();
+  const queryKey = ["following", username];
+
+  // No GET /api/follow endpoint exists — the server component already
+  // resolved this once, so seed the cache with it instead of refetching.
+  const { data: following } = useQuery({
+    queryKey,
+    queryFn: () => initialFollowing,
+    initialData: initialFollowing,
+    staleTime: Infinity,
+  });
 
   const toggle = useMutation({
     mutationFn: (isFollowing: boolean) =>
       fetch(`/api/follow/${username}`, {
         method: isFollowing ? "DELETE" : "POST",
       }).then((r) => r.json()),
-    onMutate: (isFollowing) => {
-      setFollowing(!isFollowing);
-      return { prev: isFollowing };
+    onMutate: async (isFollowing) => {
+      await qc.cancelQueries({ queryKey });
+      const prev = qc.getQueryData<boolean>(queryKey);
+      qc.setQueryData(queryKey, !isFollowing);
+      return { prev };
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx) setFollowing(ctx.prev);
+      qc.setQueryData(queryKey, ctx?.prev);
     },
   });
 

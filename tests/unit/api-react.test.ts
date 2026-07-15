@@ -21,7 +21,11 @@ vi.mock("@/lib/prisma", () => ({
   prisma: {
     user:    { findUnique: mockUserFindUnique },
     message: { findUnique: mockMessageFindUnique, update: mockMessageUpdate },
+    notification: { create: vi.fn().mockReturnValue({ catch: vi.fn() }) },
   },
+}));
+vi.mock("@/lib/email", () => ({
+  sendReactionReceivedEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
 import { PATCH } from "@/app/api/messages/[id]/react/route";

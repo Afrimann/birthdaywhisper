@@ -24,22 +24,35 @@ export async function GET(req: Request) {
       try {
         const p = email.payload as Record<string, unknown>;
 
+        // recipientEmail is always the preference-holder's own address for
+        // both types below (the birthday person for UNLOCK, the follower who
+        // asked to be reminded for REMINDER_SENDER) — so their own toggle is
+        // the one that applies. No row / no account deleted → default to on.
+        const recipient = await prisma.user.findUnique({
+          where:  { email: email.recipientEmail },
+          select: { notifPrefs: { select: { emailOnBirthdayUnlock: true, emailReminders: true } } },
+        });
+
         if (email.type === "BIRTHDAY_UNLOCK") {
-          await sendBirthdayUnlockEmail(
-            email.recipientEmail,
-            String(p.displayName),
-            Number(p.messageCount ?? 0),
-          );
+          if (recipient?.notifPrefs?.emailOnBirthdayUnlock !== false) {
+            await sendBirthdayUnlockEmail(
+              email.recipientEmail,
+              String(p.displayName),
+              Number(p.messageCount ?? 0),
+            );
+          }
         }
 
         if (email.type === "BIRTHDAY_REMINDER_SENDER") {
-          await sendBirthdayReminderEmail(
-            email.recipientEmail,
-            String(p.senderName),
-            String(p.birthdayPersonName),
-            Number(p.daysUntil),
-            String(p.profileUrl),
-          );
+          if (recipient?.notifPrefs?.emailReminders !== false) {
+            await sendBirthdayReminderEmail(
+              email.recipientEmail,
+              String(p.senderName),
+              String(p.birthdayPersonName),
+              Number(p.daysUntil),
+              String(p.profileUrl),
+            );
+          }
         }
 
         await prisma.scheduledEmail.update({

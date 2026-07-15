@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { sendReactionReceivedEmail } from "@/lib/email";
 
 const ALLOWED = new Set(["🥰", "😭", "🤣", "🔥", "💖", "🫶"]);
 
@@ -50,6 +51,15 @@ export async function PATCH(
         type:    "REACTION_RECEIVED",
         payload: { recipientName: user.displayName, emoji, messageId: id },
       },
+    }).catch(() => null);
+
+    prisma.user.findUnique({
+      where:  { id: message.senderId },
+      select: { email: true, displayName: true, notifPrefs: { select: { emailReactions: true } } },
+    }).then((sender) => {
+      if (sender && sender.notifPrefs?.emailReactions !== false) {
+        return sendReactionReceivedEmail(sender.email, sender.displayName, user.displayName, emoji);
+      }
     }).catch(() => null);
   }
 
